@@ -47,17 +47,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\PC_files\Forms\Window.cs">
+    <Compile Include="src\Server_files\Devices\IDevice.cs" />
+    <Compile Include="src\Server_files\Forms\Window.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\PC_files\Forms\Window.Designer.cs">
+    <Compile Include="src\Server_files\Forms\Window.Designer.cs">
       <DependentUpon>Window.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\PC_files\Program.cs" />
-    <Compile Include="src\PC_files\RSI\InputFrame.cs" />
-    <Compile Include="src\PC_files\RSI\OutputFrame.cs" />
-    <Compile Include="src\PC_files\RSI\RSIAdapter.cs" />
-    <Compile Include="src\PC_files\RSI\RSIServer.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\E6POS.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\KUKARobot.cs" />
+    <Compile Include="src\Server_files\Devices\OptiTrack\Optitrack.cs" />
+    <Compile Include="src\Server_files\Program.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\RSI\InputFrame.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\RSI\OutputFrame.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\RSI\RSIAdapter.cs" />
+    <Compile Include="src\Server_files\Server.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -67,7 +71,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="src\PC_files\Forms\Window.resx">
+    <EmbeddedResource Include="src\Server_files\Forms\Window.resx">
       <DependentUpon>Window.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
@@ -87,8 +91,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="src\Optitrack_files\" />
-    <Folder Include="src\PC_files\Optitrack\" />
+    <Folder Include="src\OptiTrack_files\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\KUKA_files\RSI_EthernetConfig.xml" />

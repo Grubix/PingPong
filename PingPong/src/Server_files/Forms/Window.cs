@@ -1,5 +1,5 @@
-﻿using PingPong.RSI;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using PingPong.Devices;
 
 namespace PingPong {
 
@@ -7,24 +7,37 @@ namespace PingPong {
 
         private double X, Y, Z, A, B, C = 0.0;
 
-        private readonly RSIServer server;
+        private readonly Server server;
+
+        private readonly KUKARobot robot1;
+
+        //private readonly KUKARobot robot2;
+
+        //private readonly OptiTrack optiTrack;
 
         public Window() {
             InitializeComponent();
 
-            server = new RSIServer("127.0.0.1", 8080);
+            robot1 = new KUKARobot("192.168.8.158", 8081);
+
+            server = new Server(robot1);
             server.Start();
 
             incXBtn.Click += (s, e) => IncreaseValue(ref X);
             decXBtn.Click += (s, e) => DecreaseValue(ref X);
+
             incYBtn.Click += (s, e) => IncreaseValue(ref Y);
             decYBtn.Click += (s, e) => DecreaseValue(ref Y);
+
             incZBtn.Click += (s, e) => IncreaseValue(ref Z);
             decZBtn.Click += (s, e) => DecreaseValue(ref Z);
+
             incABtn.Click += (s, e) => IncreaseValue(ref A);
             decABtn.Click += (s, e) => DecreaseValue(ref A);
+
             incBBtn.Click += (s, e) => IncreaseValue(ref B);
             decBBtn.Click += (s, e) => DecreaseValue(ref B);
+
             incCBtn.Click += (s, e) => IncreaseValue(ref C);
             decCBtn.Click += (s, e) => DecreaseValue(ref C);
         }
@@ -40,16 +53,14 @@ namespace PingPong {
         }
 
         public void SendData() {
-            OutputFrame frame = new OutputFrame() {
-                X = this.X,
-                Y = this.Y,
-                Z = this.Z,
-                A = this.A,
-                B = this.B,
-                C = this.C,
-            };
+            robot1.Position.X = X;
+            robot1.Position.Y = Y;
+            robot1.Position.Z = Z;
+            robot1.Position.A = A;
+            robot1.Position.B = B;
+            robot1.Position.C = C;
 
-            server.Send(frame);
+            server.Send();
         }
     }
 
