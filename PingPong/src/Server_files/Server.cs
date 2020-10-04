@@ -23,8 +23,8 @@ namespace PingPong {
 
         public void Start() {
             Robot1.Initialize();
-            //Robot2.Initialiize();
-            //OptiTrack.Initialize();
+            // Robot2.Initialiize();
+            // OptiTrack.Initialize();
 
             if (!isRunning) {
                 isRunning = true;

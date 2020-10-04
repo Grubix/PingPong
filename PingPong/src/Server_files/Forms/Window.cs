@@ -1,5 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using PingPong.Devices;
+using PingPong.Math;
 
 namespace PingPong {
 
@@ -17,6 +19,20 @@ namespace PingPong {
 
         public Window() {
             InitializeComponent();
+
+            Mat3 mat1 = new Mat3(new double[3,3] {
+                {1, 2, 3},
+                {1, 2, 5},
+                {2, 5, 5}
+            });
+
+            Mat3 mat2 = new Mat3(new double[3, 3] {
+                {1, 2, 1},
+                {1, 2, 5},
+                {2, -2, 5}
+            });
+
+            Console.WriteLine(mat2 * mat2.Inverse());
 
             robot1 = new KUKARobot("192.168.8.158", 8081);
 

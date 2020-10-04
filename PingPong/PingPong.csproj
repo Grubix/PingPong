@@ -76,6 +76,7 @@
     <EmbeddedResource Include="src\Server_files\Forms\Window.resx">
       <DependentUpon>Window.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Meissner feat. Pazda.pdf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
