@@ -12,7 +12,7 @@ namespace PingPong.Devices {
 
         public InputFrame(string data) {
             //TODO: parse data
-            Console.WriteLine("Received: " + data);
+            Console.WriteLine($"Received: {data}");
         }
 
     }

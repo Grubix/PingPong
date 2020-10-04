@@ -53,14 +53,12 @@ namespace PingPong {
         }
 
         public void SendData() {
-            robot1.Position.X = X;
-            robot1.Position.Y = Y;
-            robot1.Position.Z = Z;
-            robot1.Position.A = A;
-            robot1.Position.B = B;
-            robot1.Position.C = C;
+            robot1.TargetPosition = getTargetPosition();
+            server.SendData();
+        }
 
-            server.Send();
+        public E6POS getTargetPosition() {
+            return new E6POS(X, Y, Z, A, B, C);
         }
     }
 

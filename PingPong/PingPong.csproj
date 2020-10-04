@@ -57,6 +57,8 @@
     <Compile Include="src\Server_files\Devices\KUKA\E6POS.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\KUKARobot.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\Optitrack.cs" />
+    <Compile Include="src\Server_files\Math\Mat3.cs" />
+    <Compile Include="src\Server_files\Math\Vec3.cs" />
     <Compile Include="src\Server_files\Program.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\InputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\OutputFrame.cs" />
