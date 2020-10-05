@@ -8,6 +8,8 @@ namespace PingPong.Devices {
 
         public E6POS Position { get; private set; }
 
+        public long IPOC { get; private set; }
+
         //TODO: parsed data (np. pozycja (DEF_RIst))
 
         public InputFrame(string data) {

@@ -1,9 +1,9 @@
 <ROOT>
    <CONFIG>
-      <IP_NUMBER>x.x.x.x</IP_NUMBER>    <!-- IP-number of the external socket -->
-      <PORT>12345</PORT>                <!-- Port-number of the external socket -->      
-      <SENTYPE>PingPong</SENTYPE>       <!-- The name of your system send in <Sen Type="" > -->     
-      <ONLYSEND>FALSE</ONLYSEND>        <!-- TRUE means the client don't expect answers. Do not send anything to robot -->
+      <IP_NUMBER>192.168.3.1</IP_NUMBER>    <!-- IP-number of the external socket -->
+	   <PORT>8081</PORT>                    <!-- Port-number of the external socket -->      
+      <SENTYPE>PingPong</SENTYPE>           <!-- The name of your system send in <Sen Type="" > -->     
+      <ONLYSEND>FALSE</ONLYSEND>            <!-- TRUE means the client don't expect answers. Do not send anything to robot -->
    </CONFIG>
 	
    <!-- RSI Data: TYPE=  "BOOL", "STRING", "LONG", "DOUBLE" -->
@@ -17,7 +17,8 @@
       <ELEMENTS>
          <ELEMENT TAG="DEF_RIst" TYPE="DOUBLE" INDX="INTERNAL" />   <!-- Cartesian actual position -->
          <ELEMENT TAG="DEF_AIPos" TYPE="DOUBLE" INDX="INTERNAL" />  <!-- Axis-specific actual position of robot axes A1 to A6 -->
-      </ELEMENTS>
+		 <ELEMENT TAG="DEF_AIPos" TYPE="DOUBLE" INDX="INTERNAL" />  <!-- Count the late packages and send it back to server -->
+	 </ELEMENTS>
    </SEND>
    <RECEIVE>
       <ELEMENTS>

@@ -8,5 +8,8 @@ namespace PingPong.Devices {
             //TODO: Pobranie wszystkich informacji, kalibracja itd.
         }
 
+        public bool IsInitialized() {
+            return false; //TODO: 
+        }
     }
 }

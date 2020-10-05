@@ -4,32 +4,31 @@ using System.Threading.Tasks;
 namespace PingPong.Devices {
     class KUKARobot : IDevice {
 
+        private bool isInitialized = false;
+
         private readonly RSIAdapter rsiAdapter;
 
-        //TODO: dla set może być ustawione sprawdzenie czy ruch będzie w bezpieczbym zakresie
+        public long IPOC { get; private set; }
+
         public E6POS CurrentPosition { get; private set; }
 
-        public E6POS TargetPosition { get; set; }
+        public E6POS TargetPosition { get; set; } //TODO: zawsze klonować ??
 
-        public KUKARobot(string ip, int port) {
-            rsiAdapter = new RSIAdapter(ip, port);
+        public KUKARobot(int port) {
+            rsiAdapter = new RSIAdapter(port);
         }
 
-        public async Task<InputFrame> ReceiveData() {
-            InputFrame data = await rsiAdapter.ReceiveData();
-
-            //TODO: Odebranie danych z kuki i zupdatowanie wszytkich pól (np Position)
-
-            return data;
+        public void MoveToTargetPosition() {
+            rsiAdapter.SendData(new OutputFrame() {
+                Position = TargetPosition,
+                IPOC = IPOC
+            });
         }
 
-        public void SendData() {
-            if(TargetPosition == CurrentPosition || TargetPosition.Equals(CurrentPosition)) {
-                //TODO: to nie koniecznie bedzie dzialac, wszystko zalezy od zaokraglen na Kuce i kompie
-                return;
-            }
-
-            rsiAdapter.SendData(new OutputFrame(TargetPosition));
+        public async Task ReceiveDataAsync() {
+            InputFrame frame = await rsiAdapter.ReceiveDataAsync();
+            IPOC = frame.IPOC;
+            CurrentPosition = frame.Position;
         }
 
         public void CloseConnection() {
@@ -37,10 +36,17 @@ namespace PingPong.Devices {
         }
 
         public void Initialize() {
-            CurrentPosition = new E6POS();
-            TargetPosition = CurrentPosition;
-            Console.WriteLine("Odebranie aktualnej pozycji robota i wszystkich innych potrzbenych informacji");
-            //TODO: Odebranie aktualnej pozycji robota i wszystkich innych potrzbenych informacji
+            Task.Run(async () => {
+                InputFrame firstFrame = await rsiAdapter.Initialize();
+                IPOC = firstFrame.IPOC;
+                CurrentPosition = firstFrame.Position;
+                TargetPosition = (E6POS) CurrentPosition.Clone();
+                isInitialized = true;
+            });
+        }
+
+        public bool IsInitialized() {
+            return isInitialized;
         }
 
     }

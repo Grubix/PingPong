@@ -1,13 +1,14 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using PingPong.Modes;
 using PingPong.Devices;
-using PingPong.Math;
+using System.Windows.Forms;
 
 namespace PingPong {
 
     public partial class Window : Form {
 
         private double X, Y, Z, A, B, C = 0.0;
+
+        private readonly ManualMode mode;
 
         private readonly Server server;
 
@@ -20,23 +21,10 @@ namespace PingPong {
         public Window() {
             InitializeComponent();
 
-            Mat3 mat1 = new Mat3(new double[3,3] {
-                {1, 2, 3},
-                {1, 2, 5},
-                {2, 5, 5}
-            });
-
-            Mat3 mat2 = new Mat3(new double[3, 3] {
-                {1, 2, 1},
-                {1, 2, 5},
-                {2, -2, 5}
-            });
-
-            Console.WriteLine(mat2 * mat2.Inverse());
-
-            robot1 = new KUKARobot("192.168.8.158", 8081);
-
+            mode = new ManualMode();
+            robot1 = new KUKARobot(8081);
             server = new Server(robot1);
+            server.Mode = mode;
             server.Start();
 
             incXBtn.Click += (s, e) => IncreaseValue(ref X);
@@ -60,22 +48,14 @@ namespace PingPong {
 
         public void IncreaseValue(ref double value) {
             value += 1;
-            SendData();
+            mode.TargetPosition = new E6POS(X, Y, Z, A, B, C);
         }
 
         public void DecreaseValue(ref double value) {
             value -= 1;
-            SendData();
+            mode.TargetPosition = new E6POS(X, Y, Z, A, B, C);
         }
 
-        public void SendData() {
-            robot1.TargetPosition = getTargetPosition();
-            server.SendData();
-        }
-
-        public E6POS getTargetPosition() {
-            return new E6POS(X, Y, Z, A, B, C);
-        }
     }
 
 }

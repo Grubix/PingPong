@@ -1,7 +1,5 @@
 ﻿using PingPong.Devices;
-using System;
-using System.Net;
-using System.Threading;
+using PingPong.Modes;
 using System.Threading.Tasks;
 
 namespace PingPong {
@@ -15,47 +13,43 @@ namespace PingPong {
 
         private bool isRunning = false;
 
+        public IMode Mode { get; set; }
+
         public Server(KUKARobot robot1) {
             Robot1 = robot1;
-            //Robot2 = robot2;
-            //OptiTrack = optiTrack;
         }
 
         public void Start() {
             Robot1.Initialize();
-            // Robot2.Initialiize();
-            // OptiTrack.Initialize();
 
             if (!isRunning) {
                 isRunning = true;
 
                 Task.Run(async () => {
+                    // Wait until all devices are ready
+                    while (true) {
+                        if (Robot1.IsInitialized()) {
+                            break;
+                        }
+                    }
+
                     while (isRunning) {
-                        await Robot1.ReceiveData();
-                        //await Robot2.ReceiveData();
+                        //Update robot data
+                        await Robot1.ReceiveDataAsync();
+
+                        //Calculate target position
+                        Mode.Compute(Robot1);
+
+                        //Move to target position
+                        Robot1.MoveToTargetPosition();
                     }
                 });
             }
         }
 
-        public void SendData() {
-            Robot1.SendData();
-            //Robot2.SendData();
-        }
-
         public void Stop() {
             isRunning = false;
             Robot1.CloseConnection();
-            //Robot2.CloseConnection();
-        }
-
-        public void PrintAvailableIps() {
-            //TODO: do wywalenia / wrzucenia gdzies jako opcja w menu
-            IPAddress[] availableIps = Dns.GetHostAddresses(Dns.GetHostName());
-
-            foreach (IPAddress ip in availableIps) {
-                Console.WriteLine(ip);
-            }
         }
 
     }

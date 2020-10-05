@@ -6,25 +6,27 @@ using System.Threading.Tasks;
 namespace PingPong.Devices {
     public class RSIAdapter {
 
-        private readonly IPEndPoint remoteEndPoint;
-
         private readonly UdpClient client;
 
-        private RSIAdapter(IPEndPoint remoteEndPoint) {
-            this.remoteEndPoint = remoteEndPoint;
-            client = new UdpClient(remoteEndPoint);
+        private IPEndPoint remoteEndPoint;
+
+        public RSIAdapter(int port) {
+            client = new UdpClient(new IPEndPoint(IPAddress.Any, port));
         }
 
-        public RSIAdapter(string remoteIp, int port) : 
-            this(new IPEndPoint(IPAddress.Parse(remoteIp), port)) {
+        /// <summary>
+        /// Establish connection with KUKA robot, set remote endpoint
+        /// </summary>
+        /// <returns>First received frame</returns>
+        public async Task<InputFrame> Initialize() {
+            UdpReceiveResult result = await client.ReceiveAsync();
+            remoteEndPoint = result.RemoteEndPoint;
+            byte[] receivedBytes = result.Buffer;
+
+            return new InputFrame(Encoding.ASCII.GetString(receivedBytes, 0, receivedBytes.Length));
         }
 
-        public RSIAdapter(int port) : 
-            this(new IPEndPoint(IPAddress.Any, port)) {
-        }
-
-        //TODO: mozna jakos uzyc clent.BeginReceive()
-        public async Task<InputFrame> ReceiveData() {
+        public async Task<InputFrame> ReceiveDataAsync() {
              UdpReceiveResult result = await client.ReceiveAsync();
              byte[] receivedBytes = result.Buffer;
 

@@ -1,5 +1,7 @@
-﻿namespace PingPong.Devices {
-    public class E6POS {
+﻿using System;
+
+namespace PingPong.Devices {
+    public class E6POS : ICloneable {
 
         public double X { get; private set; }
         public double Y { get; private set; }
@@ -19,6 +21,15 @@
             this.A = A;
             this.B = B;
             this.C = C;
+        }
+
+        public void Reset() {
+            X = 0;
+            Y = 0;
+            Z = 0;
+            A = 0;
+            B = 0;
+            C = 0;
         }
 
         public static E6POS operator + (E6POS pos1, E6POS pos2) {
@@ -67,6 +78,10 @@
 
         public override int GetHashCode() {
             return base.GetHashCode();
+        }
+
+        public object Clone() {
+            return new E6POS(X, Y, Z, A, B, C);
         }
 
     }
