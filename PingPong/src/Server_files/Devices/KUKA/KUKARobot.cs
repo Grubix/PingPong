@@ -31,6 +31,14 @@ namespace PingPong.Devices {
             CurrentPosition = frame.Position;
         }
 
+        public void SendError(string errorMessage) {
+            rsiAdapter.SendData(new OutputFrame() {
+                Message = $"Error: {errorMessage}",
+                Position = CurrentPosition,
+                IPOC = IPOC
+            });
+        }
+
         public void CloseConnection() {
             rsiAdapter.CloseConnection();
         }
