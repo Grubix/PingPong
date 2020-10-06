@@ -20,6 +20,7 @@ namespace PingPong {
         }
 
         public void Start() {
+            // Initialize all devices
             Robot1.Initialize();
 
             if (!isRunning) {
@@ -34,13 +35,13 @@ namespace PingPong {
                     }
 
                     while (isRunning) {
-                        //Update robot data
+                        // Update robot data (cartesian position, IPOC etc.)
                         await Robot1.ReceiveDataAsync();
 
-                        //Calculate target position
+                        // Calculate target position depending on current mode
                         Mode.Compute(Robot1);
 
-                        //Move to target position
+                        // Move to target position
                         Robot1.MoveToTargetPosition();
                     }
                 });
