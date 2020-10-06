@@ -1,15 +1,15 @@
-﻿using System;
-
-namespace PingPong.Devices {
+﻿namespace PingPong.Devices {
     class OptiTrack : IDevice {
 
+        private bool isInitialized = false;
+
         public void Initialize() {
-            Console.WriteLine("Pobranie wszystkich informacji, kalibracja itd.");
             //TODO: Pobranie wszystkich informacji, kalibracja itd.
+            //TODO: Po zakonczeniu: isInitialized = true
         }
 
         public bool IsInitialized() {
-            return false; //TODO: 
+            return isInitialized;
         }
     }
 }

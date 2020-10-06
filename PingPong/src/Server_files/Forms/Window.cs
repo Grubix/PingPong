@@ -23,6 +23,7 @@ namespace PingPong {
 
             mode = new ManualMode();
             robot1 = new KUKARobot(8081);
+
             server = new Server(robot1);
             server.Mode = mode;
             server.Start();

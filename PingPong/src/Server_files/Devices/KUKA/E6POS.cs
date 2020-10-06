@@ -37,12 +37,7 @@ namespace PingPong.Devices {
         }
 
         public void Reset() {
-            X = 0;
-            Y = 0;
-            Z = 0;
-            A = 0;
-            B = 0;
-            C = 0;
+            X = Y = Z = A = B = C = 0;
         }
 
         public static E6POS operator + (E6POS pos1, E6POS pos2) {

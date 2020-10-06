@@ -32,11 +32,11 @@ namespace PingPong.Devices {
             frameTemplate = sBuilder.ToString();
         }
 
+        public long IPOC { get; set; }
+
         public string Message { get; set; } = "PingPong";
 
         public E6POS Position { get; set; } = new E6POS();
-
-        public long IPOC { get; set; }
 
         public override string ToString() {
             return string.Format(frameTemplate, 

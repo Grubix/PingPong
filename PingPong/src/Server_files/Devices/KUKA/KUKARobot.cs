@@ -12,7 +12,12 @@ namespace PingPong.Devices {
 
         public E6POS CurrentPosition { get; private set; }
 
-        public E6POS TargetPosition { get; set; } //TODO: zawsze klonować ??
+        private E6POS _targetPosition;
+
+        public E6POS TargetPosition { 
+            get => _targetPosition;
+            set => _targetPosition = (E6POS) value.Clone();
+        }
 
         public KUKARobot(int port) {
             rsiAdapter = new RSIAdapter(port);
@@ -20,8 +25,8 @@ namespace PingPong.Devices {
 
         public void MoveToTargetPosition() {
             rsiAdapter.SendData(new OutputFrame() {
-                Position = TargetPosition,
-                IPOC = IPOC
+                IPOC = IPOC,
+                Position = TargetPosition
             });
         }
 
