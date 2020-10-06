@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -35,7 +36,10 @@ namespace PingPong.Devices {
 
         public void SendData(OutputFrame data) {
             byte[] bytes = Encoding.ASCII.GetBytes(data.ToString());
-            client.Send(bytes, bytes.Length, remoteEndPoint);
+           
+            int bytesSent = client.Send(bytes, bytes.Length, remoteEndPoint);
+
+            Console.WriteLine($"Sent ({bytesSent}): {data}");
         }
 
         public void CloseConnection() {

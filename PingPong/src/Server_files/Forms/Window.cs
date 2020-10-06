@@ -2,6 +2,8 @@
 using PingPong.Devices;
 using System.Windows.Forms;
 
+using Resilio_Project;
+
 namespace PingPong {
 
     public partial class Window : Form {
@@ -21,30 +23,37 @@ namespace PingPong {
         public Window() {
             InitializeComponent();
 
-            mode = new ManualMode();
-            robot1 = new KUKARobot(8081);
+            /* *** TEST *** */
 
-            server = new Server(robot1);
-            server.Mode = mode;
-            server.Start();
+            RSIServer server = new RSIServer();
+            server.StartServer();
 
-            incXBtn.Click += (s, e) => IncreaseValue(ref X);
-            decXBtn.Click += (s, e) => DecreaseValue(ref X);
+            /* *** TEST *** */
 
-            incYBtn.Click += (s, e) => IncreaseValue(ref Y);
-            decYBtn.Click += (s, e) => DecreaseValue(ref Y);
+            //mode = new ManualMode();
+            //robot1 = new KUKARobot(8081);
 
-            incZBtn.Click += (s, e) => IncreaseValue(ref Z);
-            decZBtn.Click += (s, e) => DecreaseValue(ref Z);
+            //server = new Server(robot1);
+            //server.Mode = mode;
+            //server.Start();
 
-            incABtn.Click += (s, e) => IncreaseValue(ref A);
-            decABtn.Click += (s, e) => DecreaseValue(ref A);
+            //incXBtn.Click += (s, e) => IncreaseValue(ref X);
+            //decXBtn.Click += (s, e) => DecreaseValue(ref X);
 
-            incBBtn.Click += (s, e) => IncreaseValue(ref B);
-            decBBtn.Click += (s, e) => DecreaseValue(ref B);
+            //incYBtn.Click += (s, e) => IncreaseValue(ref Y);
+            //decYBtn.Click += (s, e) => DecreaseValue(ref Y);
 
-            incCBtn.Click += (s, e) => IncreaseValue(ref C);
-            decCBtn.Click += (s, e) => DecreaseValue(ref C);
+            //incZBtn.Click += (s, e) => IncreaseValue(ref Z);
+            //decZBtn.Click += (s, e) => DecreaseValue(ref Z);
+
+            //incABtn.Click += (s, e) => IncreaseValue(ref A);
+            //decABtn.Click += (s, e) => DecreaseValue(ref A);
+
+            //incBBtn.Click += (s, e) => IncreaseValue(ref B);
+            //decBBtn.Click += (s, e) => DecreaseValue(ref B);
+
+            //incCBtn.Click += (s, e) => IncreaseValue(ref C);
+            //decCBtn.Click += (s, e) => DecreaseValue(ref C);
         }
 
         public void IncreaseValue(ref double value) {

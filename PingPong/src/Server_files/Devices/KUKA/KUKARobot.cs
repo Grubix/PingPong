@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace PingPong.Devices {
     class KUKARobot : IDevice {
@@ -15,8 +14,12 @@ namespace PingPong.Devices {
         private E6POS _targetPosition;
 
         public E6POS TargetPosition { 
-            get => _targetPosition;
-            set => _targetPosition = (E6POS) value.Clone();
+            get {
+                return _targetPosition;
+            }
+            set {
+                _targetPosition = (E6POS) value.Clone();
+            }
         }
 
         public KUKARobot(int port) {

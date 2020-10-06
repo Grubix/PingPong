@@ -1,11 +1,43 @@
 ﻿namespace PingPong.Math {
     public class Vec3 {
 
-        public double X { get; set; }
+        public double[] components = new double[3];
 
-        public double Y { get; set; }
+        public double this[int i] {
+            get {
+                return components[i];
+            }
+            set {
+                components[i] = value;
+            }
+        }
 
-        public double Z { get; set; }
+        public double X { 
+            get {
+                return components[0];
+            } 
+            set {
+                components[0] = value;
+            }
+        }
+
+        public double Y {
+            get {
+                return components[1];
+            }
+            set {
+                components[1] = value;
+            }
+        }
+
+        public double Z {
+            get {
+                return components[2];
+            }
+            set {
+                components[2] = value;
+            }
+        }
 
         public Vec3() {
 

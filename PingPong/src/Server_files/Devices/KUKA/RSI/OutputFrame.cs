@@ -12,6 +12,7 @@ namespace PingPong.Devices {
             <Sen Type='PingPong'>
                 <EStr>{0}</EStr>
                 <RKorr X='{1}' Y='{2}' Z='{3}' A='{4}' B='{5}' C='{6}' />
+                <Tech T21='1.09' T22='2.08' T23='3.07' T24='4.06' T25='5.05' T26='6.04' T27='7.03' T28='8.02' T29='9.01' T210='10.00' />
                 <IPOC>{7}</IPOC>
             </Sen>";
 
