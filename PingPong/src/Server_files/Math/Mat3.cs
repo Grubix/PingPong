@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace PingPong.Math {
-    class Mat3 {
+    public class Mat3 {
 
         private readonly double [,] matrix = new double[3, 3];
 

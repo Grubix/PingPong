@@ -1,11 +1,21 @@
 ﻿namespace PingPong.Math {
-    class Vec3 {
+    public class Vec3 {
 
         public double X { get; set; }
 
         public double Y { get; set; }
 
         public double Z { get; set; }
+
+        public Vec3() {
+
+        }
+
+        public Vec3(double X, double Y, double Z) {
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
+        }
 
         public double Dot(Vec3 vec) {
             return X * vec.X + Y * vec.Y + Z * vec.Z;

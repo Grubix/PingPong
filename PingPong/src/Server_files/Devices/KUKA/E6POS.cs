@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PingPong.Math;
+using System;
 
 namespace PingPong.Devices {
     public class E6POS : ICloneable {
@@ -9,6 +10,18 @@ namespace PingPong.Devices {
         public double A { get; private set; }
         public double B { get; private set; }
         public double C { get; private set; }
+
+        public Vec3 XYZ {
+            get {
+                return new Vec3(X, Y, Z);
+            }
+        }
+
+        public Vec3 ABC {
+            get {
+                return new Vec3(A, B, C);
+            }
+        }
 
         public E6POS() {
 
