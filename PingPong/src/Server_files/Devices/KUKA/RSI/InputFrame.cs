@@ -22,7 +22,7 @@ namespace PingPong.Devices {
                     Value = match.Groups[3].Value.Trim();
                     Attributes = ExtractAttributes(match.Groups[1].Value.Trim());
                 } else {
-                    throw new Exception($"Tag <{tag}> not found");
+                    throw new Exception($"Tag <{tag}> not found in data");
                 }
             }
 
@@ -45,18 +45,33 @@ namespace PingPong.Devices {
 
         }
 
+        public string Data { get; private set; }
+
         public E6POS Position { get; private set; }
 
         public long IPOC { get; private set; }
 
-        public int Delay { get; private set; }
-
         public InputFrame(string data) {
-            IPOC = long.Parse(new Tag(data, "IPOC").Value);
+            Data = data;
 
-            //TODO: obrobienie reszty tagow
+            Tag IPOCTag = new Tag(data, "IPOC");
+            Tag cartesianPositionTag = new Tag(data, "RIst");
 
-            Console.WriteLine($"Received: {data}");
+            IPOC = long.Parse(IPOCTag.Value);
+            Position = new E6POS() {
+                X = double.Parse(cartesianPositionTag.Attributes["X"]),
+                Y = double.Parse(cartesianPositionTag.Attributes["Y"]),
+                Z = double.Parse(cartesianPositionTag.Attributes["Z"]),
+                A = double.Parse(cartesianPositionTag.Attributes["A"]),
+                B = double.Parse(cartesianPositionTag.Attributes["B"]),
+                C = double.Parse(cartesianPositionTag.Attributes["C"])
+            };
+
+            //TODO: Sparsowanie reszty tagow
+        }
+
+        public override string ToString() {
+            return Data;
         }
 
     }

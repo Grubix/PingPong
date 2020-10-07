@@ -1,25 +1,31 @@
-﻿using PingPong.Math;
+﻿using MathNet.Numerics.LinearAlgebra;
 using System;
 
 namespace PingPong.Devices {
     public class E6POS : ICloneable {
 
-        public double X { get; private set; }
-        public double Y { get; private set; }
-        public double Z { get; private set; }
-        public double A { get; private set; }
-        public double B { get; private set; }
-        public double C { get; private set; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+        public double A { get; set; }
+        public double B { get; set; }
+        public double C { get; set; }
 
-        public Vec3 XYZ {
+        public Vector<double> XYZ {
             get {
-                return new Vec3(X, Y, Z);
+                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z });
             }
         }
 
-        public Vec3 ABC {
+        public Vector<double> ABC {
             get {
-                return new Vec3(A, B, C);
+                return Vector<double>.Build.DenseOfArray(new double[] { A, B, C });
+            }
+        }
+
+        public Vector<double> XYZABC {
+            get {
+                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z, A, B, C });
             }
         }
 
@@ -38,6 +44,10 @@ namespace PingPong.Devices {
 
         public void Reset() {
             X = Y = Z = A = B = C = 0;
+        }
+
+        public object Clone() {
+            return new E6POS(X, Y, Z, A, B, C);
         }
 
         public static E6POS operator + (E6POS pos1, E6POS pos2) {
@@ -60,36 +70,6 @@ namespace PingPong.Devices {
                 B = pos1.B - pos2.B,
                 C = pos1.C - pos2.C
             };
-        }
-
-        public static bool operator == (E6POS pos1, E6POS pos2) {
-            return pos1.X == pos2.X &&
-                pos1.Y == pos2.Y &&
-                pos1.Z == pos2.Z &&
-                pos1.A == pos2.A &&
-                pos1.B == pos2.B &&
-                pos1.C == pos2.C;
-        }
-
-        public static bool operator != (E6POS pos1, E6POS pos2) {
-            return pos1.X != pos2.X ||
-                pos1.Y != pos2.Y ||
-                pos1.Z != pos2.Z ||
-                pos1.A != pos2.A ||
-                pos1.B != pos2.B ||
-                pos1.C != pos2.C;
-        }
-
-        public override bool Equals(object obj) {
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode() {
-            return base.GetHashCode();
-        }
-
-        public object Clone() {
-            return new E6POS(X, Y, Z, A, B, C);
         }
 
     }

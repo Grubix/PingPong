@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7794D92C-D362-4585-959B-529621E29FAD}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>PingPong</RootNamespace>
     <AssemblyName>PingPong</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -32,9 +32,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics, Version=4.12.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.4.12.0\lib\net461\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,8 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Server_files\Modes\IMode.cs" />
-    <Compile Include="src\Server_files\Modes\ManualMode.cs" />
+    <Compile Include="src\Server_files\Tasks\ITask.cs" />
+    <Compile Include="src\Server_files\Tasks\ManualMode.cs" />
     <Compile Include="src\Server_files\Devices\IDevice.cs" />
     <Compile Include="src\Server_files\Forms\Window.cs">
       <SubType>Form</SubType>
@@ -59,18 +67,11 @@
     <Compile Include="src\Server_files\Devices\KUKA\E6POS.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\KUKARobot.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\Optitrack.cs" />
-    <Compile Include="src\Server_files\Math\Mat3.cs" />
-    <Compile Include="src\Server_files\Math\Vec3.cs" />
     <Compile Include="src\Server_files\Program.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\InputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\OutputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\RSIAdapter.cs" />
     <Compile Include="src\Server_files\Server.cs" />
-    <Compile Include="src\Server_files\TEST\RequestString.cs" />
-    <Compile Include="src\Server_files\TEST\ResponseString.cs" />
-    <Compile Include="src\Server_files\TEST\RSIServer.cs" />
-    <Compile Include="src\Server_files\TEST\StringOperations.cs" />
-    <Compile Include="src\Server_files\TEST\UdpListener.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -84,6 +85,7 @@
       <DependentUpon>Window.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Meissner feat. Pazda.pdf" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

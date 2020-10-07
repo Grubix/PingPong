@@ -7,18 +7,30 @@ namespace PingPong.Devices {
 
         private readonly RSIAdapter rsiAdapter;
 
-        public long IPOC { get; private set; }
+        private E6POS targetPosition;
 
-        public E6POS CurrentPosition { get; private set; }
+        public InputFrame LastInputFrame { get; private set; }
 
-        private E6POS _targetPosition;
+        public OutputFrame LastOutputFrame { get; private set; }
+
+        public long IPOC {
+            get {
+                return LastInputFrame.IPOC;
+            }
+        }
+
+        public E6POS CurrentPosition {
+            get {
+                return LastInputFrame.Position;
+            }
+        }
 
         public E6POS TargetPosition { 
             get {
-                return _targetPosition;
+                return targetPosition;
             }
             set {
-                _targetPosition = (E6POS) value.Clone();
+                targetPosition = (E6POS) value.Clone();
             }
         }
 
@@ -26,36 +38,47 @@ namespace PingPong.Devices {
             rsiAdapter = new RSIAdapter(port);
         }
 
+        /// <summary>
+        /// Receives and parses data from the robot
+        /// </summary>
+        /// <returns></returns>
+        public async Task ReceiveDataAsync() {
+            LastInputFrame = await rsiAdapter.ReceiveDataAsync();
+        }
+
         public void MoveToTargetPosition() {
-            rsiAdapter.SendData(new OutputFrame() {
+            LastOutputFrame = new OutputFrame() {
                 IPOC = IPOC,
                 Position = TargetPosition
-            });
+            };
+
+            rsiAdapter.SendData(LastOutputFrame);
         }
 
-        public async Task ReceiveDataAsync() {
-            InputFrame frame = await rsiAdapter.ReceiveDataAsync();
-            IPOC = frame.IPOC;
-            CurrentPosition = frame.Position;
-        }
-
+        /// <summary>
+        /// Sends error and stops the robot program execution
+        /// </summary>
+        /// <param name="errorMessage">Error message to sent</param>
         public void SendError(string errorMessage) {
-            rsiAdapter.SendData(new OutputFrame() {
+            LastOutputFrame = new OutputFrame() {
                 Message = $"Error: {errorMessage}",
                 Position = CurrentPosition,
                 IPOC = IPOC
-            });
+            };
+
+            rsiAdapter.SendData(LastOutputFrame);
         }
 
+        /// <summary>
+        /// Closes connection with the robot
+        /// </summary>
         public void CloseConnection() {
             rsiAdapter.CloseConnection();
         }
 
         public void Initialize() {
             Task.Run(async () => {
-                InputFrame firstFrame = await rsiAdapter.Initialize();
-                IPOC = firstFrame.IPOC;
-                CurrentPosition = firstFrame.Position;
+                LastInputFrame = await rsiAdapter.Initialize();
                 TargetPosition = (E6POS) CurrentPosition.Clone();
                 isInitialized = true;
             });

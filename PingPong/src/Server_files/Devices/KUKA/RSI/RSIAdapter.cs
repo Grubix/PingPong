@@ -36,10 +36,7 @@ namespace PingPong.Devices {
 
         public void SendData(OutputFrame data) {
             byte[] bytes = Encoding.ASCII.GetBytes(data.ToString());
-           
-            int bytesSent = client.Send(bytes, bytes.Length, remoteEndPoint);
-
-            Console.WriteLine($"Sent ({bytesSent}): {data}");
+            client.Send(bytes, bytes.Length, remoteEndPoint);
         }
 
         public void CloseConnection() {
