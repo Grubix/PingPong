@@ -39,6 +39,9 @@
     <Reference Include="MathNet.Numerics, Version=4.12.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.12.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="NatNetML, Version=2.8.5602.27741, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\OptiTrack.NatNet.2.8.0\lib\NatNetML.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -84,7 +87,7 @@
     <EmbeddedResource Include="src\Server_files\Forms\Window.resx">
       <DependentUpon>Window.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Meissner feat. Pazda.pdf" />
+    <None Include="src\Doc_files\Meissner feat. Pazda.pdf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -95,7 +98,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="src\KUKA_files\KST_RSI_40_en.pdf" />
+    <None Include="src\Doc_files\RSI_40.pdf" />
     <None Include="src\KUKA_files\RSI_Ethernet.rsix" />
     <None Include="src\KUKA_files\RSI_Ethernet.src" />
   </ItemGroup>

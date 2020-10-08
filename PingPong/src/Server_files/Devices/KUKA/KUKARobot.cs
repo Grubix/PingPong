@@ -1,36 +1,34 @@
 ﻿using System.Threading.Tasks;
 
 namespace PingPong.Devices {
+
+    public delegate void InitializeEventHandler();
+
+    public delegate void FrameReceivedEventHandler(InputFrame inputFrame);
+
+    public delegate void FrameSentEventHandler(OutputFrame outputFrame);
+
     class KUKARobot : IDevice {
 
         private bool isInitialized = false;
 
         private readonly RSIAdapter rsiAdapter;
 
-        private E6POS targetPosition;
+        public event InitializeEventHandler OnInitialize;
+
+        public event FrameReceivedEventHandler OnFrameReceived;
+
+        public event FrameSentEventHandler OnFrameSent;
 
         public InputFrame LastInputFrame { get; private set; }
 
         public OutputFrame LastOutputFrame { get; private set; }
 
-        public long IPOC {
-            get {
-                return LastInputFrame.IPOC;
-            }
-        }
+        public E6POS TargetPosition { get; set; }
 
         public E6POS CurrentPosition {
             get {
                 return LastInputFrame.Position;
-            }
-        }
-
-        public E6POS TargetPosition { 
-            get {
-                return targetPosition;
-            }
-            set {
-                targetPosition = (E6POS) value.Clone();
             }
         }
 
@@ -39,53 +37,64 @@ namespace PingPong.Devices {
         }
 
         /// <summary>
-        /// Receives and parses data from the robot
+        /// Receives data from the robot, raises OnFrameReceived event
         /// </summary>
-        /// <returns></returns>
         public async Task ReceiveDataAsync() {
             LastInputFrame = await rsiAdapter.ReceiveDataAsync();
+            OnFrameReceived?.Invoke(LastInputFrame);
         }
 
+        /// <summary>
+        /// Move robot to TargetPosition, raises OnFrameSent event
+        /// </summary>
         public void MoveToTargetPosition() {
             LastOutputFrame = new OutputFrame() {
-                IPOC = IPOC,
+                IPOC = LastInputFrame.IPOC,
                 Position = TargetPosition
             };
 
             rsiAdapter.SendData(LastOutputFrame);
+            OnFrameSent?.Invoke(LastOutputFrame);
         }
 
         /// <summary>
-        /// Sends error and stops the robot program execution
+        /// Stops the robot program execution, raises OnFrameSent event
         /// </summary>
-        /// <param name="errorMessage">Error message to sent</param>
         public void SendError(string errorMessage) {
             LastOutputFrame = new OutputFrame() {
                 Message = $"Error: {errorMessage}",
                 Position = CurrentPosition,
-                IPOC = IPOC
+                IPOC = LastInputFrame.IPOC
             };
 
             rsiAdapter.SendData(LastOutputFrame);
+            OnFrameSent?.Invoke(LastOutputFrame);
         }
 
         /// <summary>
-        /// Closes connection with the robot
+        /// Connects with the robot, raises OnInitialize and OnFrameReceived events
         /// </summary>
-        public void CloseConnection() {
-            rsiAdapter.CloseConnection();
-        }
-
         public void Initialize() {
+            if(isInitialized) {
+                return;
+            }
+
             Task.Run(async () => {
-                LastInputFrame = await rsiAdapter.Initialize();
+                LastInputFrame = await rsiAdapter.Connect();
                 TargetPosition = (E6POS) CurrentPosition.Clone();
                 isInitialized = true;
+
+                OnInitialize?.Invoke();
+                OnFrameReceived?.Invoke(LastInputFrame);
             });
         }
 
         public bool IsInitialized() {
             return isInitialized;
+        }
+
+        public void Disconnect() {
+            rsiAdapter.Disconnect();
         }
 
     }

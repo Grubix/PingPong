@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace PingPong.Devices {
     ///<summary>
-    ///Frame received from the KUKA robot
+    ///Frame received from the KUKA robot.
     ///</summary>
     public class InputFrame {
 

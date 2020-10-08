@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace PingPong.Devices {
     ///<summary>
-    ///Frame sent to the KUKA robot
+    ///Frame sent to the KUKA robot.
     ///</summary>
     public class OutputFrame {
 
@@ -16,7 +16,7 @@ namespace PingPong.Devices {
             </Sen>";
 
         ///<summary>
-        ///Frame template minification (remove new lines, indentation etc.)
+        ///Minifies frame template (removes new lines, indentation, reduntant whitespaces etc.)
         ///</summary>
         static OutputFrame() {
             XDocument document = XDocument.Parse(frameTemplate);

@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -16,15 +15,22 @@ namespace PingPong.Devices {
         }
 
         /// <summary>
-        /// Establish connection with KUKA robot, set remote endpoint
+        /// Connects to robot and returns the first received frame.
         /// </summary>
         /// <returns>First received frame</returns>
-        public async Task<InputFrame> Initialize() {
+        public async Task<InputFrame> Connect() {
             UdpReceiveResult result = await client.ReceiveAsync();
             remoteEndPoint = result.RemoteEndPoint;
             byte[] receivedBytes = result.Buffer;
 
             return new InputFrame(Encoding.ASCII.GetString(receivedBytes, 0, receivedBytes.Length));
+        }
+
+        /// <summary>
+        /// Close connection.
+        /// </summary>
+        public void Disconnect() {
+            client.Close();
         }
 
         public async Task<InputFrame> ReceiveDataAsync() {
@@ -37,10 +43,6 @@ namespace PingPong.Devices {
         public void SendData(OutputFrame data) {
             byte[] bytes = Encoding.ASCII.GetBytes(data.ToString());
             client.Send(bytes, bytes.Length, remoteEndPoint);
-        }
-
-        public void CloseConnection() {
-            client.Close();
         }
  
     }

@@ -1,12 +1,11 @@
 ﻿using PingPong.Tasks;
 using PingPong.Devices;
 using System.Windows.Forms;
+using System;
 
 namespace PingPong {
 
     public partial class Window : Form {
-
-        private double X, Y, Z, A, B, C;
 
         private readonly Server server;
 
@@ -14,7 +13,7 @@ namespace PingPong {
 
         //private readonly KUKARobot robot1;
 
-        //private readonly OptiTrack optiTrack;
+        private readonly OptiTrack optiTrack;
 
         private readonly ManualMode task;
 
@@ -23,39 +22,36 @@ namespace PingPong {
 
             task = new ManualMode();
             robot1 = new KUKARobot(8081);
+            optiTrack = new OptiTrack(OptiTrack.ConnetionType.Multicast);
 
-            server = new Server(robot1, task);
+            robot1.OnFrameReceived += inputFrame => {
+                Console.WriteLine($"Received: {inputFrame}");
+            };
+
+            robot1.OnFrameSent += outputFrame => {
+                Console.WriteLine($"Sent: {outputFrame}\n");
+            };
+
+            server = new Server(robot1, optiTrack, task);
             server.Start();
 
-            incXBtn.Click += (s, e) => IncreaseValue(ref X);
-            decXBtn.Click += (s, e) => DecreaseValue(ref X);
+            incXBtn.Click += (s, e) => task.TargetPosition.X++;
+            decXBtn.Click += (s, e) => task.TargetPosition.X--;
 
-            incYBtn.Click += (s, e) => IncreaseValue(ref Y);
-            decYBtn.Click += (s, e) => DecreaseValue(ref Y);
+            incYBtn.Click += (s, e) => task.TargetPosition.Y++;
+            decYBtn.Click += (s, e) => task.TargetPosition.Y--;
 
-            incZBtn.Click += (s, e) => IncreaseValue(ref Z);
-            decZBtn.Click += (s, e) => DecreaseValue(ref Z);
+            incZBtn.Click += (s, e) => task.TargetPosition.Z++;
+            decZBtn.Click += (s, e) => task.TargetPosition.Z--;
 
-            incABtn.Click += (s, e) => IncreaseValue(ref A);
-            decABtn.Click += (s, e) => DecreaseValue(ref A);
+            incABtn.Click += (s, e) => task.TargetPosition.A++;
+            decABtn.Click += (s, e) => task.TargetPosition.A--;
 
-            incBBtn.Click += (s, e) => IncreaseValue(ref B);
-            decBBtn.Click += (s, e) => DecreaseValue(ref B);
+            incBBtn.Click += (s, e) => task.TargetPosition.B++;
+            decBBtn.Click += (s, e) => task.TargetPosition.B--;
 
-            incCBtn.Click += (s, e) => IncreaseValue(ref C);
-            decCBtn.Click += (s, e) => DecreaseValue(ref C);
-        }
-
-        public void IncreaseValue(ref double value) {
-            value += 1;
-            task.TargetPosition = new E6POS(X, Y, Z, A, B, C);
-            X = Y = Z = A = B = C = 0;
-        }
-
-        public void DecreaseValue(ref double value) {
-            value -= 1;
-            task.TargetPosition = new E6POS(X, Y, Z, A, B, C);
-            X = Y = Z = A = B = C = 0;
+            incCBtn.Click += (s, e) => task.TargetPosition.C++;
+            decCBtn.Click += (s, e) => task.TargetPosition.C--;
         }
 
     }

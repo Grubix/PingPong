@@ -1,5 +1,6 @@
 ﻿using PingPong.Devices;
 using PingPong.Tasks;
+using System;
 
 namespace PingPong {
     class Server {
@@ -8,55 +9,63 @@ namespace PingPong {
 
         //public KUKARobot Robot2 { get; private set; }
 
-        //public OptiTrack OptiTrack { get; private set; }
+        public OptiTrack OptiTrack { get; private set; }
 
         private bool isRunning = false;
 
         public ITask Task { get; set; }
 
-        public Server(KUKARobot robot1, ITask task) {
+        public Server(KUKARobot robot1, OptiTrack optiTrack, ITask task) {
             Robot1 = robot1;
+            OptiTrack = optiTrack;
             Task = task;
         }
 
         public void Start() {
             if (!isRunning) {
+                // Set event handlers
+                Robot1.OnInitialize += () => StartThreadForRobot(Robot1);
+                //Robot2.OnInitialize += () => StartThreadForRobot(Robot2);
+
                 // Initialize all devices
+                OptiTrack.Initialize();
                 Robot1.Initialize();
-
-                //TODO: Dla drugiego robota stworzyc kolejny wątek. Zastanowić się co wtedy powinno być w interfejsie ITask i jak to ze sobą zsynchronizować
-
-                System.Threading.Tasks.Task.Run(async () => {
-                    // Wait until all devices are ready
-                    while (true) {
-                        if (Robot1.IsInitialized()) {
-                            break;
-                        }
-                    }
-
-                    // Send response to robot (prevent connection timeout)
-                    Robot1.MoveToTargetPosition();
-
-                    while (isRunning) {
-                        // Update robot data (cartesian position, IPOC etc.)
-                        await Robot1.ReceiveDataAsync();
-
-                        // Calculate target position depending on current mode
-                        Task.CalculateTargetPosition(Robot1);
-
-                        // Move to target position
-                        Robot1.MoveToTargetPosition();
-                    }
-                });
+                //Robot2.Initialize();
 
                 isRunning = true;
             }
         }
 
+        private void StartThreadForRobot(KUKARobot robot) {
+            System.Threading.Tasks.Task.Run(async () => {
+                // Send response to robot (prevent connection timeout)
+                robot.MoveToTargetPosition();
+
+                //TODO: Jezeli eventy beda dzialaly jak trzeba mozna wywalic petle
+
+                while (isRunning) {
+                    // Update robot data (cartesian position, IPOC etc.)
+                    await robot.ReceiveDataAsync();
+
+                    //TODO: Dla drugiego robota stworzyc kolejny wątek. Zastanowić się co wtedy powinno być w interfejsie 
+                    //TODO: ITask i jak to ze sobą zsynchronizować
+
+                    // Calculate target position depending on current task
+                    Task.CalculateTargetPosition(robot);
+
+                    // Move to target position
+                    robot.MoveToTargetPosition();
+                }
+            });
+        }
+
         public void Stop() {
             isRunning = false;
-            Robot1.CloseConnection();
+            Robot1.Disconnect();
+            OptiTrack.Disconnect();
         }
+
+        //TODO: callback / delegat / event handler jak zwał tak zwał wywyoływany po zakończeniu pętli (zupdatowanie w okienku info o pozycji, wykresy itd.)
 
     }
 }
