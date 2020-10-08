@@ -12,6 +12,9 @@
         /// <returns>true if device is ready to use, false otherwise</returns>
         bool IsInitialized();
 
+        /// <summary>
+        /// Close connection with the device
+        /// </summary>
         void Disconnect();
 
     }

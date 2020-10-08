@@ -3,9 +3,9 @@ using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 
 namespace PingPong.Devices {
-    ///<summary>
-    ///Frame received from the KUKA robot.
-    ///</summary>
+    /// <summary>
+    /// Frame received from the KUKA robot.
+    /// </summary>
     public class InputFrame {
 
         private class Tag {

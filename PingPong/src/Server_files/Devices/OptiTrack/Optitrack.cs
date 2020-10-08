@@ -13,7 +13,9 @@ namespace PingPong.Devices {
 
         private readonly NatNetClientML natNetClient;
 
-        public OptiTrack(ConnetionType connetionType) {
+        public event FrameReceivedEventHandler OnFrameReceived;
+
+        public OptiTrack(ConnetionType connetionType = ConnetionType.Multicast) {
             natNetClient = new NatNetClientML((int) connetionType);
         }
 
@@ -22,7 +24,7 @@ namespace PingPong.Devices {
                 throw new Exception("KUKA robots must be initialized before optitrack");
             }
 
-            //TODO: kalibracja
+            //TODO: kalibracja z wykorzystaniem ZAINICJALIZOWANYCH ROBOTÓW !!
         }
 
         public void Initialize() {
@@ -33,18 +35,15 @@ namespace PingPong.Devices {
             int status = natNetClient.Initialize("127.0.0.1", "127.0.0.1");
 
             if(status != 0) {
-                throw new Exception("Optitrack initialization failed.");
+                throw new Exception("Optitrack initialization failed");
             }
 
             // TEST TEST TEST
             natNetClient.OnFrameReady += (data, client) => {
                 Console.WriteLine(data);
+                //TODO: OnFrameReceived?.Invoke(); Przekazanie jako argument jakichs sensownych danych
             };
             // TEST TEST TEST
-
-            //TODO: Pobranie wszystkich informacji, kalibracja itd.
-            //TODO: W konstruktorze mozna dac flage czy jest juz jakas kalibracja wgrana (np jakis plik czy cos) zeby
-            //TODO: nie trzeba bylo robic tej kalibracji za kazdym razem od nowa
 
             isInitialized = true;
         }
@@ -56,6 +55,8 @@ namespace PingPong.Devices {
         public void Disconnect() {
             natNetClient.Uninitialize();
         }
+
+        public delegate void FrameReceivedEventHandler(); //TODO: co przekazywać jako argument ??
 
     }
 }

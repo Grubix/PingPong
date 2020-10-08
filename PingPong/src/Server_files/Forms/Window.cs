@@ -22,7 +22,7 @@ namespace PingPong {
 
             task = new ManualMode();
             robot1 = new KUKARobot(8081);
-            optiTrack = new OptiTrack(OptiTrack.ConnetionType.Multicast);
+            optiTrack = new OptiTrack();
 
             robot1.OnFrameReceived += inputFrame => {
                 Console.WriteLine($"Received: {inputFrame}");

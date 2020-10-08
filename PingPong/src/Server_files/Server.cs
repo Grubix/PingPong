@@ -1,6 +1,5 @@
 ﻿using PingPong.Devices;
 using PingPong.Tasks;
-using System;
 
 namespace PingPong {
     class Server {
@@ -19,36 +18,35 @@ namespace PingPong {
             Robot1 = robot1;
             OptiTrack = optiTrack;
             Task = task;
+
+            // Set event handlers
+            Robot1.OnInitialize += () => StartRobotThread(Robot1);
+            // OptiTrack.OnFrameReceived += () => Task.CalculateTargetPosition(Robot1);
+            // TODO: do powyższego może być potrzebne użycie locka - modyfikacja Robot1.TargetPosition moze 
+            // TODO: nastapic w momencie pobierania danych do ramki (OutputFrame) na innym wątku (StartThreadForRobot)
         }
 
+        /// <summary>
+        /// Start the server
+        /// </summary>
         public void Start() {
             if (!isRunning) {
-                // Set event handlers
-                Robot1.OnInitialize += () => StartThreadForRobot(Robot1);
-                //Robot2.OnInitialize += () => StartThreadForRobot(Robot2);
+                isRunning = true;
 
-                // Initialize all devices
+                // Initialize devices
                 OptiTrack.Initialize();
                 Robot1.Initialize();
-                //Robot2.Initialize();
-
-                isRunning = true;
             }
         }
 
-        private void StartThreadForRobot(KUKARobot robot) {
+        private void StartRobotThread(KUKARobot robot) {
             System.Threading.Tasks.Task.Run(async () => {
-                // Send response to robot (prevent connection timeout)
-                robot.MoveToTargetPosition();
-
-                //TODO: Jezeli eventy beda dzialaly jak trzeba mozna wywalic petle
-
                 while (isRunning) {
                     // Update robot data (cartesian position, IPOC etc.)
                     await robot.ReceiveDataAsync();
 
-                    //TODO: Dla drugiego robota stworzyc kolejny wątek. Zastanowić się co wtedy powinno być w interfejsie 
-                    //TODO: ITask i jak to ze sobą zsynchronizować
+                    //TODO: Docelowo Task.CalculateTargetPosition(robot); będzie wywowyłane dopiero po otrzymaniu ramki z optitracka (patrz konstruktor)
+                    //TODO: Czyli w tej pętli będzie tylko odbieranie ramki (koniecznie await), a po odebraniu odesłanie danych
 
                     // Calculate target position depending on current task
                     Task.CalculateTargetPosition(robot);
@@ -59,13 +57,14 @@ namespace PingPong {
             });
         }
 
+        /// <summary>
+        /// Stop the server
+        /// </summary>
         public void Stop() {
             isRunning = false;
             Robot1.Disconnect();
             OptiTrack.Disconnect();
         }
-
-        //TODO: callback / delegat / event handler jak zwał tak zwał wywyoływany po zakończeniu pętli (zupdatowanie w okienku info o pozycji, wykresy itd.)
 
     }
 }

@@ -3,9 +3,9 @@ using System.Xml;
 using System.Xml.Linq;
 
 namespace PingPong.Devices {
-    ///<summary>
-    ///Frame sent to the KUKA robot.
-    ///</summary>
+    /// <summary>
+    /// Frame sent to the KUKA robot.
+    /// </summary>
     public class OutputFrame {
 
         private static readonly string frameTemplate = @"
@@ -15,9 +15,9 @@ namespace PingPong.Devices {
                 <IPOC>{7}</IPOC>
             </Sen>";
 
-        ///<summary>
-        ///Minifies frame template (removes new lines, indentation, reduntant whitespaces etc.)
-        ///</summary>
+        /// <summary>
+        /// Minifies frame template (removes new lines, indentation, redundant white characters etc.)
+        /// </summary>
         static OutputFrame() {
             XDocument document = XDocument.Parse(frameTemplate);
             StringBuilder sBuilder = new StringBuilder();

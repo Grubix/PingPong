@@ -2,12 +2,6 @@
 
 namespace PingPong.Devices {
 
-    public delegate void InitializeEventHandler();
-
-    public delegate void FrameReceivedEventHandler(InputFrame inputFrame);
-
-    public delegate void FrameSentEventHandler(OutputFrame outputFrame);
-
     class KUKARobot : IDevice {
 
         private bool isInitialized = false;
@@ -48,6 +42,8 @@ namespace PingPong.Devices {
         /// Move robot to TargetPosition, raises OnFrameSent event
         /// </summary>
         public void MoveToTargetPosition() {
+            //TODO: Sprawdzenie czy pozycja jest dozwolona (nie wykracza poza dopuszczany zakres ruchu)
+
             LastOutputFrame = new OutputFrame() {
                 IPOC = LastInputFrame.IPOC,
                 Position = TargetPosition
@@ -72,7 +68,7 @@ namespace PingPong.Devices {
         }
 
         /// <summary>
-        /// Connects with the robot, raises OnInitialize and OnFrameReceived events
+        /// Establish connection with the robot, raises OnInitialize and OnFrameReceived events
         /// </summary>
         public void Initialize() {
             if(isInitialized) {
@@ -81,8 +77,14 @@ namespace PingPong.Devices {
 
             Task.Run(async () => {
                 LastInputFrame = await rsiAdapter.Connect();
-                TargetPosition = (E6POS) CurrentPosition.Clone();
+                TargetPosition = new E6POS(); //TODO: dla pozycji absolutnej TargetPosition = (E6POS) CurrentPosition.Clone()
                 isInitialized = true;
+
+                // Send response (prevent connection timeout)
+                rsiAdapter.SendData(new OutputFrame() {
+                    IPOC = LastInputFrame.IPOC,
+                    Position = TargetPosition
+                });
 
                 OnInitialize?.Invoke();
                 OnFrameReceived?.Invoke(LastInputFrame);
@@ -96,6 +98,12 @@ namespace PingPong.Devices {
         public void Disconnect() {
             rsiAdapter.Disconnect();
         }
+
+        public delegate void InitializeEventHandler();
+
+        public delegate void FrameReceivedEventHandler(InputFrame inputFrame);
+
+        public delegate void FrameSentEventHandler(OutputFrame outputFrame);
 
     }
 }
