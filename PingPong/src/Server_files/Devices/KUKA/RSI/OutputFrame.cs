@@ -2,7 +2,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace PingPong.Devices {
+namespace PingPong.Devices.KUKA {
     /// <summary>
     /// Frame sent to the KUKA robot.
     /// </summary>

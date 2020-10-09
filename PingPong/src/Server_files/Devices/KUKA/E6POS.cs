@@ -1,7 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using System;
 
-namespace PingPong.Devices {
+namespace PingPong.Devices.KUKA {
     public class E6POS : ICloneable {
 
         public double X { get; set; }

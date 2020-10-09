@@ -7,15 +7,15 @@
         void Initialize();
 
         /// <summary>
-        /// Checks if device is ready to use
+        /// Uninitializes device
+        /// </summary>
+        void Uninitialize();
+
+        /// <summary>
+        /// Checks if device is initialized (ready to use)
         /// </summary>
         /// <returns>true if device is ready to use, false otherwise</returns>
         bool IsInitialized();
-
-        /// <summary>
-        /// Close connection with the device
-        /// </summary>
-        void Disconnect();
 
     }
 }

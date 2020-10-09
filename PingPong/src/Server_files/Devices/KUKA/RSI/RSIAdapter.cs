@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PingPong.Devices {
+namespace PingPong.Devices.KUKA {
     public class RSIAdapter {
 
         private readonly UdpClient client;
@@ -15,7 +15,7 @@ namespace PingPong.Devices {
         }
 
         /// <summary>
-        /// Connects to robot and returns the first received frame.
+        /// Connects to robot and returns the first received frame
         /// </summary>
         /// <returns>First received frame</returns>
         public async Task<InputFrame> Connect() {
@@ -27,12 +27,16 @@ namespace PingPong.Devices {
         }
 
         /// <summary>
-        /// Close connection.
+        /// Close connection
         /// </summary>
         public void Disconnect() {
             client.Close();
         }
 
+        /// <summary>
+        /// Receives data from the KUKA robot asynchronously
+        /// </summary>
+        /// <returns>Parsed data as InputFrame</returns>
         public async Task<InputFrame> ReceiveDataAsync() {
              UdpReceiveResult result = await client.ReceiveAsync();
              byte[] receivedBytes = result.Buffer;
@@ -40,6 +44,10 @@ namespace PingPong.Devices {
              return new InputFrame(Encoding.ASCII.GetString(receivedBytes, 0, receivedBytes.Length));
         }
 
+        /// <summary>
+        /// Sends data to the KUKA robot
+        /// </summary>
+        /// <param name="data">data to sent</param>
         public void SendData(OutputFrame data) {
             byte[] bytes = Encoding.ASCII.GetBytes(data.ToString());
             client.Send(bytes, bytes.Length, remoteEndPoint);

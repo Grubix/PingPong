@@ -14,7 +14,7 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -58,8 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
     <Compile Include="src\Server_files\Tasks\ITask.cs" />
-    <Compile Include="src\Server_files\Tasks\ManualMode.cs" />
     <Compile Include="src\Server_files\Devices\IDevice.cs" />
     <Compile Include="src\Server_files\Forms\Window.cs">
       <SubType>Form</SubType>
@@ -69,12 +69,11 @@
     </Compile>
     <Compile Include="src\Server_files\Devices\KUKA\E6POS.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\KUKARobot.cs" />
-    <Compile Include="src\Server_files\Devices\OptiTrack\Optitrack.cs" />
+    <Compile Include="src\Server_files\Devices\OptiTrack\OptiTrackSystem.cs" />
     <Compile Include="src\Server_files\Program.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\InputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\OutputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\RSIAdapter.cs" />
-    <Compile Include="src\Server_files\Server.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -87,8 +86,8 @@
     <EmbeddedResource Include="src\Server_files\Forms\Window.resx">
       <DependentUpon>Window.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="src\Doc_files\Meissner feat. Pazda.pdf" />
     <None Include="packages.config" />
+    <None Include="src\Doc_files\Meissner feat. Pazda.pdf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

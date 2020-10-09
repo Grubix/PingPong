@@ -43,13 +43,13 @@
         <Input InIdx="5" OutObjId="ETHERNET1" OutIdx="5" />
       </Inputs>
       <Parameters>
-        <Parameter Name="LowerLimX" ParamId="0" ParamValue="-5" />
-        <Parameter Name="LowerLimY" ParamId="1" ParamValue="-5" />
-        <Parameter Name="LowerLimZ" ParamId="2" ParamValue="-5" />
-        <Parameter Name="UpperLimX" ParamId="3" ParamValue="5" />
-        <Parameter Name="UpperLimY" ParamId="4" ParamValue="5" />
-        <Parameter Name="UpperLimZ" ParamId="5" ParamValue="5" />
-        <Parameter Name="MaxRotAngle" ParamId="6" ParamValue="5" />
+        <Parameter Name="LowerLimX" ParamId="0" ParamValue="-5000" />
+        <Parameter Name="LowerLimY" ParamId="1" ParamValue="-5000" />
+        <Parameter Name="LowerLimZ" ParamId="2" ParamValue="-5000" />
+        <Parameter Name="UpperLimX" ParamId="3" ParamValue="5000" />
+        <Parameter Name="UpperLimY" ParamId="4" ParamValue="5000" />
+        <Parameter Name="UpperLimZ" ParamId="5" ParamValue="5000" />
+        <Parameter Name="MaxRotAngle" ParamId="6" ParamValue="360" />
         <Parameter Name="LastCorrStat" ParamId="7" ParamValue="0" />
         <Parameter Name="LastCorrX" ParamId="8" ParamValue="0" />
         <Parameter Name="LastCorrY" ParamId="9" ParamValue="0" />

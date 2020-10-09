@@ -2,6 +2,9 @@ using System;
 using System.Windows.Forms;
 
 namespace PingPong {
+    /// <summary>
+    /// Application entry point
+    /// </summary>
     static class Program {
 
         [STAThread]

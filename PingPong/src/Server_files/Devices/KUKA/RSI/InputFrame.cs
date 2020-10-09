@@ -2,7 +2,7 @@ using System;
 using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 
-namespace PingPong.Devices {
+namespace PingPong.Devices.KUKA {
     /// <summary>
     /// Frame received from the KUKA robot.
     /// </summary>
