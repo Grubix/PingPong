@@ -46,7 +46,7 @@ namespace PingPong.Devices.OptiTrack {
             }
 
             natNetClient.OnFrameReady += (data, client) => {
-                OnFrameReceived?.Invoke(new InputFrame()); //TODO: Przekazanie jako argument jakichs sensownych danych (do zrobienia w klasie InputFrame)
+                OnFrameReceived?.Invoke(new InputFrame()); //TODO: Co jest potrzebne w ramce z optitracka ??
             };
 
             isInitialized = true;

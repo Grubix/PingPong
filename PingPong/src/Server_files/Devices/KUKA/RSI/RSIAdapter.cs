@@ -34,7 +34,7 @@ namespace PingPong.Devices.KUKA {
         }
 
         /// <summary>
-        /// Receives data from the KUKA robot asynchronously
+        /// Receives data from the remoteEndPoint asynchronously
         /// </summary>
         /// <returns>Parsed data as InputFrame</returns>
         public async Task<InputFrame> ReceiveDataAsync() {
@@ -45,7 +45,7 @@ namespace PingPong.Devices.KUKA {
         }
 
         /// <summary>
-        /// Sends data to the KUKA robot
+        /// Sends data to the remoteEndPoint
         /// </summary>
         /// <param name="data">data to sent</param>
         public void SendData(OutputFrame data) {

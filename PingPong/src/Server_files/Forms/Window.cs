@@ -21,6 +21,9 @@ namespace PingPong {
             robot1 = new KUKARobot(8081);
             robot2 = null; //TODO:
 
+            //optiTrack.Initialize();
+            robot1.Initialize();
+
             optiTrack.OnFrameReceived += frameReceived => Console.WriteLine("Optitrack frame received");
             robot1.OnFrameReceived += frameReceived => Console.WriteLine($"\nKUKA1::Received: {frameReceived}");
             robot1.OnFrameSent += frameSent => Console.WriteLine($"KUKA1::Sent: {frameSent}\n");

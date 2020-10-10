@@ -12,7 +12,7 @@ namespace PingPong.Devices.KUKA {
 
         public OutputFrame LastFrameSent { get; private set; }
 
-        public E6POS TargetPosition { get; set; }
+        public E6POS TargetPosition { get; set; } = new E6POS();
 
         public E6POS CurrentPosition {
             get {
@@ -35,7 +35,7 @@ namespace PingPong.Devices.KUKA {
         public KUKARobot(int port) {
             rsiAdapter = new RSIAdapter(port);
 
-            // Start receiving and sending data after initialization
+            // On initialize start new thread for receiving and sending data
             OnInitialize += () => {
                 Task.Run(async () => {
                     while (isInitialized) {
@@ -47,7 +47,7 @@ namespace PingPong.Devices.KUKA {
         }
 
         /// <summary>
-        /// Receives data from the robot, raises OnFrameReceived event
+        /// Receives data from the robot asynchronously, raises OnFrameReceived event
         /// </summary>
         private async Task ReceiveDataAsync() {
             LastReceivedFrame = await rsiAdapter.ReceiveDataAsync();
@@ -58,9 +58,9 @@ namespace PingPong.Devices.KUKA {
         /// Move robot to TargetPosition, raises OnFrameSent event
         /// </summary>
         private void MoveToTargetPosition() {
-            //TODO: Sprawdzenie czy pozycja jest dozwolona (nie wykracza poza dopuszczany zakres ruchu)
+            //TODO: Sprawdzenie czy pozycja jest dozwolona (nie wykracza poza dopuszczalny zakres ruchu)
 
-            // Lock TargetPosition object while sending the output frame
+            // Lock TargetPosition object while sending data to the robot
             lock (TargetPosition) {
                 LastFrameSent = new OutputFrame() {
                     IPOC = LastReceivedFrame.IPOC,
