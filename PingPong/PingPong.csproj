@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Server_files\TrajectoryGenerator.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
     <Compile Include="src\Server_files\Tasks\ITask.cs" />
     <Compile Include="src\Server_files\Devices\IDevice.cs" />
