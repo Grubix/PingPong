@@ -8,15 +8,19 @@ namespace PingPong.Devices.KUKA {
 
         private readonly RSIAdapter rsiAdapter;
 
-        public InputFrame LastReceivedFrame { get; private set; }
+        private InputFrame lastReceivedFrame;
 
-        public OutputFrame LastFrameSent { get; private set; }
-
-        public E6POS TargetPosition { get; set; } = new E6POS();
+        public E6POS TargetPosition { get; set; }
 
         public E6POS CurrentPosition {
             get {
-                return LastReceivedFrame.Position;
+                return lastReceivedFrame.Position;
+            }
+        }
+
+        public long CurrentIPOC {
+            get {
+                return lastReceivedFrame.IPOC;
             }
         }
 
@@ -50,8 +54,13 @@ namespace PingPong.Devices.KUKA {
         /// Receives data from the robot asynchronously, raises OnFrameReceived event
         /// </summary>
         private async Task ReceiveDataAsync() {
-            LastReceivedFrame = await rsiAdapter.ReceiveDataAsync();
-            OnFrameReceived?.Invoke(LastReceivedFrame);
+            InputFrame receivedFrame = await rsiAdapter.ReceiveDataAsync();
+
+            // Lock lastReceivedFrame object while assigning new data
+            lock (lastReceivedFrame) {
+                lastReceivedFrame = receivedFrame;
+                OnFrameReceived?.Invoke(lastReceivedFrame);
+            }
         }
 
         /// <summary>
@@ -62,34 +71,33 @@ namespace PingPong.Devices.KUKA {
 
             // Lock TargetPosition object while sending data to the robot
             lock (TargetPosition) {
-                LastFrameSent = new OutputFrame() {
-                    IPOC = LastReceivedFrame.IPOC,
-                    Position = TargetPosition
+                OutputFrame outputFrame = new OutputFrame() {
+                    Position = TargetPosition,
+                    IPOC = CurrentIPOC
                 };
 
-                rsiAdapter.SendData(LastFrameSent);
+                rsiAdapter.SendData(outputFrame);
+                OnFrameSent?.Invoke(outputFrame);
                 TargetPosition.Reset(); //TODO: DLA POZYCJI ABSOLUTNEJ: WYWWALIĆ
             }
-
-            OnFrameSent?.Invoke(LastFrameSent);
         }
 
         /// <summary>
         /// Stops the robot program execution, raises OnFrameSent event
         /// </summary>
         public void SendError(string errorMessage) {
-            LastFrameSent = new OutputFrame() {
+            OutputFrame outputFrame = new OutputFrame() {
                 Message = $"Error: {errorMessage}",
                 Position = CurrentPosition,
-                IPOC = LastReceivedFrame.IPOC
+                IPOC = CurrentIPOC
             };
 
-            rsiAdapter.SendData(LastFrameSent);
-            OnFrameSent?.Invoke(LastFrameSent);
+            rsiAdapter.SendData(outputFrame);
+            OnFrameSent?.Invoke(outputFrame);
         }
 
         /// <summary>
-        /// Establish connection with the robot, raises OnInitialize and OnFrameReceived events
+        /// Establish connection with the robot, raises OnFrameReceived, OnFrameSent and OnInitialize events
         /// </summary>
         public void Initialize() {
             if(isInitialized) {
@@ -97,35 +105,42 @@ namespace PingPong.Devices.KUKA {
             }
 
             Task.Run(async () => {
-                LastReceivedFrame = await rsiAdapter.Connect();
-                
+                InputFrame receivedFrame = await rsiAdapter.Connect();
+
+                lock (lastReceivedFrame) {
+                    lastReceivedFrame = receivedFrame;
+                    OnFrameReceived?.Invoke(receivedFrame);
+                }
+
                 lock (TargetPosition) {
-                    //TODO: DLA POZYCJI ABSOLUTNEJ: TargetPosition = (E6POS) CurrentPosition.Clone()
+                    //TODO: DLA POZYCJI ABSOLUTNEJ: 
+                    //TODO: TargetPosition = (E6POS) CurrentPosition.Clone()
                     TargetPosition = new E6POS();
 
+                    OutputFrame outputFrame = new OutputFrame() {
+                        Position = TargetPosition,
+                        IPOC = CurrentIPOC
+                    };
+
                     // Send response (prevent connection timeout)
-                    rsiAdapter.SendData(new OutputFrame() {
-                        IPOC = LastReceivedFrame.IPOC,
-                        Position = TargetPosition
-                    });
+                    rsiAdapter.SendData(outputFrame);
+                    OnFrameSent?.Invoke(outputFrame);
                 }
 
-                lock (this) { //TODO: sprawdzic czy lock dla boola ma jakikolwiek sens
+                lock (this) {
                     isInitialized = true;
+                    OnInitialize?.Invoke();
                 }
-
-                OnInitialize?.Invoke();
-                OnFrameReceived?.Invoke(LastReceivedFrame);
             });
-        }
-
-        public bool IsInitialized() {
-            return isInitialized;
         }
 
         public void Uninitialize() {
             isInitialized = false;
             rsiAdapter.Disconnect();
+        }
+
+        public bool IsInitialized() {
+            return isInitialized;
         }
 
     }

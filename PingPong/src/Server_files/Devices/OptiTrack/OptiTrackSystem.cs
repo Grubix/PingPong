@@ -36,7 +36,18 @@ namespace PingPong.Devices.OptiTrack {
                 throw new Exception("Optitrack and KUKA robot must be initialized");
             }
 
-            //TODO: kalibracja z wykorzystaniem ZAINICJALIZOWANEGO robota
+            //handler odpalający się za kazdym razem jak zostanie otrzymana ramka z optitracka
+            void handler(InputFrame receivedFrame) {
+
+                //TODO: TUTAJ DZIAŁA PAN BABSONIK, jakas petla albo cos robiaca te wszystkie obliczenia ktore sa w pdfie
+
+                if (true) { //jakiś warunek mowiacy o zakonczeniu kalibracji
+                    OnFrameReceived -= handler;
+                }
+            }
+
+            OnFrameReceived += handler;
+            
             //TODO: gdzie trzymac wyznaczone macierze rotacji i wekt translacji ? w kuce czy w optitracku ?
         }
 
