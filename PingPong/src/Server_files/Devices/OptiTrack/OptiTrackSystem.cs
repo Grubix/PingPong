@@ -14,6 +14,10 @@ namespace PingPong.Devices.OptiTrack {
 
         private readonly NatNetClientML natNetClient;
 
+        private readonly ServerDescription serverDescription;
+
+        public InputFrame LastReceivedFrame { get; private set; }
+
         public event InitializeEventHandler OnInitialize;
 
         public event FrameReceivedEventHandler OnFrameReceived;
@@ -24,14 +28,16 @@ namespace PingPong.Devices.OptiTrack {
 
         public OptiTrackSystem(ConnetionType connetionType = ConnetionType.Multicast) {
             natNetClient = new NatNetClientML((int) connetionType);
+            serverDescription = new ServerDescription();
         }
 
-        public void Calibrate(KUKARobot robot) {
+        public void Calibrate(KUKARobot robot, E6POS startPosition, E6POS endPosition) {
             if (!isInitialized || !robot.IsInitialized()) {
                 throw new Exception("Optitrack and KUKA robot must be initialized");
             }
 
             //TODO: kalibracja z wykorzystaniem ZAINICJALIZOWANEGO robota
+            //TODO: gdzie trzymac wyznaczone macierze rotacji i wekt translacji ? w kuce czy w optitracku ?
         }
 
         public void Initialize() {
@@ -45,8 +51,19 @@ namespace PingPong.Devices.OptiTrack {
                 throw new Exception("Optitrack initialization failed. Is Motive application running?");
             }
 
+            status = natNetClient.GetServerDescription(serverDescription);
+
+            if(status != 0) {
+                throw new Exception("Optitrack connection failed. Is Motive application running?");
+            }
+
+            object synchronizeLock = new object();
+
             natNetClient.OnFrameReady += (data, client) => {
-                OnFrameReceived?.Invoke(new InputFrame()); //TODO: Co jest potrzebne w ramce z optitracka ??
+                lock (synchronizeLock) {
+                    LastReceivedFrame = new InputFrame(data);
+                    OnFrameReceived?.Invoke(LastReceivedFrame);
+                }
             };
 
             isInitialized = true;

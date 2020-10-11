@@ -14,6 +14,8 @@ namespace PingPong {
 
         private readonly KUKARobot robot2;
 
+        private ITask task; //TODO: docelowo po odebraniu ramki z optitracka wywołanie metody ComputeTargetPosition()
+
         public Window() {
             InitializeComponent();
 

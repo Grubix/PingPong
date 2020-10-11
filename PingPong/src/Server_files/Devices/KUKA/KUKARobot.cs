@@ -68,7 +68,7 @@ namespace PingPong.Devices.KUKA {
                 };
 
                 rsiAdapter.SendData(LastFrameSent);
-                TargetPosition.Reset(); //TODO: DLA POZYCJI ABSOLUTNEJ WYWWALIĆ
+                TargetPosition.Reset(); //TODO: DLA POZYCJI ABSOLUTNEJ: WYWWALIĆ
             }
 
             OnFrameSent?.Invoke(LastFrameSent);
@@ -99,8 +99,8 @@ namespace PingPong.Devices.KUKA {
             Task.Run(async () => {
                 LastReceivedFrame = await rsiAdapter.Connect();
                 
-                lock(TargetPosition) {
-                    //TODO: DLA POZYCJI ABSOLUTNEJ TargetPosition = (E6POS) CurrentPosition.Clone()
+                lock (TargetPosition) {
+                    //TODO: DLA POZYCJI ABSOLUTNEJ: TargetPosition = (E6POS) CurrentPosition.Clone()
                     TargetPosition = new E6POS();
 
                     // Send response (prevent connection timeout)
@@ -110,7 +110,10 @@ namespace PingPong.Devices.KUKA {
                     });
                 }
 
-                isInitialized = true;
+                lock (this) { //TODO: sprawdzic czy lock dla boola ma jakikolwiek sens
+                    isInitialized = true;
+                }
+
                 OnInitialize?.Invoke();
                 OnFrameReceived?.Invoke(LastReceivedFrame);
             });
