@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MathNet.Numerics.LinearAlgebra;
-using PingPong.Devices.KUKA;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 
-namespace PingPong.src.Server_files
-{
-    public class TrajectoryGenerator
-    {
-        private class Parameter
-        {
+namespace PingPong.Devices.KUKA {
+    public class TrajectoryGenerator {
+        private class Parameter {
             private double a0;
             private double a1;
             private double a2;

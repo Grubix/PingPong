@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -36,18 +36,49 @@ namespace PingPong.Devices.KUKA {
 
         public string Message { get; set; } = "PingPong";
 
-        public E6POS Position { get; set; } = new E6POS();
+        private E6POS correction = new E6POS();
+
+        public E6POS Correction { 
+            get {
+                return correction;
+            }
+            set {
+                correction = ClampCorrectionValues(value);
+            } 
+        }
 
         public override string ToString() {
             return string.Format(frameTemplate, 
                 Message, 
-                Position.X,
-                Position.Y,
-                Position.Z,
-                Position.A,
-                Position.B,
-                Position.C,
+                Correction.X,
+                Correction.Y,
+                Correction.Z,
+                Correction.A,
+                Correction.B,
+                Correction.C,
                 IPOC
+            );
+        }
+
+        private static double ClampValue(double value, double min, double max) {
+            //TODO: zarzucanie wyjątkiem ??
+            if (value < min) {
+                return min;
+            } else if (value > max) {
+                return max;
+            } else {
+                return value;
+            }
+        }
+
+        private static E6POS ClampCorrectionValues(E6POS correction) {
+            return new E6POS(
+                ClampValue(correction.X, -1, 1),
+                ClampValue(correction.Y, -1, 1),
+                ClampValue(correction.Z, -1, 1),
+                ClampValue(correction.A, -1, 1),
+                ClampValue(correction.B, -1, 1),
+                ClampValue(correction.C, -1, 1)
             );
         }
 

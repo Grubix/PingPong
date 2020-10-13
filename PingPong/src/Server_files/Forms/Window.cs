@@ -1,52 +1,49 @@
-﻿using PingPong.Tasks;
-using PingPong.Devices.KUKA;
+﻿using PingPong.Devices.KUKA;
 using PingPong.Devices.OptiTrack;
 using System.Windows.Forms;
-using System;
 
 namespace PingPong {
 
     public partial class Window : Form {
 
-        private readonly OptiTrackSystem optiTrack;
+        //private readonly OptiTrackSystem optiTrack;
 
         private readonly KUKARobot robot1;
 
-        private readonly KUKARobot robot2;
+        //private readonly KUKARobot robot2;
 
-        private ITask task; //TODO: docelowo po odebraniu ramki z optitracka wywołanie metody ComputeTargetPosition()
+        //private ITask task; //TODO: docelowo po odebraniu ramki z optitracka wywołanie metody ComputeTargetPosition()
 
         public Window() {
             InitializeComponent();
 
-            optiTrack = new OptiTrackSystem();
+            //optiTrack = new OptiTrackSystem();
             robot1 = new KUKARobot(8081);
-            robot2 = null; //TODO:
 
-            optiTrack.OnFrameReceived += frameReceived => Console.WriteLine("Optitrack frame received");
-            robot1.OnFrameReceived += frameReceived => Console.WriteLine($"\nKUKA1::Received: {frameReceived}");
-            robot1.OnFrameSent += frameSent => Console.WriteLine($"KUKA1::Sent: {frameSent}\n");
+            //optiTrack.OnFrameReceived += frameReceived => Console.WriteLine("Optitrack frame received");
+            //robot1.OnFrameReceived += frameReceived => Console.WriteLine($"\nKUKA1::Received: {frameReceived}");
+            //robot1.OnFrameSent += frameSent => Console.WriteLine($"KUKA1::Sent: {frameSent}\n");
 
             //optiTrack.Initialize();
             robot1.Initialize();
 
-            incXBtn.Click += (s, e) => robot1.TargetPosition.X++;
-            decXBtn.Click += (s, e) => robot1.TargetPosition.X--;
+            incXBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(50, 0, 0);
+            decXBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(50, 0, 0);
 
-            incYBtn.Click += (s, e) => robot1.TargetPosition.Y++;
-            decYBtn.Click += (s, e) => robot1.TargetPosition.Y--;
+            incYBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 50, 0);
+            decYBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 50, 0);
 
-            incZBtn.Click += (s, e) => robot1.TargetPosition.Z++;
-            decZBtn.Click += (s, e) => robot1.TargetPosition.Z--;
+            incZBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 0, 50);
+            decZBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 0, 50);
 
-            incABtn.Click += (s, e) => robot1.TargetPosition.A++;
-            decABtn.Click += (s, e) => robot1.TargetPosition.A--;
+            //incABtn.Click += (s, e) => robot1.TargetPosition.A++;
+            //decABtn.Click += (s, e) => robot1.TargetPosition.A--;
 
-            incBBtn.Click += (s, e) => robot1.TargetPosition.B++;
-            decBBtn.Click += (s, e) => robot1.TargetPosition.B--;
+            //incBBtn.Click += (s, e) => robot1.TargetPosition.B++;
+            //decBBtn.Click += (s, e) => robot1.TargetPosition.B--;
 
-            incCBtn.Click += (s, e) => robot1.TargetPosition.C++;
-            decCBtn.Click += (s, e) => robot1.TargetPosition.C--;
+            //incCBtn.Click += (s, e) => robot1.TargetPosition.C++;
+            //decCBtn.Click += (s, e) => robot1.TargetPosition.C--;
         }
 
     }

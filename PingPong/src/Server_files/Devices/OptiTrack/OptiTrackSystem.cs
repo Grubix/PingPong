@@ -16,8 +16,6 @@ namespace PingPong.Devices.OptiTrack {
 
         private readonly ServerDescription serverDescription;
 
-        public InputFrame LastReceivedFrame { get; private set; }
-
         public event InitializeEventHandler OnInitialize;
 
         public event FrameReceivedEventHandler OnFrameReceived;
@@ -52,8 +50,7 @@ namespace PingPong.Devices.OptiTrack {
 
             natNetClient.OnFrameReady += (data, client) => {
                 lock (synchronizeLock) {
-                    LastReceivedFrame = new InputFrame(data);
-                    OnFrameReceived?.Invoke(LastReceivedFrame);
+                    OnFrameReceived?.Invoke(new InputFrame(data));
                 }
             };
 
