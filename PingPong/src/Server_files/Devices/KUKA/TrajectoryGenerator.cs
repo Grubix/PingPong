@@ -36,17 +36,17 @@ namespace PingPong.Devices.KUKA {
                 correction = a3 * Math.Pow(period, 3) + a2 * Math.Pow(period, 2) + a1 * period;
             }
 
-            public double getCorrection() {
+            public double GetCorrection() {
                 return correction;
             }
         }
 
-        private Parameter X;
-        private Parameter Y;
-        private Parameter Z;
-        private Parameter A;
-        private Parameter B;
-        private Parameter C;
+        private readonly Parameter X = new Parameter();
+        private readonly Parameter Y = new Parameter();
+        private readonly Parameter Z = new Parameter();
+        private readonly Parameter A = new Parameter();
+        private readonly Parameter B = new Parameter();
+        private readonly Parameter C = new Parameter();
         
         private double period = 0.004;
         private double timeToDest = -1.0;
@@ -105,12 +105,12 @@ namespace PingPong.Devices.KUKA {
 
         public E6POS GetCorrection() {
             return new E6POS(
-                X.getCorrection(),
-                Y.getCorrection(),
-                Z.getCorrection(),
-                A.getCorrection(),
-                B.getCorrection(),
-                C.getCorrection()
+                X.GetCorrection(),
+                Y.GetCorrection(),
+                Z.GetCorrection(),
+                A.GetCorrection(),
+                B.GetCorrection(),
+                C.GetCorrection()
             );
         }
     }

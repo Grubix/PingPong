@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -61,6 +61,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -73,8 +74,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\KUKAVector.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\WorkspaceLimit.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
+    <Compile Include="src\Server_files\Forms\ThreadSafeChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="src\Server_files\Forms\ThreadSafeChart.Designer.cs">
+      <DependentUpon>ThreadSafeChart.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\Server_files\Tasks\ITask.cs" />
     <Compile Include="src\Server_files\Devices\IDevice.cs" />
     <Compile Include="src\Server_files\Forms\Window.cs">
@@ -90,7 +99,6 @@
     <Compile Include="src\Server_files\Devices\KUKA\RSI\InputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\OutputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\RSIAdapter.cs" />
-    <Compile Include="src\Server_files\Utils\Timer.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -100,6 +108,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="src\Server_files\Forms\ThreadSafeChart.resx">
+      <DependentUpon>ThreadSafeChart.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Server_files\Forms\Window.resx">
       <DependentUpon>Window.cs</DependentUpon>
     </EmbeddedResource>

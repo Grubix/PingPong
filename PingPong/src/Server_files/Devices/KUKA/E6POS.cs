@@ -1,37 +1,11 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using System;
+﻿using System;
 
 namespace PingPong.Devices.KUKA {
-    public class E6POS : ICloneable {
+    public class E6POS : KUKAVector, ICloneable {
 
         private const double XYZComparsionTolerance = 0.00001;
 
         private const double ABCComparsionTolerance = 0.01;
-
-        public double X { get; }
-        public double Y { get; }
-        public double Z { get; }
-        public double A { get; }
-        public double B { get; }
-        public double C { get; }
-
-        public Vector<double> XYZ {
-            get {
-                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z });
-            }
-        }
-
-        public Vector<double> ABC {
-            get {
-                return Vector<double>.Build.DenseOfArray(new double[] { A, B, C });
-            }
-        }
-
-        public Vector<double> XYZABC {
-            get {
-                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z, A, B, C });
-            }
-        }
 
         public E6POS(double X, double Y, double Z, double A, double B, double C) {
             this.X = X;

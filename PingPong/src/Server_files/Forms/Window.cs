@@ -1,8 +1,12 @@
 ﻿using PingPong.Devices.KUKA;
 using PingPong.Devices.OptiTrack;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
-namespace PingPong {
+namespace PingPong.Forms {
 
     public partial class Window : Form {
 
@@ -18,7 +22,7 @@ namespace PingPong {
             InitializeComponent();
 
             //optiTrack = new OptiTrackSystem();
-            robot1 = new KUKARobot(8081);
+            robot1 = new KUKARobot(8081, new WorkspaceLimit(-100, -100, -100, 100, 100, 100));
 
             //optiTrack.OnFrameReceived += frameReceived => Console.WriteLine("Optitrack frame received");
             //robot1.OnFrameReceived += frameReceived => Console.WriteLine($"\nKUKA1::Received: {frameReceived}");
@@ -35,6 +39,13 @@ namespace PingPong {
 
             incZBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 0, 50);
             decZBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 0, 50);
+
+            Task.Run(() => {
+                for (int i = 0; i < 10000; i++) {
+                    realTimeChart.AddPoint(Math.Sin(i / 50.0) * Math.Cos(1.2 * Math.Sin(i / 50.0)));
+                    Thread.Sleep(5);
+                }
+            });
 
             //incABtn.Click += (s, e) => robot1.TargetPosition.A++;
             //decABtn.Click += (s, e) => robot1.TargetPosition.A--;

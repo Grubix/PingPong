@@ -1,4 +1,4 @@
-﻿namespace PingPong
+﻿namespace PingPong.Forms
 {
     partial class Window
     {
@@ -40,6 +40,7 @@
             this.decBBtn = new System.Windows.Forms.Button();
             this.incCBtn = new System.Windows.Forms.Button();
             this.decCBtn = new System.Windows.Forms.Button();
+            this.realTimeChart = new PingPong.Forms.ThreadSafeChart();
             this.SuspendLayout();
             // 
             // incXBtn
@@ -150,11 +151,22 @@
             this.decCBtn.Text = "C-";
             this.decCBtn.UseVisualStyleBackColor = true;
             // 
+            // realTimeChart
+            // 
+            this.realTimeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.realTimeChart.Location = new System.Drawing.Point(177, 13);
+            this.realTimeChart.Name = "realTimeChart";
+            this.realTimeChart.Size = new System.Drawing.Size(645, 172);
+            this.realTimeChart.TabIndex = 12;
+            // 
             // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(183, 197);
+            this.ClientSize = new System.Drawing.Size(834, 197);
+            this.Controls.Add(this.realTimeChart);
             this.Controls.Add(this.decCBtn);
             this.Controls.Add(this.incCBtn);
             this.Controls.Add(this.decBBtn);
@@ -189,5 +201,6 @@
         private System.Windows.Forms.Button decBBtn;
         private System.Windows.Forms.Button incCBtn;
         private System.Windows.Forms.Button decCBtn;
+        private ThreadSafeChart realTimeChart;
     }
 }

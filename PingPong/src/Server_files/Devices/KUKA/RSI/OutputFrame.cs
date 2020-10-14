@@ -36,16 +36,7 @@ namespace PingPong.Devices.KUKA {
 
         public string Message { get; set; } = "PingPong";
 
-        private E6POS correction = new E6POS();
-
-        public E6POS Correction { 
-            get {
-                return correction;
-            }
-            set {
-                correction = ClampCorrectionValues(value);
-            } 
-        }
+        public E6POS Correction { get; set; } = new E6POS();
 
         public override string ToString() {
             return string.Format(frameTemplate, 
@@ -57,28 +48,6 @@ namespace PingPong.Devices.KUKA {
                 Correction.B,
                 Correction.C,
                 IPOC
-            );
-        }
-
-        private static double ClampValue(double value, double min, double max) {
-            //TODO: zarzucanie wyjątkiem ??
-            if (value < min) {
-                return min;
-            } else if (value > max) {
-                return max;
-            } else {
-                return value;
-            }
-        }
-
-        private static E6POS ClampCorrectionValues(E6POS correction) {
-            return new E6POS(
-                ClampValue(correction.X, -1, 1),
-                ClampValue(correction.Y, -1, 1),
-                ClampValue(correction.Z, -1, 1),
-                ClampValue(correction.A, -1, 1),
-                ClampValue(correction.B, -1, 1),
-                ClampValue(correction.C, -1, 1)
             );
         }
 

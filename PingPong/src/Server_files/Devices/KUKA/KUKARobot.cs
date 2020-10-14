@@ -1,29 +1,13 @@
-﻿using PingPong.Utils;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace PingPong.Devices.KUKA {
 
     class KUKARobot : IDevice {
 
-        public class Velocity {
-
-            public double X { get; }
-            public double Y { get; }
-            public double Z { get; }
-            public double A { get; }
-            public double B { get; }
-            public double C { get; }
+        private class Velocity : KUKAVector {
 
             public Velocity(E6POS previousPosition, E6POS currentPosition, double deltaTime) {
-                if (deltaTime < 0) {
-                    throw new ArgumentException("DeltaTime value cannot be negative");
-                }
-
-                if (deltaTime < 0.001) {
-                    throw new ArgumentException($"DeltaTime value is too small: {deltaTime}");
-                }
-
                 X = (currentPosition.X - previousPosition.X) / deltaTime;
                 Y = (currentPosition.Y - previousPosition.Y) / deltaTime;
                 Z = (currentPosition.Z - previousPosition.Z) / deltaTime;
@@ -36,8 +20,6 @@ namespace PingPong.Devices.KUKA {
 
         private bool isInitialized = false;
 
-        private readonly Timer timer;
-
         private readonly RSIAdapter rsiAdapter;
 
         private readonly TrajectoryGenerator trajectoryGenerator;
@@ -46,15 +28,15 @@ namespace PingPong.Devices.KUKA {
 
         private E6POS targetPosition;
 
+        public WorkspaceLimit WorkspaceLimit { get; set; }
+
         public E6POS TargetPosition {
             get {
                 return targetPosition;
             }
             set {
-                //TODO: Sprawdzenie czy pozycja nie wykracza poza dopuszczalny zakres ruchu
-                if (false) {
+                if (!WorkspaceLimit.CheckPosition(value)) {
                     SendError("The available workspace limit has been exceeded");
-                    throw new Exception("");
                 }
 
                 targetPosition = value;
@@ -67,7 +49,9 @@ namespace PingPong.Devices.KUKA {
             }
         }
 
-        public Velocity CurrentVelocity { get; set; }
+        public KUKAVector CurrentVelocity { get; private set; }
+
+        public double DeltaTime { get; private set; }
 
         public event InitializeEventHandler OnInitialize;
 
@@ -81,12 +65,11 @@ namespace PingPong.Devices.KUKA {
 
         public delegate void FrameSentEventHandler(OutputFrame frameSent);
 
-        public KUKARobot(int port) {
-            timer = new Timer();
+        public KUKARobot(int port, WorkspaceLimit workspaceLimit) {
             rsiAdapter = new RSIAdapter(port);
+            WorkspaceLimit = workspaceLimit;
             trajectoryGenerator = new TrajectoryGenerator();
             targetPosition = new E6POS();
-            CurrentVelocity = new Velocity(new E6POS(), new E6POS(), 1);
         }
 
         /// <summary>
@@ -94,13 +77,14 @@ namespace PingPong.Devices.KUKA {
         /// </summary>
         private async Task ReceiveDataAsync() {
             InputFrame receivedFrame = await rsiAdapter.ReceiveDataAsync();
+            DeltaTime = rsiAdapter.DeltaTime;
+
+            lock (CurrentVelocity) {
+                CurrentVelocity = new Velocity(CurrentPosition, receivedFrame.Position, DeltaTime);
+            }
 
             lock (lastReceivedFrame) {
                 lastReceivedFrame = receivedFrame;
-            }
-
-            lock (CurrentVelocity) {
-                CurrentVelocity = new Velocity(CurrentPosition, receivedFrame.Position, rsiAdapter.TimeDelta);
             }
 
             OnFrameReceived?.Invoke(lastReceivedFrame);
@@ -119,13 +103,12 @@ namespace PingPong.Devices.KUKA {
                 newCorrection = newCorrection.ClearABC();
                 //TODO: ogarnac dlaczego bez wyzerowania ABC kuka robi wir miecza
 
-                if(CheckCorrection(newCorrection)) {
+                if (CheckCorrection(newCorrection)) {
                     outputFrame.Correction = newCorrection;
                     Console.WriteLine(newCorrection);
                     //rsiAdapter.SendData(outputFrame);
                 } else {
-                    Uninitialize();
-                    throw new Exception();
+                    SendError("Dzieki naszym obliczeniom KUKA prawie zrobila wir miecza. Najs.");
                 }
             }
 
@@ -153,17 +136,17 @@ namespace PingPong.Devices.KUKA {
         }
 
         /// <summary>
-        /// Stops the robot program execution, raises OnFrameSent event
+        /// Stops the robot program execution, throws Exception
         /// </summary>
         public void SendError(string errorMessage) {
-            OutputFrame outputFrame = new OutputFrame() {
+            rsiAdapter.SendData(new OutputFrame() {
                 IPOC = lastReceivedFrame.IPOC,
                 Message = $"Error: {errorMessage}",
-                Correction = CurrentPosition
-            };
+                Correction = new E6POS()
+            });
 
-            rsiAdapter.SendData(outputFrame);
-            OnFrameSent?.Invoke(outputFrame);
+            Uninitialize();
+            throw new Exception(errorMessage);
         }
 
         /// <summary>
@@ -176,8 +159,6 @@ namespace PingPong.Devices.KUKA {
 
             Task.Run(async () => {
                 InputFrame receivedFrame = await rsiAdapter.Connect();
-
-                timer.Start();
 
                 lock (this) {
                     isInitialized = true;

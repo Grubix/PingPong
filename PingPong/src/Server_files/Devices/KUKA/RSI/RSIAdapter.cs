@@ -1,5 +1,5 @@
-using PingPong.Utils;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -10,19 +10,19 @@ namespace PingPong.Devices.KUKA {
 
         private bool isConnected;
 
-        private readonly Timer timer;
-
         private readonly UdpClient client;
+
+        private readonly Stopwatch stopwatch; //TODO: zamiast timera na kompie, mozna uzyc znacznika IPOC, kuka ma najprawdopodobniej znacznie dokladniejszy timer, DO SPRAWDZENIA
 
         private IPEndPoint remoteEndPoint;
 
         /// <summary>
         /// Time in seconds between two last received frames
         /// </summary>
-        public double TimeDelta { get; private set; }
+        public double DeltaTime { get; private set; }
 
         public RSIAdapter(int port) {
-            timer = new Timer();
+            stopwatch = new Stopwatch();
             client = new UdpClient(new IPEndPoint(IPAddress.Any, port));
         }
 
@@ -36,8 +36,7 @@ namespace PingPong.Devices.KUKA {
             }
 
             UdpReceiveResult result = await client.ReceiveAsync();
-           
-            timer.Start();
+            stopwatch.Start();
 
             remoteEndPoint = result.RemoteEndPoint;
             byte[] receivedBytes = result.Buffer;
@@ -59,11 +58,12 @@ namespace PingPong.Devices.KUKA {
         /// <returns>Parsed data as InputFrame</returns>
         public async Task<InputFrame> ReceiveDataAsync() {
             UdpReceiveResult result = await client.ReceiveAsync();
-
-            timer.Stop();
-            TimeDelta = timer.Seconds;
-            timer.Start();
-
+            stopwatch.Stop();
+            
+            DeltaTime = stopwatch.ElapsedMilliseconds / 1000.0;
+            
+            stopwatch.Reset();
+            stopwatch.Start();
             byte[] receivedBytes = result.Buffer;
 
             return new InputFrame(Encoding.ASCII.GetString(receivedBytes, 0, receivedBytes.Length));
