@@ -1,37 +1,11 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using System;
+﻿using System;
 
 namespace PingPong.Devices.KUKA {
-    public class E6POS : ICloneable {
+    public class E6POS : KUKAVector, ICloneable {
 
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
-        public double A { get; set; }
-        public double B { get; set; }
-        public double C { get; set; }
+        private const double XYZComparsionTolerance = 0.00001;
 
-        public Vector<double> XYZ {
-            get {
-                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z });
-            }
-        }
-
-        public Vector<double> ABC {
-            get {
-                return Vector<double>.Build.DenseOfArray(new double[] { A, B, C });
-            }
-        }
-
-        public Vector<double> XYZABC {
-            get {
-                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z, A, B, C });
-            }
-        }
-
-        public E6POS() {
-
-        }
+        private const double ABCComparsionTolerance = 0.01;
 
         public E6POS(double X, double Y, double Z, double A, double B, double C) {
             this.X = X;
@@ -42,34 +16,70 @@ namespace PingPong.Devices.KUKA {
             this.C = C;
         }
 
-        public void Reset() {
-            X = Y = Z = A = B = C = 0;
+        public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0, 0, 0) {
+        }
+
+        public E6POS() : this(0, 0, 0, 0, 0, 0) {
+        }
+
+        public E6POS Clear() {
+            return new E6POS();
+        }
+
+        public E6POS ClearXYZ() {
+            return new E6POS(0, 0, 0, A, B, C);
+        }
+
+        public E6POS ClearABC() {
+            return new E6POS(X, Y, Z, 0, 0, 0);
         }
 
         public object Clone() {
             return new E6POS(X, Y, Z, A, B, C);
         }
 
+        public override bool Equals(object obj) {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode() {
+            return base.GetHashCode();
+        }
+
         public static E6POS operator + (E6POS pos1, E6POS pos2) {
-            return new E6POS() {
-                X = pos1.X + pos2.X,
-                Y = pos1.Y + pos2.Y,
-                Z = pos1.Z + pos2.Z,
-                A = pos1.A + pos2.A,
-                B = pos1.B + pos2.B,
-                C = pos1.C + pos2.C
-            };
+            return new E6POS(
+                pos1.X + pos2.X,
+                pos1.Y + pos2.Y,
+                pos1.Z + pos2.Z,
+                pos1.A + pos2.A,
+                pos1.B + pos2.B,
+                pos1.C + pos2.C
+            );
         }
 
         public static E6POS operator - (E6POS pos1, E6POS pos2) {
-            return new E6POS() {
-                X = pos1.X - pos2.X,
-                Y = pos1.Y - pos2.Y,
-                Z = pos1.Z - pos2.Z,
-                A = pos1.A - pos2.A,
-                B = pos1.B - pos2.B,
-                C = pos1.C - pos2.C
-            };
+            return new E6POS(
+                pos1.X - pos2.X,
+                pos1.Y - pos2.Y,
+                pos1.Z - pos2.Z,
+                pos1.A - pos2.A,
+                pos1.B - pos2.B,
+                pos1.C - pos2.C
+            );
+        }
+
+        public static bool operator == (E6POS pos1, E6POS pos2) {
+            return
+                Math.Abs(pos1.X - pos2.X) <= XYZComparsionTolerance &&
+                Math.Abs(pos1.Y - pos2.Y) <= XYZComparsionTolerance &&
+                Math.Abs(pos1.Z - pos2.Z) <= XYZComparsionTolerance &&
+                Math.Abs(pos1.A - pos2.A) <= ABCComparsionTolerance &&
+                Math.Abs(pos1.B - pos2.B) <= ABCComparsionTolerance &&
+                Math.Abs(pos1.C - pos2.C) <= ABCComparsionTolerance;
+        }
+
+        public static bool operator != (E6POS pos1, E6POS pos2) {
+            return !(pos1 == pos2);
         }
 
     }

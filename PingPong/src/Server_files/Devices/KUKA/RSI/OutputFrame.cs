@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -36,17 +36,17 @@ namespace PingPong.Devices.KUKA {
 
         public string Message { get; set; } = "PingPong";
 
-        public E6POS Position { get; set; } = new E6POS();
+        public E6POS Correction { get; set; } = new E6POS();
 
         public override string ToString() {
             return string.Format(frameTemplate, 
                 Message, 
-                Position.X,
-                Position.Y,
-                Position.Z,
-                Position.A,
-                Position.B,
-                Position.C,
+                Correction.X,
+                Correction.Y,
+                Correction.Z,
+                Correction.A,
+                Correction.B,
+                Correction.C,
                 IPOC
             );
         }

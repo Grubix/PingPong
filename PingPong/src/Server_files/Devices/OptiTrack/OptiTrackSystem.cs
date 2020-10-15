@@ -16,8 +16,6 @@ namespace PingPong.Devices.OptiTrack {
 
         private readonly ServerDescription serverDescription;
 
-        public InputFrame LastReceivedFrame { get; private set; }
-
         public event InitializeEventHandler OnInitialize;
 
         public event FrameReceivedEventHandler OnFrameReceived;
@@ -29,15 +27,6 @@ namespace PingPong.Devices.OptiTrack {
         public OptiTrackSystem(ConnetionType connetionType = ConnetionType.Multicast) {
             natNetClient = new NatNetClientML((int) connetionType);
             serverDescription = new ServerDescription();
-        }
-
-        public void Calibrate(KUKARobot robot, E6POS startPosition, E6POS endPosition) {
-            if (!isInitialized || !robot.IsInitialized()) {
-                throw new Exception("Optitrack and KUKA robot must be initialized");
-            }
-
-            //TODO: kalibracja z wykorzystaniem ZAINICJALIZOWANEGO robota
-            //TODO: gdzie trzymac wyznaczone macierze rotacji i wekt translacji ? w kuce czy w optitracku ?
         }
 
         public void Initialize() {
@@ -61,8 +50,7 @@ namespace PingPong.Devices.OptiTrack {
 
             natNetClient.OnFrameReady += (data, client) => {
                 lock (synchronizeLock) {
-                    LastReceivedFrame = new InputFrame(data);
-                    OnFrameReceived?.Invoke(LastReceivedFrame);
+                    OnFrameReceived?.Invoke(new InputFrame(data));
                 }
             };
 
@@ -77,6 +65,26 @@ namespace PingPong.Devices.OptiTrack {
         public void Uninitialize() {
             isInitialized = false;
             natNetClient.Uninitialize();
+        }
+
+        public void Calibrate(KUKARobot robot, E6POS startPosition, E6POS endPosition) {
+            if (!isInitialized || !robot.IsInitialized()) {
+                throw new Exception("Optitrack and KUKA robot must be initialized");
+            }
+
+            //handler odpalający się za kazdym razem jak zostanie otrzymana ramka z optitracka
+            void ProcessFrame(InputFrame receivedFrame) {
+
+                //TODO: TUTAJ DZIAŁA PAN BABSONIK, jakas petla albo cos robiaca te wszystkie obliczenia ktore sa w pdfie
+
+                if (true) { //jakiś warunek mowiacy o zakonczeniu kalibracji
+                    OnFrameReceived -= ProcessFrame;
+                }
+            }
+
+            OnFrameReceived += ProcessFrame;
+
+            //TODO: gdzie trzymac wyznaczone macierze rotacji i wekt translacji ? w kuce czy w optitracku ?
         }
 
     }

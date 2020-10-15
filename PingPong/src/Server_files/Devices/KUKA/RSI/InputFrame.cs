@@ -45,11 +45,11 @@ namespace PingPong.Devices.KUKA {
 
         }
 
-        public string Data { get; private set; }
+        public string Data { get; }
 
-        public E6POS Position { get; private set; }
+        public E6POS Position { get; }
 
-        public long IPOC { get; private set; }
+        public long IPOC { get; }
 
         public InputFrame(string data) {
             Data = data;
@@ -58,14 +58,14 @@ namespace PingPong.Devices.KUKA {
             Tag cartesianPositionTag = new Tag(data, "RIst");
 
             IPOC = long.Parse(IPOCTag.Value);
-            Position = new E6POS() {
-                X = double.Parse(cartesianPositionTag.Attributes["X"]),
-                Y = double.Parse(cartesianPositionTag.Attributes["Y"]),
-                Z = double.Parse(cartesianPositionTag.Attributes["Z"]),
-                A = double.Parse(cartesianPositionTag.Attributes["A"]),
-                B = double.Parse(cartesianPositionTag.Attributes["B"]),
-                C = double.Parse(cartesianPositionTag.Attributes["C"])
-            };
+            Position = new E6POS(
+                double.Parse(cartesianPositionTag.Attributes["X"]),
+                double.Parse(cartesianPositionTag.Attributes["Y"]),
+                double.Parse(cartesianPositionTag.Attributes["Z"]),
+                double.Parse(cartesianPositionTag.Attributes["A"]),
+                double.Parse(cartesianPositionTag.Attributes["B"]),
+                double.Parse(cartesianPositionTag.Attributes["C"])
+            );
 
             //TODO: Sparsowanie reszty tagow
         }
