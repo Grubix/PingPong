@@ -3,9 +3,9 @@
 namespace PingPong.KUKA {
     public class E6POS : RobotVector, ICloneable {
 
-        private const double XYZComparsionTolerance = 0.00001;
+        private const double XYZComparsionTolerance = 0.01;
 
-        private const double ABCComparsionTolerance = 0.01;
+        private const double ABCComparsionTolerance = 0.001;
 
         public E6POS(double X, double Y, double Z, double A, double B, double C) {
             this.X = X;
