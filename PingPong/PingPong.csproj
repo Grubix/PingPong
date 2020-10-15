@@ -78,6 +78,7 @@
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\WorkspaceLimit.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
+    <Compile Include="src\Server_files\Devices\OptiTrack\OptiTrackCalibration.cs" />
     <Compile Include="src\Server_files\Forms\ThreadSafeChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
