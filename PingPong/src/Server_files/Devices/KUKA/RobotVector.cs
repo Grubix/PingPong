@@ -1,7 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 
-namespace PingPong.Devices.KUKA {
-    public abstract class KUKAVector {
+namespace PingPong.KUKA {
+    public abstract class RobotVector {
 
         public double X { get; protected set; }
         public double Y { get; protected set; }

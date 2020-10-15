@@ -1,4 +1,4 @@
-﻿using PingPong.Devices.KUKA;
+﻿using PingPong.KUKA;
 
 namespace PingPong.Tasks {
 

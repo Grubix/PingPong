@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PingPong.Devices.KUKA {
+namespace PingPong.KUKA {
     public class RSIAdapter {
 
         private bool isConnected;
@@ -22,8 +22,8 @@ namespace PingPong.Devices.KUKA {
         public double DeltaTime { get; private set; }
 
         public RSIAdapter(int port) {
-            stopwatch = new Stopwatch();
             client = new UdpClient(new IPEndPoint(IPAddress.Any, port));
+            stopwatch = new Stopwatch();
         }
 
         /// <summary>

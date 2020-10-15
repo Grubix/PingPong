@@ -1,7 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using System;
 
-namespace PingPong.Devices.KUKA {
+namespace PingPong.KUKA {
     public class TrajectoryGenerator {
         private class Parameter {
             private double a0;

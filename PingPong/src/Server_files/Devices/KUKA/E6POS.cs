@@ -1,7 +1,7 @@
 ﻿using System;
 
-namespace PingPong.Devices.KUKA {
-    public class E6POS : KUKAVector, ICloneable {
+namespace PingPong.KUKA {
+    public class E6POS : RobotVector, ICloneable {
 
         private const double XYZComparsionTolerance = 0.00001;
 
@@ -11,9 +11,9 @@ namespace PingPong.Devices.KUKA {
             this.X = X;
             this.Y = Y;
             this.Z = Z;
-            this.A = A;
-            this.B = B;
-            this.C = C;
+            this.A = A % 180.0;
+            this.B = B % 180.0;
+            this.C = C % 180.0; //TODO: to modulo moze byc problemem dlaczego generator trajektorii srednio dziala dla abc
         }
 
         public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0, 0, 0) {
@@ -44,6 +44,10 @@ namespace PingPong.Devices.KUKA {
 
         public override int GetHashCode() {
             return base.GetHashCode();
+        }
+
+        public override string ToString() {
+            return $"X={X}, Y={Y}, Z={Z}, A={A}, B={B}, C={C}";
         }
 
         public static E6POS operator + (E6POS pos1, E6POS pos2) {

@@ -1,4 +1,4 @@
-﻿namespace PingPong.Devices {
+﻿namespace PingPong {
     interface IDevice {
 
         ///<summary>

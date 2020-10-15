@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace PingPong.Devices.KUKA {
+namespace PingPong.KUKA {
 
     class KUKARobot : IDevice {
 
-        private class Velocity : KUKAVector {
+        private class Velocity : RobotVector {
+
+            public Velocity() {
+                X = Y = Z = A = B = C = 0;
+            }
 
             public Velocity(E6POS previousPosition, E6POS currentPosition, double deltaTime) {
                 X = (currentPosition.X - previousPosition.X) / deltaTime;
@@ -18,57 +22,83 @@ namespace PingPong.Devices.KUKA {
 
         }
 
-        private bool isInitialized = false;
+        private volatile bool isInitialized = false;
 
+        private readonly object robotDataSyncLock = new object();
+
+        private readonly object targetPositionSyncLock = new object();
+        
         private readonly RSIAdapter rsiAdapter;
+
+        private readonly RobotLimits limits;
 
         private readonly TrajectoryGenerator trajectoryGenerator;
 
-        private InputFrame lastReceivedFrame;
+        private long currentIPOC;
+
+        private double currentDeltaTime;
+        public double CurrentDeltaTime {
+            get {
+                lock (robotDataSyncLock) {
+                    return currentDeltaTime;
+                }
+            }
+        }
+
+        private E6POS currentPosition;
+        public E6POS CurrentPosition {
+            get {
+                lock (robotDataSyncLock) {
+                    return currentPosition;
+                }
+            }
+        }
+
+        private Velocity currentVelocity;
+        public RobotVector CurrentVelocity {
+            get {
+                lock (robotDataSyncLock) {
+                    return currentVelocity;
+                }
+            }
+        }
 
         private E6POS targetPosition;
-
-        public WorkspaceLimit WorkspaceLimit { get; set; }
-
         public E6POS TargetPosition {
             get {
-                return targetPosition;
+                lock (targetPositionSyncLock) {
+                    return targetPosition;
+                }
             }
             set {
-                if (!WorkspaceLimit.CheckPosition(value)) {
+                if (!limits.CheckPosition(value)) {
                     SendError("The available workspace limit has been exceeded");
                 }
 
-                targetPosition = value;
+                lock (targetPositionSyncLock) {
+                    targetPosition = value;
+                }
             }
         }
 
-        public E6POS CurrentPosition {
-            get {
-                return lastReceivedFrame.Position;
-            }
-        }
+        public event InitializedEventHandler Initialized;
 
-        public KUKAVector CurrentVelocity { get; private set; }
+        public event FrameReceivedEventHandler FrameReceived;
 
-        public double DeltaTime { get; private set; }
+        public event FrameSentEventHandler FrameSent;
 
-        public event InitializeEventHandler OnInitialize;
-
-        public event FrameReceivedEventHandler OnFrameReceived;
-
-        public event FrameSentEventHandler OnFrameSent;
-
-        public delegate void InitializeEventHandler(InputFrame receivedFrame);
+        public delegate void InitializedEventHandler(InputFrame receivedFrame);
 
         public delegate void FrameReceivedEventHandler(InputFrame receivedFrame);
 
         public delegate void FrameSentEventHandler(OutputFrame frameSent);
 
-        public KUKARobot(int port, WorkspaceLimit workspaceLimit) {
+        public KUKARobot(int port, RobotLimits robotLimits) {
             rsiAdapter = new RSIAdapter(port);
-            WorkspaceLimit = workspaceLimit;
+            limits = robotLimits;
             trajectoryGenerator = new TrajectoryGenerator();
+            currentPosition = new E6POS();
+            currentVelocity = new Velocity();
             targetPosition = new E6POS();
         }
 
@@ -77,76 +107,54 @@ namespace PingPong.Devices.KUKA {
         /// </summary>
         private async Task ReceiveDataAsync() {
             InputFrame receivedFrame = await rsiAdapter.ReceiveDataAsync();
-            DeltaTime = rsiAdapter.DeltaTime;
+            E6POS previousPosition = currentPosition;
 
-            lock (CurrentVelocity) {
-                CurrentVelocity = new Velocity(CurrentPosition, receivedFrame.Position, DeltaTime);
+            lock (robotDataSyncLock) {
+                currentIPOC = receivedFrame.IPOC;
+                currentDeltaTime = rsiAdapter.DeltaTime;
+                currentPosition = receivedFrame.Position;
             }
 
-            lock (lastReceivedFrame) {
-                lastReceivedFrame = receivedFrame;
-            }
-
-            OnFrameReceived?.Invoke(lastReceivedFrame);
+            currentVelocity = new Velocity(previousPosition, CurrentPosition, CurrentDeltaTime);
+            FrameReceived?.Invoke(receivedFrame);
         }
 
         /// <summary>
         /// Move robot to TargetPosition, raises OnFrameSent event
         /// </summary>
         private void MoveToTargetPosition() {
-            OutputFrame outputFrame = new OutputFrame() {
-                IPOC = lastReceivedFrame.IPOC
-            };
+            E6POS correction = trajectoryGenerator.GoToPoint(CurrentPosition, TargetPosition, 10.0);
+            correction = correction.ClearABC(); //TODO: ogarnac dlaczego bez wyzerowania ABC kuka robi wir miecza
 
-            lock (TargetPosition) {
-                E6POS newCorrection = trajectoryGenerator.GoToPoint(CurrentPosition, TargetPosition, 10.0);
-                newCorrection = newCorrection.ClearABC();
-                //TODO: ogarnac dlaczego bez wyzerowania ABC kuka robi wir miecza
+            if (limits.CheckCorrection(correction)) {
+                OutputFrame outputFrame = new OutputFrame() {
+                    IPOC = currentIPOC,
+                    Correction = correction
+                };
 
-                if (CheckCorrection(newCorrection)) {
-                    outputFrame.Correction = newCorrection;
-                    Console.WriteLine(newCorrection);
-                    //rsiAdapter.SendData(outputFrame);
-                } else {
-                    SendError("Dzieki naszym obliczeniom KUKA prawie zrobila wir miecza. Najs.");
-                }
+                Console.WriteLine(correction);
+                //rsiAdapter.SendData(outputFrame);
+                FrameSent?.Invoke(outputFrame);
+            } else {
+                SendError("Correction val err");
             }
-
-            OnFrameSent?.Invoke(outputFrame);
-        }
-
-        private bool CheckCorrection(E6POS correction) {
-            bool CheckValue(double value, double min, double max) {
-                if (value < min) {
-                    return false;
-                } else if (value > max) {
-                    return false;
-                }
-
-                return true;
-            }
-
-            return
-                CheckValue(correction.X, -1, 1) &&
-                CheckValue(correction.Y, -1, 1) &&
-                CheckValue(correction.Z, -1, 1) &&
-                CheckValue(correction.A, -1, 1) &&
-                CheckValue(correction.B, -1, 1) &&
-                CheckValue(correction.C, -1, 1);
         }
 
         /// <summary>
         /// Stops the robot program execution, throws Exception
         /// </summary>
         public void SendError(string errorMessage) {
+            if(!isInitialized) {
+                throw new Exception("Device is not initialized");
+            }
+
             rsiAdapter.SendData(new OutputFrame() {
-                IPOC = lastReceivedFrame.IPOC,
+                IPOC = currentIPOC,
                 Message = $"Error: {errorMessage}",
                 Correction = new E6POS()
             });
 
             Uninitialize();
-            throw new Exception(errorMessage);
         }
 
         /// <summary>
@@ -159,20 +167,21 @@ namespace PingPong.Devices.KUKA {
 
             Task.Run(async () => {
                 InputFrame receivedFrame = await rsiAdapter.Connect();
+                isInitialized = true;
 
-                lock (this) {
-                    isInitialized = true;
-                    lastReceivedFrame = receivedFrame;
-                    TargetPosition = CurrentPosition;
+                lock (robotDataSyncLock) {
+                    currentIPOC = receivedFrame.IPOC;
+                    currentPosition = receivedFrame.Position;
 
                     // Send response (prevent connection timeout)
                     rsiAdapter.SendData(new OutputFrame() {
-                        IPOC = lastReceivedFrame.IPOC,
+                        IPOC = currentIPOC,
                         Correction = new E6POS()
                     });
                 }
 
-                OnInitialize?.Invoke(lastReceivedFrame);
+                TargetPosition = CurrentPosition;
+                Initialized?.Invoke(receivedFrame);
 
                 // Start loop for receiving and sending data
                 while (isInitialized) {
