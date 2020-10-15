@@ -1,6 +1,6 @@
 ﻿using NatNetML;
 
-namespace PingPong.Devices.OptiTrack {
+namespace PingPong.OptiTrack {
     class InputFrame {
 
         public InputFrame(FrameOfMocapData data) {

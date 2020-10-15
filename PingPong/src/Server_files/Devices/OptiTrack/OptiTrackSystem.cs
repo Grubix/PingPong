@@ -1,8 +1,8 @@
 ﻿using System;
 using NatNetML;
-using PingPong.Devices.KUKA;
+using PingPong.KUKA;
 
-namespace PingPong.Devices.OptiTrack {
+namespace PingPong.OptiTrack {
     class OptiTrackSystem : IDevice {
 
         public enum ConnetionType : int {
@@ -16,11 +16,11 @@ namespace PingPong.Devices.OptiTrack {
 
         private readonly ServerDescription serverDescription;
 
-        public event InitializeEventHandler OnInitialize;
+        public event InitializedEventHandler Initialized;
 
-        public event FrameReceivedEventHandler OnFrameReceived;
+        public event FrameReceivedEventHandler FrameReceived;
 
-        public delegate void InitializeEventHandler();
+        public delegate void InitializedEventHandler();
 
         public delegate void FrameReceivedEventHandler(InputFrame receivedFrame);
 
@@ -46,16 +46,12 @@ namespace PingPong.Devices.OptiTrack {
                 throw new Exception("Optitrack connection failed. Is Motive application running?");
             }
 
-            object synchronizeLock = new object();
-
             natNetClient.OnFrameReady += (data, client) => {
-                lock (synchronizeLock) {
-                    OnFrameReceived?.Invoke(new InputFrame(data));
-                }
+                FrameReceived?.Invoke(new InputFrame(data));
             };
 
             isInitialized = true;
-            OnInitialize?.Invoke();
+            Initialized?.Invoke();
         }
 
         public bool IsInitialized() {
@@ -78,11 +74,11 @@ namespace PingPong.Devices.OptiTrack {
                 //TODO: TUTAJ DZIAŁA PAN BABSONIK, jakas petla albo cos robiaca te wszystkie obliczenia ktore sa w pdfie
 
                 if (true) { //jakiś warunek mowiacy o zakonczeniu kalibracji
-                    OnFrameReceived -= ProcessFrame;
+                    FrameReceived -= ProcessFrame;
                 }
             }
 
-            OnFrameReceived += ProcessFrame;
+            FrameReceived += ProcessFrame;
 
             //TODO: gdzie trzymac wyznaczone macierze rotacji i wekt translacji ? w kuce czy w optitracku ?
         }
