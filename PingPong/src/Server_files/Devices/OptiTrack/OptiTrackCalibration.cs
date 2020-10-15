@@ -1,9 +1,9 @@
-﻿using System;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 using System.Collections.Generic;
-using PingPong.Devices.KUKA;
+using PingPong.KUKA;
 
-namespace PingPong.Devices.OptiTrack {
+namespace PingPong.OptiTrack {
     class OptiTrackCalibration {
         private Vector<double> centroidKuka;
         private Vector<double> centroidOptiTrack;
