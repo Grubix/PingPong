@@ -49,8 +49,8 @@ namespace PingPong.KUKA {
         private readonly Parameter C = new Parameter();
         
         private double period = 0.004;
-        private double timeToDest = -1.0;
-        Vector<double> currentVelocity;
+        public double timeToDest = -1.0;
+        public Vector<double> currentVelocity;
         Vector<double> targetVelocity;
 
         private E6POS targetPosition = new E6POS();
@@ -65,7 +65,7 @@ namespace PingPong.KUKA {
         public E6POS GoToPoint(E6POS currentPosition, E6POS targetPosition, double time) {
             if(this.targetPosition != targetPosition) {
                 this.targetPosition = targetPosition;
-                timeToDest = -1;
+                timeToDest = -1.0;
             }
 
             if (timeToDest == -1.0) {
@@ -90,6 +90,8 @@ namespace PingPong.KUKA {
             currentVelocity[3] = A.GetUpdatedVelocity(period);
             currentVelocity[4] = B.GetUpdatedVelocity(period);
             currentVelocity[5] = C.GetUpdatedVelocity(period);
+            //Console.WriteLine("velocity: " + currentVelocity[5]);
+            
         }
 
         public void UpdateCoefficients(E6POS currentPosition, E6POS targetPosition, Vector<double> currentVelocity, Vector<double> targetVelocity, double period) {

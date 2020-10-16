@@ -22,7 +22,7 @@ namespace PingPong.Forms {
         public ThreadSafeChart() {
             InitializeComponent();
 
-            MaxSamples = 1500;
+            MaxSamples = 3000;
             RefreshTime = 60;
 
             series = new Series {

@@ -20,14 +20,16 @@ namespace PingPong.Forms {
             InitializeComponent();
 
             robot1 = new KUKARobot(8081, new RobotLimits(
-                new double[] { -1000.0, -1000.0, -1000.0 },
-                new double[] { 1000.0, 1000.0, 1000.0 },
+                new double[] { 40.0, -100.0, 350.0 },
+                new double[] { 390.0, 250.0, 600.0 },
+                /*new double[] { 50.0, -160.0, 635.0 },
+                new double[] { 590.0, 300.0, 870.0 },*/
                 0.5,
-                0.005
+                0.05
             ));
 
             robot1.FrameReceived += fr => {
-                realTimeChart.AddPoint(robot1.CurrentVelocity.X);
+                realTimeChart.AddPoint(robot1.trajectoryGenerator.currentVelocity[5]);
             };
             //robot1.FrameSent += fs => Console.WriteLine($"KUKA1::Sent: {fs}\n");
 
@@ -48,8 +50,8 @@ namespace PingPong.Forms {
             //incBBtn.Click += (s, e) => robot1.TargetPosition.B++;
             //decBBtn.Click += (s, e) => robot1.TargetPosition.B--;
 
-            //incCBtn.Click += (s, e) => robot1.TargetPosition.C++;
-            //decCBtn.Click += (s, e) => robot1.TargetPosition.C--;
+            incCBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 0, 0, 0, 0, 0.01);
+            decCBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 0, 0, 0, 0, 0.01);
 
             //Task.Run(() => {
             //    for (int i = 0; i < 10000; i++) {

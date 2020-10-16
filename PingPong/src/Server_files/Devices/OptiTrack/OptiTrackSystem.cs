@@ -69,7 +69,7 @@ namespace PingPong.OptiTrack {
             }
 
             //handler odpalający się za kazdym razem jak zostanie otrzymana ramka z optitracka
-            void ProcessFrame(InputFrame receivedFrame) {
+            /*void ProcessFrame(InputFrame receivedFrame) {
 
                 //TODO: TUTAJ DZIAŁA PAN BABSONIK, jakas petla albo cos robiaca te wszystkie obliczenia ktore sa w pdfie
 
@@ -78,7 +78,7 @@ namespace PingPong.OptiTrack {
                 }
             }
 
-            FrameReceived += ProcessFrame;
+            FrameReceived += ProcessFrame;*/
 
             //TODO: gdzie trzymac wyznaczone macierze rotacji i wekt translacji ? w kuce czy w optitracku ?
         }

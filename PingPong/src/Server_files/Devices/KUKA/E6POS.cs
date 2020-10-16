@@ -8,12 +8,17 @@ namespace PingPong.KUKA {
         private const double ABCComparsionTolerance = 0.001;
 
         public E6POS(double X, double Y, double Z, double A, double B, double C) {
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
+            this.X = Math.Round(X * 10000) / 10000;
+            this.Y = Math.Round(Y * 10000) / 10000;
+            this.Z = Math.Round(Z * 10000) / 10000;
             this.A = A % 180.0;
             this.B = B % 180.0;
-            this.C = C % 180.0; //TODO: to modulo moze byc problemem dlaczego generator trajektorii srednio dziala dla abc
+
+            //this.C = Math.Abs(C % 360.0) * Math.Sign(C); //TODO: to modulo moze byc problemem dlaczego generator trajektorii srednio dziala dla abc
+            this.C = C + 180.0;
+            /*if (this.C < 0) {
+                this.C = 360.0 + this.C;
+            }*/
         }
 
         public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0, 0, 0) {
@@ -85,6 +90,12 @@ namespace PingPong.KUKA {
         public static bool operator != (E6POS pos1, E6POS pos2) {
             return !(pos1 == pos2);
         }
+
+       /* public E6POS modulation() {
+            this.X = Math.Round(X * 10000) / 10000;
+            this.Y = Math.Round(Y * 10000) / 10000;
+            this.Z = Math.Round(Z * 10000) / 10000;
+        }*/
 
     }
 }

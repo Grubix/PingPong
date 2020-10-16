@@ -11,7 +11,8 @@ namespace PingPong.KUKA {
                 X = Y = Z = A = B = C = 0;
             }
 
-            public Velocity(E6POS previousPosition, E6POS currentPosition, double deltaTime) {
+            public Velocity(E6POS previousPosition, E6POS currentPosition, double deltaTime)
+            {
                 X = (currentPosition.X - previousPosition.X) / deltaTime;
                 Y = (currentPosition.Y - previousPosition.Y) / deltaTime;
                 Z = (currentPosition.Z - previousPosition.Z) / deltaTime;
@@ -32,7 +33,7 @@ namespace PingPong.KUKA {
 
         private readonly RobotLimits limits;
 
-        private readonly TrajectoryGenerator trajectoryGenerator;
+        public TrajectoryGenerator trajectoryGenerator;
 
         private long currentIPOC;
 
@@ -115,7 +116,7 @@ namespace PingPong.KUKA {
                 currentPosition = receivedFrame.Position;
             }
 
-            currentVelocity = new Velocity(previousPosition, CurrentPosition, CurrentDeltaTime);
+            currentVelocity = new Velocity(previousPosition, currentPosition, 0.004);
             FrameReceived?.Invoke(receivedFrame);
         }
 
@@ -123,8 +124,16 @@ namespace PingPong.KUKA {
         /// Move robot to TargetPosition, raises OnFrameSent event
         /// </summary>
         private void MoveToTargetPosition() {
-            E6POS correction = trajectoryGenerator.GoToPoint(CurrentPosition, TargetPosition, 10.0);
-            correction = correction.ClearABC(); //TODO: ogarnac dlaczego bez wyzerowania ABC kuka robi wir miecza
+            E6POS correction = trajectoryGenerator.GoToPoint(CurrentPosition, TargetPosition, 30.0);
+            Console.WriteLine(trajectoryGenerator.timeToDest);
+            correction = new E6POS(
+                correction.X,
+                correction.Y,
+                correction.Z,
+                0,
+                0,
+                correction.C
+            );
 
             if (limits.CheckCorrection(correction)) {
                 OutputFrame outputFrame = new OutputFrame() {
@@ -133,7 +142,7 @@ namespace PingPong.KUKA {
                 };
 
                 Console.WriteLine(correction);
-                //rsiAdapter.SendData(outputFrame);
+                rsiAdapter.SendData(outputFrame);
                 FrameSent?.Invoke(outputFrame);
             } else {
                 SendError("Correction val err");
@@ -155,6 +164,7 @@ namespace PingPong.KUKA {
             });
 
             Uninitialize();
+            throw new Exception(errorMessage);
         }
 
         /// <summary>
