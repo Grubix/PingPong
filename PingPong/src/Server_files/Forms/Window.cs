@@ -26,8 +26,19 @@ namespace PingPong.Forms {
                 0.005
             ));
 
-            //robot1.FrameReceived += fr => { };
-            robot1.FrameSent += fs => realTimeChart.AddPoint(robot1.CurrentPosition.X, robot1.TargetPosition.X);
+            robot1.FrameReceived += fr => {
+                posXText.Text = fr.Position.X.ToString();
+                posYText.Text = fr.Position.Y.ToString();
+                posZText.Text = fr.Position.Z.ToString();
+                posAText.Text = fr.Position.A.ToString();
+                posBText.Text = fr.Position.B.ToString();
+                posCText.Text = fr.Position.C.ToString();
+            };
+
+            robot1.FrameSent += fs => {
+                realTimeChart.AddPoint(robot1.CurrentPosition.X, robot1.TargetPosition.X);
+            };
+
             robot1.Initialized += () => {
                 Task.Run(() => {
                     robot1.ForceMoveToPosition(robot1.CurrentPosition + new E6POS(0, 50, 0));
@@ -59,10 +70,11 @@ namespace PingPong.Forms {
             decCBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 0, 0, 0, 0, 50);
 
             Task.Run(() => {
+                Thread.Sleep(1000);
                 for (int i = 0; i < 10000; i++) {
-                    double sin = Math.Sin(i * 0.004);
-                    double cos = Math.Cos(i * 0.004);
-                    realTimeChart.AddPoint(sin, cos);
+                    double v1 = Math.Abs(Math.Sin(i * 0.004) / (2 + Math.Cos(i * 0.004)));
+                    double v2 = Math.Abs(Math.Cos(i * 0.004) / (2 + Math.Sin(i * 0.004)));
+                    realTimeChart.AddPoint(Math.Sin(v1 + v2), Math.Cos(v1 + v2) - 0.4);
                     Thread.Sleep(4);
                 }
             });

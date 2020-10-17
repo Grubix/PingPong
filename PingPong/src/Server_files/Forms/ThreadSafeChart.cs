@@ -13,7 +13,7 @@ namespace PingPong.Forms {
 
         private int visibleSamples = 0;
 
-        private int totalSamples = 0;
+        private long totalSamples = 0;
 
         private long deltaTime = 0;
 
@@ -25,7 +25,7 @@ namespace PingPong.Forms {
             InitializeComponent();
 
             MaxSamples = 3000;
-            RefreshTime = 100;
+            RefreshTime = 70;
 
             series1 = new Series {
                 ChartType = SeriesChartType.FastLine,

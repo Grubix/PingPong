@@ -148,6 +148,10 @@ namespace PingPong.KUKA {
         /// </summary>
         /// <param name="position">target position</param>
         public void ForceMoveToPosition(E6POS position) {
+            if (!isInitialized) {
+                throw new InvalidOperationException("Device is not initialized");
+            }
+
             lock (targetPositionSyncLock) {
                 targetPosition = position;
                 forceMoveMode = true;
@@ -189,6 +193,10 @@ namespace PingPong.KUKA {
                 while (isInitialized) {
                     await ReceiveDataAsync();
                     MoveToTargetPosition();
+                }
+            }).ContinueWith(t => {
+                if (t.IsFaulted) {
+                    throw t.Exception.InnerException;
                 }
             });
         }
