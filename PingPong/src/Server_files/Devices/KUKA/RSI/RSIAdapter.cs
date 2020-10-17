@@ -32,7 +32,7 @@ namespace PingPong.KUKA {
         /// <returns>First received frame</returns>
         public async Task<InputFrame> Connect() {
             if(isConnected) {
-                throw new Exception("Connection has been already established");
+                throw new Exception("The connection has already been established");
             }
 
             UdpReceiveResult result = await client.ReceiveAsync();

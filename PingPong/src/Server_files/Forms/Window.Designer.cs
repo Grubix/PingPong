@@ -158,14 +158,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.realTimeChart.Location = new System.Drawing.Point(177, 13);
             this.realTimeChart.Name = "realTimeChart";
-            this.realTimeChart.Size = new System.Drawing.Size(645, 172);
+            this.realTimeChart.Size = new System.Drawing.Size(895, 436);
             this.realTimeChart.TabIndex = 12;
             // 
             // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(834, 197);
+            this.ClientSize = new System.Drawing.Size(1084, 461);
             this.Controls.Add(this.realTimeChart);
             this.Controls.Add(this.decCBtn);
             this.Controls.Add(this.incCBtn);

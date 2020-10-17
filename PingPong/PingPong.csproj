@@ -74,7 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Server_files\Devices\KUKA\RobotVector.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\PolynominalTest.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RobotLimits.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
@@ -139,7 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\KUKA_files\RSI_EthernetConfig.xml" />
-    <Content Include="src\KUKA_files\Server\TestServer.exe" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

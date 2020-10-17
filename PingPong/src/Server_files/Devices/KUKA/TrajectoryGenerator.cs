@@ -53,19 +53,26 @@ namespace PingPong.KUKA {
         Vector<double> currentVelocity;
         Vector<double> targetVelocity;
 
+        private E6POS targetPosition = new E6POS();
+
         public TrajectoryGenerator() {
             currentVelocity = Vector<double>.Build.Dense(6);
-            currentVelocity.Clear();
             targetVelocity = Vector<double>.Build.Dense(6);
-            targetVelocity.Clear();
         }
 
         public E6POS GoToPoint(E6POS currentPosition, E6POS targetPosition, double time) {
+            //TODO: Reset "timera" jezeli czas time sie zmienił
+
+            if(this.targetPosition != targetPosition) {
+                this.targetPosition = targetPosition;
+                timeToDest = -1;
+            }
+
             if (timeToDest == -1.0) {
                 timeToDest = time;
             }
             if (timeToDest >= 0.004) {
-                UpdateCoefficients(currentPosition, targetPosition, currentVelocity, targetVelocity, timeToDest);
+                UpdateCoefficients(currentPosition, this.targetPosition, currentVelocity, targetVelocity, timeToDest);
                 ComputeCorrection(period);
                 timeToDest -= period;
                 UpdateVelocity(period);

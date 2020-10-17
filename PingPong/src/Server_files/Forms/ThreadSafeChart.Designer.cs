@@ -37,7 +37,7 @@
             this.chart.ChartAreas.Add(chartArea1);
             this.chart.Location = new System.Drawing.Point(0, 0);
             this.chart.Name = "chart";
-            this.chart.Size = new System.Drawing.Size(700, 400);
+            this.chart.Size = new System.Drawing.Size(300, 200);
             this.chart.TabIndex = 0;
             this.chart.Text = "chart";
             // 
@@ -47,7 +47,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.chart);
             this.Name = "ThreadSafeChart";
-            this.Size = new System.Drawing.Size(700, 400);
+            this.Size = new System.Drawing.Size(300, 200);
             ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.ResumeLayout(false);
 

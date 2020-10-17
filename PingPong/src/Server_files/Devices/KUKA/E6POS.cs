@@ -1,19 +1,45 @@
 ﻿using System;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace PingPong.KUKA {
-    public class E6POS : RobotVector, ICloneable {
+    public class E6POS : ICloneable {
 
-        private const double XYZComparsionTolerance = 0.00001;
+        private const int XYZPrecision = 100000;
+        private const int ABCPrecision = 100000;
 
-        private const double ABCComparsionTolerance = 0.01;
+        private const double XYZComparsionTolerance = 1 / XYZPrecision;
+        private const double ABCComparsionTolerance = 1 / ABCPrecision;
+
+        public double X { get; }
+        public double Y { get; }
+        public double Z { get; }
+        public double A { get; }
+        public double B { get; }
+        public double C { get; }
+
+        public Vector<double> XYZ {
+            get {
+                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z });
+            }
+        }
+        public Vector<double> ABC {
+            get {
+                return Vector<double>.Build.DenseOfArray(new double[] { A, B, C });
+            }
+        }
+        public Vector<double> XYZABC {
+            get {
+                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z, A, B, C });
+            }
+        }
 
         public E6POS(double X, double Y, double Z, double A, double B, double C) {
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
-            this.A = A % 180.0;
-            this.B = B % 180.0;
-            this.C = C % 180.0; //TODO: to modulo moze byc problemem dlaczego generator trajektorii srednio dziala dla abc
+            this.X = Math.Round(X * XYZPrecision) / XYZPrecision;
+            this.Y = Math.Round(Y * XYZPrecision) / XYZPrecision;
+            this.Z = Math.Round(Z * XYZPrecision) / XYZPrecision;
+            this.A = Math.Round((A < 0 ? 360.0 + A : A) * ABCPrecision) / ABCPrecision;
+            this.B = Math.Round((B < 0 ? 360.0 + B : B) * ABCPrecision) / ABCPrecision;
+            this.C = Math.Round((C < 0 ? 360.0 + C : C) * ABCPrecision) / ABCPrecision;
         }
 
         public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0, 0, 0) {

@@ -32,11 +32,11 @@ namespace PingPong.KUKA {
             frameTemplate = sBuilder.ToString();
         }
 
-        public long IPOC { get; set; }
-
-        public string Message { get; set; } = "PingPong";
+        public string Message { get; set; } = "";
 
         public E6POS Correction { get; set; } = new E6POS();
+
+        public long IPOC { get; set; }
 
         public override string ToString() {
             return string.Format(frameTemplate, 
