@@ -20,10 +20,12 @@ namespace PingPong.Forms {
             InitializeComponent();
 
             robot1 = new KUKARobot(8081, new RobotLimits(
-                new double[] { -1000.0, -1000.0, -1000.0 },
-                new double[] { 1000.0, 1000.0, 1000.0 },
+                new double[] { 40.0, -100.0, 350.0 },
+                new double[] { 390.0, 250.0, 600.0 },
+                /*new double[] { 50.0, -160.0, 635.0 },
+                new double[] { 590.0, 300.0, 870.0 },*/
                 0.5,
-                0.005
+                0.05
             ));
 
             robot1.FrameReceived += fr => {
