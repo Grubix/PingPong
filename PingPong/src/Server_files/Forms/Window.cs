@@ -69,17 +69,39 @@ namespace PingPong.Forms {
             incCBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 0, 0, 0, 0, 50);
             decCBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 0, 0, 0, 0, 50);
 
+            //Task.Run(() => {
+            //    Thread.Sleep(1000);
+            //    for (int i = 0; i < 10000; i++) {
+            //        double v1 = Math.Abs(Math.Sin(i * 0.004) / (2 + Math.Cos(i * 0.004)));
+            //        double v2 = Math.Abs(Math.Cos(i * 0.004) / (2 + Math.Sin(i * 0.004)));
+            //        realTimeChart.AddPoint(Math.Sin(v1 + v2), Math.Cos(v1 + v2) - 0.4);
+            //        Thread.Sleep(4);
+            //    }
+            //});
+
+            robot1.Initialize();
+
+            double start1 = 0.0;
+            Polynominal poly = new Polynominal(0);
+
+            double start2 = 0.0;
+            TrajectoryGenerator gen = new TrajectoryGenerator();
+
+            double time = 0;
+
             Task.Run(() => {
                 Thread.Sleep(1000);
                 for (int i = 0; i < 10000; i++) {
-                    double v1 = Math.Abs(Math.Sin(i * 0.004) / (2 + Math.Cos(i * 0.004)));
-                    double v2 = Math.Abs(Math.Cos(i * 0.004) / (2 + Math.Sin(i * 0.004)));
-                    realTimeChart.AddPoint(Math.Sin(v1 + v2), Math.Cos(v1 + v2) - 0.4);
+                    start1 = poly.GoTo(start1, 360.0, 5.0);
+                    start2 = start2 + gen.GoToPoint(new E6POS(0, 0, 0, 0, start2, 0), new E6POS(0, 0, 0, 0, 360.0, 0), 5.0).B;
+
+                    realTimeChart.AddPoint(start1, start2);
                     Thread.Sleep(4);
+
+                    time += 4;
+                    Console.WriteLine(time);
                 }
             });
-
-            robot1.Initialize();
         }
 
     }
