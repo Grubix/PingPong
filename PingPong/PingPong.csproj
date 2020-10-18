@@ -116,6 +116,8 @@
       <DependentUpon>Window.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="src\Doc_files\eggert_comparison_mva97.pdf" />
+    <None Include="src\Doc_files\LN9_TrajectoryGeneration.pdf" />
     <None Include="src\Doc_files\Meissner feat. Pazda.pdf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

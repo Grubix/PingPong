@@ -31,7 +31,7 @@ namespace PingPong.KUKA {
         /// </summary>
         /// <returns>First received frame</returns>
         public async Task<InputFrame> Connect() {
-            if(isConnected) {
+            if (isConnected) {
                 throw new Exception("The connection has already been established");
             }
 
@@ -59,9 +59,9 @@ namespace PingPong.KUKA {
         public async Task<InputFrame> ReceiveDataAsync() {
             UdpReceiveResult result = await client.ReceiveAsync();
             stopwatch.Stop();
-            
+
             DeltaTime = stopwatch.ElapsedMilliseconds / 1000.0;
-            
+
             stopwatch.Reset();
             stopwatch.Start();
             byte[] receivedBytes = result.Buffer;
@@ -77,6 +77,6 @@ namespace PingPong.KUKA {
             byte[] bytes = Encoding.ASCII.GetBytes(data.ToString());
             client.Send(bytes, bytes.Length, remoteEndPoint);
         }
- 
+
     }
 }

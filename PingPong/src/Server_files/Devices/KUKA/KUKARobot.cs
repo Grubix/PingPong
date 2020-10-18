@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,23 +13,25 @@ namespace PingPong.KUKA {
 
         public delegate void FrameSentEventHandler(OutputFrame frameSent);
 
-        private volatile bool isInitialized = false;
+        private readonly RSIAdapter rsiAdapter;
 
-        private readonly object robotDataSyncLock = new object();
+        private readonly RobotLimits limits;
 
-        private readonly object targetPositionSyncLock = new object();
+        private readonly BackgroundWorker backgroundWorker;
 
         private readonly TrajectoryGenerator trajectoryGenerator = new TrajectoryGenerator();
 
         private readonly ManualResetEvent reachTargetPosition = new ManualResetEvent(false);
 
-        private readonly RSIAdapter rsiAdapter;
+        private readonly object robotDataSyncLock = new object();
 
-        private readonly RobotLimits limits;
+        private readonly object targetPositionSyncLock = new object();
+
+        private volatile bool isInitialized = false;
 
         private bool forceMoveMode = false;
 
-        private long currentIPOC;
+        private long currentIPOC = -1;
 
         private E6POS currentPosition = new E6POS();
 
@@ -65,6 +68,9 @@ namespace PingPong.KUKA {
             }
         }
 
+        /// <summary>
+        /// Occurs when the robot is initialized (connection has been established)
+        /// </summary>
         public event InitializedEventHandler Initialized;
 
         /// <summary>
@@ -82,6 +88,38 @@ namespace PingPong.KUKA {
         public KUKARobot(int port, RobotLimits robotLimits) {
             rsiAdapter = new RSIAdapter(port);
             limits = robotLimits;
+
+            backgroundWorker = new BackgroundWorker() {
+                WorkerSupportsCancellation = true
+            };
+
+            backgroundWorker.DoWork += async (sender, args) => {
+                InputFrame receivedFrame = await rsiAdapter.Connect();
+
+                lock (robotDataSyncLock) {
+                    currentIPOC = receivedFrame.IPOC;
+                    currentPosition = receivedFrame.Position;
+                    targetPosition = currentPosition;
+                }
+
+                // Send response (prevent connection timeout)
+                rsiAdapter.SendData(new OutputFrame() {
+                    Message = "PingPong",
+                    Correction = new E6POS(),
+                    IPOC = currentIPOC
+                });
+
+                Initialized?.Invoke();
+
+                // Start loop for receiving and sending data
+                while (!backgroundWorker.CancellationPending) {
+                    await ReceiveDataAsync();
+                    MoveToTargetPosition();
+                }
+
+                isInitialized = false;
+                rsiAdapter.Disconnect();
+            };
         }
 
         /// <summary>
@@ -170,40 +208,13 @@ namespace PingPong.KUKA {
                 return;
             }
 
-            Task.Run(async () => {
-                InputFrame receivedFrame = await rsiAdapter.Connect();
-
-                lock (robotDataSyncLock) {
-                    currentIPOC = receivedFrame.IPOC;
-                    currentPosition = receivedFrame.Position;
-                    targetPosition = currentPosition;
-                }
-
-                // Send response (prevent connection timeout)
-                rsiAdapter.SendData(new OutputFrame() {
-                    Message = "PingPong",
-                    Correction = new E6POS(),
-                    IPOC = currentIPOC
-                });
-
-                isInitialized = true;
-                Initialized?.Invoke();
-
-                // Start loop for receiving and sending data
-                while (isInitialized) {
-                    await ReceiveDataAsync();
-                    MoveToTargetPosition();
-                }
-            }).ContinueWith(t => {
-                if (t.IsFaulted) {
-                    throw t.Exception.InnerException;
-                }
-            });
+            backgroundWorker.RunWorkerAsync();
         }
 
         public void Uninitialize() {
-            isInitialized = false;
-            rsiAdapter.Disconnect();
+            if (!backgroundWorker.CancellationPending) {
+                backgroundWorker.CancelAsync();
+            }
         }
 
         public bool IsInitialized() {

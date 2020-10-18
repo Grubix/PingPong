@@ -1,5 +1,5 @@
-﻿using System;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 
 namespace PingPong.KUKA {
     public class E6POS : ICloneable {
@@ -11,10 +11,15 @@ namespace PingPong.KUKA {
         private const double ABCComparsionTolerance = 1 / ABCPrecision;
 
         public double X { get; }
+
         public double Y { get; }
+
         public double Z { get; }
+
         public double A { get; }
+
         public double B { get; }
+
         public double C { get; }
 
         public Vector<double> XYZ {
@@ -22,11 +27,13 @@ namespace PingPong.KUKA {
                 return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z });
             }
         }
+
         public Vector<double> ABC {
             get {
                 return Vector<double>.Build.DenseOfArray(new double[] { A, B, C });
             }
         }
+
         public Vector<double> XYZABC {
             get {
                 return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z, A, B, C });
@@ -76,7 +83,7 @@ namespace PingPong.KUKA {
             return $"X={X}, Y={Y}, Z={Z}, A={A}, B={B}, C={C}";
         }
 
-        public static E6POS operator + (E6POS pos1, E6POS pos2) {
+        public static E6POS operator +(E6POS pos1, E6POS pos2) {
             return new E6POS(
                 pos1.X + pos2.X,
                 pos1.Y + pos2.Y,
@@ -87,7 +94,7 @@ namespace PingPong.KUKA {
             );
         }
 
-        public static E6POS operator - (E6POS pos1, E6POS pos2) {
+        public static E6POS operator -(E6POS pos1, E6POS pos2) {
             return new E6POS(
                 pos1.X - pos2.X,
                 pos1.Y - pos2.Y,
@@ -98,7 +105,7 @@ namespace PingPong.KUKA {
             );
         }
 
-        public static bool operator == (E6POS pos1, E6POS pos2) {
+        public static bool operator ==(E6POS pos1, E6POS pos2) {
             return
                 Math.Abs(pos1.X - pos2.X) <= XYZComparsionTolerance &&
                 Math.Abs(pos1.Y - pos2.Y) <= XYZComparsionTolerance &&
@@ -108,7 +115,7 @@ namespace PingPong.KUKA {
                 Math.Abs(pos1.C - pos2.C) <= ABCComparsionTolerance;
         }
 
-        public static bool operator != (E6POS pos1, E6POS pos2) {
+        public static bool operator !=(E6POS pos1, E6POS pos2) {
             return !(pos1 == pos2);
         }
 

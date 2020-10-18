@@ -3,15 +3,15 @@
 namespace PingPong.KUKA {
     class RobotLimits {
 
-        private readonly double [] workspaceLowerPoint = new double[3];
+        private readonly double[] workspaceLowerPoint = new double[3];
 
-        private readonly double [] workspaceUpperPoint = new double[3];
+        private readonly double[] workspaceUpperPoint = new double[3];
 
         private readonly double maxXYZCorrection;
 
         private readonly double maxABCCorrection;
 
-        public RobotLimits(double [] workspaceLowerPoint, double [] workspaceUpperPoint,
+        public RobotLimits(double[] workspaceLowerPoint, double[] workspaceUpperPoint,
             double maxXYZCorrection, double maxABCCorrection) {
 
             bool invalidWorkspacePoints =
@@ -38,7 +38,7 @@ namespace PingPong.KUKA {
                 position.Z >= workspaceLowerPoint[2] && position.Z <= workspaceUpperPoint[2];
         }
 
-        public bool CheckCorrection (E6POS correction) {
+        public bool CheckCorrection(E6POS correction) {
             return
                 Math.Abs(correction.X) <= maxXYZCorrection &&
                 Math.Abs(correction.Y) <= maxXYZCorrection &&

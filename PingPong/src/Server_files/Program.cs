@@ -1,6 +1,6 @@
+using PingPong.Forms;
 using System;
 using System.Windows.Forms;
-using PingPong.Forms;
 
 namespace PingPong {
     /// <summary>
@@ -14,6 +14,6 @@ namespace PingPong {
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Window());
         }
-        
+
     }
 }

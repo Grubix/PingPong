@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
 using NatNetML;
 using PingPong.KUKA;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace PingPong.OptiTrack {
     class OptiTrackSystem : IDevice {
@@ -28,7 +28,7 @@ namespace PingPong.OptiTrack {
         public delegate void FrameReceivedEventHandler(InputFrame receivedFrame);
 
         public OptiTrackSystem(ConnetionType connetionType = ConnetionType.Multicast) {
-            natNetClient = new NatNetClientML((int) connetionType);
+            natNetClient = new NatNetClientML((int)connetionType);
             serverDescription = new ServerDescription();
         }
 

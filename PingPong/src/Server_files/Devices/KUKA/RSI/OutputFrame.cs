@@ -39,8 +39,8 @@ namespace PingPong.KUKA {
         public long IPOC { get; set; }
 
         public override string ToString() {
-            return string.Format(frameTemplate, 
-                Message, 
+            return string.Format(frameTemplate,
+                Message,
                 Correction.X,
                 Correction.Y,
                 Correction.Z,

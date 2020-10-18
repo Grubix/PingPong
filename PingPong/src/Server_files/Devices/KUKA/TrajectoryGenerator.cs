@@ -21,7 +21,7 @@ namespace PingPong.KUKA {
             }
 
             public double GetUpdatedVelocity(double period) {
-                velocity =  3 * a3 * Math.Pow(period, 2) + 2 * a2 * period + a1;
+                velocity = 3 * a3 * Math.Pow(period, 2) + 2 * a2 * period + a1;
                 return velocity;
             }
 
@@ -47,7 +47,7 @@ namespace PingPong.KUKA {
         private readonly Parameter A = new Parameter();
         private readonly Parameter B = new Parameter();
         private readonly Parameter C = new Parameter();
-        
+
         private double period = 0.004;
         private double timeToDest = -1.0;
         Vector<double> currentVelocity;
@@ -63,12 +63,13 @@ namespace PingPong.KUKA {
         public E6POS GoToPoint(E6POS currentPosition, E6POS targetPosition, double time) {
             //TODO: Reset "timera" jezeli czas time sie zmienił
 
-            if(this.targetPosition != targetPosition) {
+            if (this.targetPosition != targetPosition) {
                 this.targetPosition = targetPosition;
                 timeToDest = -1;
             }
 
             if (timeToDest == -1.0) {
+                
                 timeToDest = time;
             }
             if (timeToDest >= 0.004) {

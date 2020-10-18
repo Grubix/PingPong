@@ -1,7 +1,14 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using PingPong.KUKA;
 using System;
 using System.Collections.Generic;
-using PingPong.KUKA;
+
+
+/// <summary>
+/// SPOKO WYJAŚNIENIE http://nghiaho.com/?page_id=671
+/// https://en.wikipedia.org/wiki/Wahba%27s_problem
+/// https://en.wikipedia.org/wiki/Kabsch_algorithm
+/// </summary>
 
 namespace PingPong.OptiTrack {
     class OptiTrackCalibration {
@@ -98,7 +105,7 @@ namespace PingPong.OptiTrack {
             }
         }
 
-        public void CalculateRotationAndTranslation() { 
+        public void CalculateRotationAndTranslation() {
             // Rozklad SVD --> matrixH = U*W*VT 
             var SVD = matrixH.Svd(true); // tworzy rozklad wedlug wartosci osobistych macierzy matrixH
 

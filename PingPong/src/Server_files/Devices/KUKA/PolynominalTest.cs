@@ -48,7 +48,7 @@ namespace PingPong.KUKA {
             if (Math.Abs(targetValue - previousTargetValue) >= 0.001 || Math.Abs(targetDuration - previousTargetDuration) >= 0.001) {
                 //start new movement
                 elapsedTime = 0;
-                UpdateCoefficients(startValue, targetValue,targetDuration);
+                UpdateCoefficients(startValue, targetValue, targetDuration);
             } else {
                 elapsedTime += deltaTime;
             }

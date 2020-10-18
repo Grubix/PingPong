@@ -25,7 +25,7 @@ namespace PingPong.Forms {
             InitializeComponent();
 
             MaxSamples = 3000;
-            RefreshTime = 70;
+            RefreshTime = 100;
 
             series1 = new Series {
                 ChartType = SeriesChartType.FastLine,
@@ -78,7 +78,7 @@ namespace PingPong.Forms {
                 }
             };
 
-            chart.Invoke(threadSafeAddPoint, new object[] { value1, value2});
+            chart.Invoke(threadSafeAddPoint, new object[] { value1, value2 });
         }
 
         private delegate void ThreadSafeAddPoint(double value1, double value2);

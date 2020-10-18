@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PingPong.Forms {
-
     public partial class Window : Form {
 
         private readonly KUKARobot robot1;
@@ -19,11 +18,13 @@ namespace PingPong.Forms {
         public Window() {
             InitializeComponent();
 
+            // Punkty w jakims innym ukladzie
+            //new double[] { 50.0, -160.0, 635.0 },
+            //new double[] { 590.0, 300.0, 870.0 },
+
             robot1 = new KUKARobot(8081, new RobotLimits(
                 new double[] { 40.0, -100.0, 350.0 },
                 new double[] { 390.0, 250.0, 600.0 },
-                /*new double[] { 50.0, -160.0, 635.0 },
-                new double[] { 590.0, 300.0, 870.0 },*/
                 0.5,
                 0.05
             ));
@@ -41,26 +42,23 @@ namespace PingPong.Forms {
                 realTimeChart.AddPoint(robot1.CurrentPosition.X, robot1.TargetPosition.X);
             };
 
-            robot1.Initialized += () => {
+            incXBtn.Click += (s, e) => {
                 Task.Run(() => {
                     robot1.ForceMoveToPosition(robot1.CurrentPosition + new E6POS(0, 50, 0));
                     robot1.ForceMoveToPosition(robot1.CurrentPosition - new E6POS(0, 0, 50));
                     robot1.ForceMoveToPosition(robot1.CurrentPosition - new E6POS(0, 50, 0));
                     robot1.ForceMoveToPosition(robot1.CurrentPosition + new E6POS(0, 0, 50));
-                    //TODO: dzieki powzyszym metodom proba zmiany robot1.TargetPosition powinno byc zablokowane (np guzikami)
-                });
+                }).Wait();
             };
 
-            robot1.Initialize();
-
-            incXBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(50, 0, 0);
+            //incXBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(50, 0, 0);
             decXBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(50, 0, 0);
 
-            incYBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(50, 0, 0);
-            decYBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(50, 0, 0);
+            incYBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 50, 0);
+            decYBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 50, 0);
 
-            incZBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(50, 0, 0);
-            decZBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(50, 0, 0);
+            incZBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 0, 50);
+            decZBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 0, 50);
 
             incABtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 0, 0, 50, 0, 0);
             decABtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 0, 0, 50, 0, 0);
@@ -69,7 +67,7 @@ namespace PingPong.Forms {
             decBBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 0, 0, 0, 50, 0);
 
             incCBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 0, 0, 0, 0, 50);
-            decCBtn.Click += (s, e) => robot1.TargetPosition += new E6POS(0, 0, 0, 0, 0, 50);
+            decCBtn.Click += (s, e) => robot1.TargetPosition -= new E6POS(0, 0, 0, 0, 0, 50);
 
             Task.Run(() => {
                 Thread.Sleep(1000);
@@ -80,8 +78,9 @@ namespace PingPong.Forms {
                     Thread.Sleep(4);
                 }
             });
+
+            robot1.Initialize();
         }
 
     }
-
 }
