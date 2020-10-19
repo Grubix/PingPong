@@ -3,13 +3,6 @@ using PingPong.KUKA;
 using System;
 using System.Collections.Generic;
 
-
-/// <summary>
-/// SPOKO WYJAŚNIENIE http://nghiaho.com/?page_id=671
-/// https://en.wikipedia.org/wiki/Wahba%27s_problem
-/// https://en.wikipedia.org/wiki/Kabsch_algorithm
-/// </summary>
-
 namespace PingPong.OptiTrack {
     class OptiTrackCalibration {
 

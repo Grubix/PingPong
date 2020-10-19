@@ -4,11 +4,8 @@ using System;
 namespace PingPong.KUKA {
     public class E6POS : ICloneable {
 
-        private const int XYZPrecision = 100000;
-        private const int ABCPrecision = 100000;
-
-        private const double XYZComparsionTolerance = 1 / XYZPrecision;
-        private const double ABCComparsionTolerance = 1 / ABCPrecision;
+        private const double XYZComparsionTolerance = 0.001;
+        private const double ABCComparsionTolerance = 0.00001;
 
         public double X { get; }
 
@@ -41,12 +38,12 @@ namespace PingPong.KUKA {
         }
 
         public E6POS(double X, double Y, double Z, double A, double B, double C) {
-            this.X = Math.Round(X * XYZPrecision) / XYZPrecision;
-            this.Y = Math.Round(Y * XYZPrecision) / XYZPrecision;
-            this.Z = Math.Round(Z * XYZPrecision) / XYZPrecision;
-            this.A = Math.Round((A < 0 ? 360.0 + A : A) * ABCPrecision) / ABCPrecision;
-            this.B = Math.Round((B < 0 ? 360.0 + B : B) * ABCPrecision) / ABCPrecision;
-            this.C = Math.Round((C < 0 ? 360.0 + C : C) * ABCPrecision) / ABCPrecision;
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
+            this.A = A < 0 ? 360.0 + A : A;
+            this.B = B < 0 ? 360.0 + B : B;
+            this.C = C < 0 ? 360.0 + C : C;
         }
 
         public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0, 0, 0) {
@@ -80,7 +77,13 @@ namespace PingPong.KUKA {
         }
 
         public override string ToString() {
-            return $"X={X}, Y={Y}, Z={Z}, A={A}, B={B}, C={C}";
+            return 
+                $"X={Math.Round(X * 1000) / 1000}, " +
+                $"Y={Math.Round(Y * 1000) / 1000}, " +
+                $"Z={Math.Round(Z * 1000) / 1000}, " +
+                $"A={Math.Round(A * 10000) / 10000}, " +
+                $"B={Math.Round(B * 10000) / 10000}, " +
+                $"C={Math.Round(C * 10000) / 10000}";
         }
 
         public static E6POS operator +(E6POS pos1, E6POS pos2) {

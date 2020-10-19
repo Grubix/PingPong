@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PingPong.KUKA {
+namespace PingPong {
     class Polynominal {
 
         private const double deltaTime = 0.004;

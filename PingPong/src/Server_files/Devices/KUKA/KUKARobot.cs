@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,9 +20,7 @@ namespace PingPong.KUKA {
 
         private readonly BackgroundWorker backgroundWorker;
 
-        private readonly TrajectoryGenerator trajectoryGenerator = new TrajectoryGenerator();
-
-        private readonly ManualResetEvent reachTargetPosition = new ManualResetEvent(false);
+        private readonly TrajectoryGenerator trajectoryGenerator;
 
         private readonly object robotDataSyncLock = new object();
 
@@ -88,12 +87,14 @@ namespace PingPong.KUKA {
         public KUKARobot(int port, RobotLimits robotLimits) {
             rsiAdapter = new RSIAdapter(port);
             limits = robotLimits;
+            trajectoryGenerator = new TrajectoryGenerator(); //TODO: to mozna tworzyc po inicjalizacji i np. pobrac aktualne pozycje kuki
 
             backgroundWorker = new BackgroundWorker() {
                 WorkerSupportsCancellation = true
             };
 
             backgroundWorker.DoWork += async (sender, args) => {
+                // Connect with the robot
                 InputFrame receivedFrame = await rsiAdapter.Connect();
 
                 lock (robotDataSyncLock) {
@@ -133,10 +134,6 @@ namespace PingPong.KUKA {
                 currentPosition = receivedFrame.Position;
             }
 
-            if (currentPosition == targetPosition) {
-                reachTargetPosition.Set();
-            }
-
             FrameReceived?.Invoke(receivedFrame);
         }
 
@@ -174,7 +171,7 @@ namespace PingPong.KUKA {
 
             if (limitExceeded) {
                 Uninitialize();
-                throw new Exception(errorMessage);
+                throw new InvalidOperationException(errorMessage);
             }
 
             FrameSent?.Invoke(outputFrame);
@@ -195,8 +192,17 @@ namespace PingPong.KUKA {
                 forceMoveMode = true;
             }
 
-            reachTargetPosition.WaitOne();
-            reachTargetPosition.Reset();
+            ManualResetEvent reachTargetPositionEvent = new ManualResetEvent(false);
+
+            void checkPosition(InputFrame receivedFrame) {
+                if (receivedFrame.Position == targetPosition) {
+                    FrameReceived -= checkPosition;
+                    reachTargetPositionEvent.Set();
+                }
+            }
+
+            FrameReceived += checkPosition;
+            reachTargetPositionEvent.WaitOne();
 
             lock (targetPositionSyncLock) {
                 forceMoveMode = false;
@@ -219,6 +225,34 @@ namespace PingPong.KUKA {
 
         public bool IsInitialized() {
             return isInitialized;
+        }
+
+        //TODO: 
+        private List<E6POS> GetCalibrationPoints(E6POS startPosition, E6POS endPosition, uint intermediatePoints) {
+            List<E6POS> points = new List<E6POS>();
+            uint totalPoints = 2 + intermediatePoints;
+
+            E6POS deltaPosition = new E6POS(
+                (endPosition.X - startPosition.X) / (intermediatePoints + 1),
+                (endPosition.Y - startPosition.Y) / (intermediatePoints + 1),
+                (endPosition.Z - startPosition.Z) / (intermediatePoints + 1),
+                (endPosition.A - startPosition.A) / (intermediatePoints + 1),
+                (endPosition.B - startPosition.B) / (intermediatePoints + 1),
+                (endPosition.C - startPosition.C) / (intermediatePoints + 1)
+            );
+
+            for (int i = 0; i < totalPoints; i++) {
+                points.Add(startPosition + new E6POS(
+                    deltaPosition.X * i,
+                    deltaPosition.Y * i,
+                    deltaPosition.Z * i,
+                    deltaPosition.A * i,
+                    deltaPosition.B * i,
+                    deltaPosition.C * i
+                ));
+            }
+
+            return points;
         }
 
     }
