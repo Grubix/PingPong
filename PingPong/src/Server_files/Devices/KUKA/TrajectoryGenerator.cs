@@ -68,11 +68,11 @@ namespace PingPong.KUKA {
             if (time2Dest >= 0.004) {
                 UpdateCoefficients(currentPosition, targetPosition);
                 ComputeNextPoint();
-                timeToDest -= period;
+                time2Dest -= period;
                 UpdateVelocity();
                 return GetNextPoint();
             } else {
-                totalTimeToDest = 0.0;
+                totalTime2Dest = 0.0;
                 return targetPosition;
             }
         }
