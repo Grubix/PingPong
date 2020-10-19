@@ -93,7 +93,7 @@ namespace PingPong.Forms {
                 Thread.Sleep(1000);
                 for (int i = 0; i < 10000; i++) {
                     start1 = poly.GoTo(start1, 360.0, 5.0);
-                    start2 = start2 + gen.GoToPoint(new E6POS(0, 0, 0, 0, start2, 0), new E6POS(0, 0, 0, 0, 360.0, 0), 5.0).B;
+                    start2 = start2 + gen.Go2Point(new E6POS(0, 0, 0, 0, start2, 0), new E6POS(0, 0, 0, 0, 360.0, 0), 5.0).B;
 
                     realTimeChart.AddPoint(start1, start2);
                     Thread.Sleep(4);
