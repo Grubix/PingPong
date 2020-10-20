@@ -50,6 +50,7 @@ namespace PingPong.KUKA {
             centroidA /= pointsCount;
             centroidB /= pointsCount;
 
+            // Covariance matrix
             var matrixH = Matrix<double>.Build.Dense(3, 3);
 
             for (int i = 0; i < 3; i++) {
@@ -67,18 +68,19 @@ namespace PingPong.KUKA {
             var svdDecomposition = matrixH.Svd();
             var UT = svdDecomposition.U.Transpose();
             var V = svdDecomposition.VT.Transpose();
-            int detSign = Math.Sign((V * UT).Determinant());
 
-            V[0, 2] *= detSign;
-            V[1, 2] *= detSign;
-            V[2, 2] *= detSign;
+            if ((V * UT).Determinant() <= 0) { //TODO: niedokonca jasne czy ma byc < 0 czy <= 0,
+                V[0, 2] *= -1;
+                V[1, 2] *= -1;
+                V[2, 2] *= -1;
+            }
 
-            rotation = V * UT;
-            translation = -1 * rotation * centroidB + centroidA;
+            rotation = V * UT; //TODO: rotacja A do B ?? OGARNĄĆ!
+            translation = centroidA -1 * rotation * centroidB;
         }
 
         public Transformation(Matrix<double> rotation, Vector<double> translation) {
-            //TODO: niekoniecznie bedzie potrzebne
+            //TODO: Taki kontstruktor moze byc potrzebny do utworzenia transormacji pomiędzy dwoma KUKAmi
         }
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace PingPong.KUKA {
         /// <param name="pointInA">point in A coordinate system</param>
         /// <returns></returns>
         public Vector<double> ConvertPoint(Vector<double> pointInA) {
-            return null; //TODO: Jazda babsonik <3
+            return rotation * pointInA + translation;
         }
 
         //TODO: jakies dwie metody do zapisu i odczytu danych

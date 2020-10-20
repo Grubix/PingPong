@@ -75,11 +75,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\Transformation.cs" />
-    <Compile Include="src\Server_files\Syf\PolynominalTest.cs" />
+    <Compile Include="src\Old_files\PolynominalTest.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RobotLimits.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
-    <Compile Include="src\Server_files\Devices\OptiTrack\OptiTrackCalibration.cs" />
+    <Compile Include="src\Old_files\OptiTrackCalibration.cs" />
     <Compile Include="src\Server_files\Forms\ThreadSafeChart.cs">
       <SubType>UserControl</SubType>
     </Compile>

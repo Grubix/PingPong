@@ -147,7 +147,7 @@ namespace PingPong.KUKA {
 
             lock (targetPositionSyncLock) {
                 if (limits.CheckPosition(targetPosition)) {
-                    E6POS computedCorrection = trajectoryGenerator.GoToPoint(currentPosition, targetPosition, 10.0);
+                    E6POS computedCorrection = trajectoryGenerator.GoToPoint(currentPosition, targetPosition, 10.0) - currentPosition;
 
                     if (limits.CheckCorrection(computedCorrection)) {
                         correction = computedCorrection;
