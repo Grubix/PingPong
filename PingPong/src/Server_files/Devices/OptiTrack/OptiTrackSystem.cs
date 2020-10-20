@@ -1,14 +1,10 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
 using NatNetML;
-using PingPong.KUKA;
+using System;
+using System.Threading;
 
 namespace PingPong.OptiTrack {
     class OptiTrackSystem : IDevice {
-
-        public enum ConnetionType : int {
-            Multicast = 0,
-            Unicast = 1
-        }
 
         private bool isInitialized = false;
 
@@ -24,26 +20,52 @@ namespace PingPong.OptiTrack {
 
         public delegate void FrameReceivedEventHandler(InputFrame receivedFrame);
 
-        public OptiTrackSystem(ConnetionType connetionType = ConnetionType.Multicast) {
-            natNetClient = new NatNetClientML((int) connetionType);
+        public OptiTrackSystem(int connectionType = 0) {
+            natNetClient = new NatNetClientML(connectionType);
             serverDescription = new ServerDescription();
         }
 
+        public Vector<double> GetAveragePosition(uint samples) {
+            if (!isInitialized) {
+                throw new InvalidOperationException("Device is not initialized");
+            }
+
+            ManualResetEvent getSamplesEvent = new ManualResetEvent(false);
+            Vector<double> position = Vector<double>.Build.Dense(3);
+
+            int currentSample = 0;
+
+            void checkSample(InputFrame inputFrame) {
+                position += inputFrame.Position;
+                currentSample++;
+
+                if (currentSample == samples) {
+                    FrameReceived -= checkSample;
+                    getSamplesEvent.Set();
+                }
+            }
+
+            FrameReceived += checkSample;
+            getSamplesEvent.WaitOne();
+
+            return position / samples;
+        }
+
         public void Initialize() {
-            if(isInitialized) {
+            if (isInitialized) {
                 return;
             }
 
             int status = natNetClient.Initialize("127.0.0.1", "127.0.0.1");
 
-            if(status != 0) {
-                throw new Exception("Optitrack initialization failed. Is Motive application running?");
+            if (status != 0) {
+                throw new InvalidOperationException("OptiTrack system initialization failed. Is Motive application running?");
             }
 
             status = natNetClient.GetServerDescription(serverDescription);
 
-            if(status != 0) {
-                throw new Exception("Optitrack connection failed. Is Motive application running?");
+            if (status != 0) {
+                throw new InvalidOperationException("Connection failed. Is Motive application running?");
             }
 
             natNetClient.OnFrameReady += (data, client) => {
@@ -61,26 +83,6 @@ namespace PingPong.OptiTrack {
         public void Uninitialize() {
             isInitialized = false;
             natNetClient.Uninitialize();
-        }
-
-        public void Calibrate(KUKARobot robot, E6POS startPosition, E6POS endPosition) {
-            if (!isInitialized || !robot.IsInitialized()) {
-                throw new Exception("Optitrack and KUKA robot must be initialized");
-            }
-
-            //handler odpalający się za kazdym razem jak zostanie otrzymana ramka z optitracka
-            void ProcessFrame(InputFrame receivedFrame) {
-
-                //TODO: TUTAJ DZIAŁA PAN BABSONIK, jakas petla albo cos robiaca te wszystkie obliczenia ktore sa w pdfie
-
-                if (true) { //jakiś warunek mowiacy o zakonczeniu kalibracji
-                    FrameReceived -= ProcessFrame;
-                }
-            }
-
-            FrameReceived += ProcessFrame;
-
-            //TODO: gdzie trzymac wyznaczone macierze rotacji i wekt translacji ? w kuce czy w optitracku ?
         }
 
     }

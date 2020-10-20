@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace PingPong.KUKA {
     /// <summary>
-    /// Frame received from the KUKA robot.
+    /// Represents frame (data) received from the KUKA robot.
     /// </summary>
     public class InputFrame {
 
@@ -18,7 +18,7 @@ namespace PingPong.KUKA {
                 Regex tagRegex = new Regex($"<{tag}([^/>]*)/?>(([^<]*)</{tag}>)?");
                 Match match = tagRegex.Match(data);
 
-                if(match.Success) {
+                if (match.Success) {
                     Value = match.Groups[3].Value.Trim();
                     Attributes = ExtractAttributes(match.Groups[1].Value.Trim());
                 } else {
@@ -36,7 +36,7 @@ namespace PingPong.KUKA {
                 Regex attributeRegex = new Regex("([a-zA-Z0-9_]+)[ ]*=[ ]*\"([^\"]*)\"");
                 MatchCollection matches = attributeRegex.Matches(attributesString);
 
-                foreach(Match match in matches) {
+                foreach (Match match in matches) {
                     attributes[match.Groups[1].Value.Trim()] = match.Groups[2].Value;
                 }
 
