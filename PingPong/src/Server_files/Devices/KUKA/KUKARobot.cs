@@ -140,7 +140,7 @@ namespace PingPong.KUKA {
 
             lock (targetPositionSyncLock) {
                 if (limits.CheckPosition(targetPosition.position)) {
-                    E6POS nextPosition = generator.GoToPoint(
+                    E6POS nextPosition = generator.GetNextPosition(
                         currentPosition,
                         targetPosition.position,
                         targetPosition.duration
@@ -149,7 +149,9 @@ namespace PingPong.KUKA {
                     E6POS nextCorrection = nextPosition - currentPosition; 
 
                     if (limits.CheckCorrection(nextCorrection)) {
-                        correction = nextCorrection;
+                        //TODO: 
+                        Console.WriteLine(correction);
+                        //correction = nextCorrection;
                     } else {
                         limitExceeded = true;
                         errorMessage = "Correction limit has been exceeded";

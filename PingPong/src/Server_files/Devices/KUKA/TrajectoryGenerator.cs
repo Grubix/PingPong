@@ -1,15 +1,15 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using System;
+﻿using System;
 
 namespace PingPong.KUKA {
     public class TrajectoryGenerator {
+
         private class Parameter {
             private double a0;
             private double a1;
             private double a2;
             private double a3;
             private double velocity;
-            private double nextPoint;
+            private double nextValue;
 
             public Parameter() {
                 a0 = 0.0;
@@ -17,7 +17,7 @@ namespace PingPong.KUKA {
                 a2 = 0.0;
                 a3 = 0.0;
                 velocity = 0.0;
-                nextPoint = 0.0;
+                nextValue = 0.0;
             }
 
             public void UpdateCoefficients(double currentPosition, double targetPosition, double targetVelocity, double time) {
@@ -27,16 +27,16 @@ namespace PingPong.KUKA {
                 a3 = (targetVelocity * time + velocity * time - 2 * (targetPosition - currentPosition)) / Math.Pow(time, 3);
             }
 
-            public void ComputeNextPoint(double period) {
-                nextPoint = a3 * Math.Pow(period, 3) + a2 * Math.Pow(period, 2) + a1 * period + a0;
+            public void ComputeNextValue(double period) {
+                nextValue = a3 * Math.Pow(period, 3) + a2 * Math.Pow(period, 2) + a1 * period + a0;
             }
 
             public void UpdateVelocity(double period) {
                 velocity = 3 * a3 * Math.Pow(period, 2) + 2 * a2 * period + a1;
             }
 
-            public double GetNextPoint() {
-                return nextPoint;
+            public double GetNextValue() {
+                return nextValue;
             }
         }
 
@@ -47,16 +47,16 @@ namespace PingPong.KUKA {
         private readonly Parameter B = new Parameter();
         private readonly Parameter C = new Parameter();
 
-        private double period = 0.004;
+        private readonly double period = 0.004;
         private double time2Dest = 0.0;
         private double totalTime2Dest = 0.0;
-        private E6POS targetPosition = new E6POS();
+        private E6POS targetPosition;
 
-        public TrajectoryGenerator() {
-            
+        public TrajectoryGenerator(E6POS currentPosition) {
+            targetPosition = currentPosition;
         }
 
-        public E6POS Go2Point(E6POS currentPosition, E6POS targetPosition, double time) {
+        public E6POS GetNextPosition(E6POS currentPosition, E6POS targetPosition, double time) {
             if (currentPosition == targetPosition) {
                 return targetPosition;
             }
@@ -70,7 +70,15 @@ namespace PingPong.KUKA {
                 ComputeNextPoint();
                 time2Dest -= period;
                 UpdateVelocity();
-                return GetNextPoint();
+
+                return new E6POS(
+                    X.GetNextValue(),
+                    Y.GetNextValue(),
+                    Z.GetNextValue(),
+                    A.GetNextValue(),
+                    B.GetNextValue(),
+                    C.GetNextValue()
+                );
             } else {
                 totalTime2Dest = 0.0;
                 return targetPosition;
@@ -88,12 +96,12 @@ namespace PingPong.KUKA {
         }
 
         public void ComputeNextPoint() {
-            X.ComputeNextPoint(period);
-            Y.ComputeNextPoint(period);
-            Z.ComputeNextPoint(period);
-            A.ComputeNextPoint(period);
-            B.ComputeNextPoint(period);
-            C.ComputeNextPoint(period);
+            X.ComputeNextValue(period);
+            Y.ComputeNextValue(period);
+            Z.ComputeNextValue(period);
+            A.ComputeNextValue(period);
+            B.ComputeNextValue(period);
+            C.ComputeNextValue(period);
         }
 
         public void UpdateVelocity() {
@@ -105,15 +113,5 @@ namespace PingPong.KUKA {
             C.UpdateVelocity(period);
         }
 
-        public E6POS GetNextPoint() {
-            return new E6POS(
-                X.GetNextPoint(),
-                Y.GetNextPoint(),
-                Z.GetNextPoint(),
-                A.GetNextPoint(),
-                B.GetNextPoint(),
-                C.GetNextPoint()
-            );
-        }
     }
 }
