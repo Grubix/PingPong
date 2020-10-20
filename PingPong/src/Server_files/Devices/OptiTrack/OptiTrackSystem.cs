@@ -59,13 +59,13 @@ namespace PingPong.OptiTrack {
             int status = natNetClient.Initialize("127.0.0.1", "127.0.0.1");
 
             if (status != 0) {
-                throw new InvalidOperationException("Optitrack initialization failed. Is Motive application running?");
+                throw new InvalidOperationException("OptiTrack system initialization failed. Is Motive application running?");
             }
 
             status = natNetClient.GetServerDescription(serverDescription);
 
             if (status != 0) {
-                throw new InvalidOperationException("Optitrack connection failed. Is Motive application running?");
+                throw new InvalidOperationException("Connection failed. Is Motive application running?");
             }
 
             natNetClient.OnFrameReady += (data, client) => {

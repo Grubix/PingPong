@@ -5,6 +5,7 @@ namespace PingPong.KUKA {
     public class E6POS : ICloneable {
 
         private const double XYZComparsionTolerance = 0.001;
+
         private const double ABCComparsionTolerance = 0.00001;
 
         public double X { get; }

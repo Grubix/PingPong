@@ -20,21 +20,23 @@ namespace PingPong.KUKA {
 
         private readonly BackgroundWorker backgroundWorker;
 
-        private readonly TrajectoryGenerator trajectoryGenerator;
-
         private readonly object robotDataSyncLock = new object();
 
         private readonly object targetPositionSyncLock = new object();
 
         private volatile bool isInitialized = false;
 
-        private bool forceMoveMode = false;
+        private TrajectoryGenerator generator;
 
-        private long currentIPOC = -1;
+        private bool forceMoveMode;
 
-        private E6POS currentPosition = new E6POS();
+        private long currentIPOC;
 
-        private E6POS targetPosition = new E6POS();
+        private E6POS currentPosition;
+
+        private (E6POS position, double duration) targetPosition;
+
+        private const double defaultMovementDuration = 10.0;
 
         /// <summary>
         /// Robot current position
@@ -53,16 +55,7 @@ namespace PingPong.KUKA {
         public E6POS TargetPosition {
             get {
                 lock (targetPositionSyncLock) {
-                    return targetPosition;
-                }
-            }
-            set {
-                lock (targetPositionSyncLock) {
-                    if (forceMoveMode) {
-                        return;
-                    }
-
-                    targetPosition = value;
+                    return targetPosition.position;
                 }
             }
         }
@@ -87,7 +80,6 @@ namespace PingPong.KUKA {
         public KUKARobot(int port, RobotLimits robotLimits) {
             rsiAdapter = new RSIAdapter(port);
             limits = robotLimits;
-            trajectoryGenerator = new TrajectoryGenerator(); //TODO: to mozna tworzyc po inicjalizacji i np. pobrac aktualne pozycje kuki
 
             backgroundWorker = new BackgroundWorker() {
                 WorkerSupportsCancellation = true
@@ -96,11 +88,12 @@ namespace PingPong.KUKA {
             backgroundWorker.DoWork += async (sender, args) => {
                 // Connect with the robot
                 InputFrame receivedFrame = await rsiAdapter.Connect();
+                generator = new TrajectoryGenerator(receivedFrame.Position);
 
                 lock (robotDataSyncLock) {
                     currentIPOC = receivedFrame.IPOC;
                     currentPosition = receivedFrame.Position;
-                    targetPosition = currentPosition;
+                    targetPosition = (currentPosition, defaultMovementDuration);
                 }
 
                 // Send response (prevent connection timeout)
@@ -146,11 +139,17 @@ namespace PingPong.KUKA {
             E6POS correction = new E6POS();
 
             lock (targetPositionSyncLock) {
-                if (limits.CheckPosition(targetPosition)) {
-                    E6POS computedCorrection = trajectoryGenerator.GoToPoint(currentPosition, targetPosition, 10.0) - currentPosition;
+                if (limits.CheckPosition(targetPosition.position)) {
+                    E6POS nextPosition = generator.GoToPoint(
+                        currentPosition,
+                        targetPosition.position,
+                        targetPosition.duration
+                    );
 
-                    if (limits.CheckCorrection(computedCorrection)) {
-                        correction = computedCorrection;
+                    E6POS nextCorrection = nextPosition - currentPosition; 
+
+                    if (limits.CheckCorrection(nextCorrection)) {
+                        correction = nextCorrection;
                     } else {
                         limitExceeded = true;
                         errorMessage = "Correction limit has been exceeded";
@@ -178,24 +177,56 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Moves robot to the target postion and locks TargetPosition property.
-        /// Current thread will be blocked until robot reach target position
+        /// Moves the robot to specified position
         /// </summary>
         /// <param name="position">target position</param>
-        public void ForceMoveToPosition(E6POS position) {
+        /// <param name="duration">desired movement duration in seconds</param>
+        public void MoveTo(E6POS position, double duration = defaultMovementDuration) {
+            if (duration <= 0) {
+                throw new ArgumentException("Duration value must be greater than 0");
+            }
+
+            lock (targetPositionSyncLock) {
+                if (forceMoveMode) {
+                    return;
+                }
+
+                targetPosition = (position, duration);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deltaPosition"></param>
+        /// <param name="duration">desired movement duration in seconds</param>
+        public void ShiftBy(E6POS deltaPosition, double duration = defaultMovementDuration) {
+            MoveTo(TargetPosition + deltaPosition, duration);
+        }
+
+        /// <summary>
+        /// Moves robot to specified position and blocks current thread until the position is reached
+        /// </summary>
+        /// <param name="position">target position</param>
+        /// <param name="duration">desired movement duration in seconds</param>
+        public void ForceMoveTo(E6POS position, double duration = defaultMovementDuration) {
             if (!isInitialized) {
                 throw new InvalidOperationException("Device is not initialized");
             }
 
+            if (duration <= 0) {
+                throw new ArgumentException("Duration value must be greater than 0");
+            }
+
             lock (targetPositionSyncLock) {
-                targetPosition = position;
+                targetPosition = (position, duration);
                 forceMoveMode = true;
             }
 
             ManualResetEvent reachTargetPositionEvent = new ManualResetEvent(false);
 
             void checkPosition(InputFrame receivedFrame) {
-                if (receivedFrame.Position == targetPosition) {
+                if (receivedFrame.Position == targetPosition.position) {
                     FrameReceived -= checkPosition;
                     reachTargetPositionEvent.Set();
                 }
@@ -207,6 +238,15 @@ namespace PingPong.KUKA {
             lock (targetPositionSyncLock) {
                 forceMoveMode = false;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deltaPosition"></param>
+        /// <param name="duration">desired movement duration in seconds</param>
+        public void ForceShiftBy(E6POS deltaPosition, double duration = defaultMovementDuration) {
+            ForceMoveTo(TargetPosition + deltaPosition, duration);
         }
 
         public void Initialize() {
@@ -225,34 +265,6 @@ namespace PingPong.KUKA {
 
         public bool IsInitialized() {
             return isInitialized;
-        }
-
-        //TODO: 
-        private List<E6POS> GetCalibrationPoints(E6POS startPosition, E6POS endPosition, uint intermediatePoints) {
-            List<E6POS> points = new List<E6POS>();
-            uint totalPoints = 2 + intermediatePoints;
-
-            E6POS deltaPosition = new E6POS(
-                (endPosition.X - startPosition.X) / (intermediatePoints + 1),
-                (endPosition.Y - startPosition.Y) / (intermediatePoints + 1),
-                (endPosition.Z - startPosition.Z) / (intermediatePoints + 1),
-                (endPosition.A - startPosition.A) / (intermediatePoints + 1),
-                (endPosition.B - startPosition.B) / (intermediatePoints + 1),
-                (endPosition.C - startPosition.C) / (intermediatePoints + 1)
-            );
-
-            for (int i = 0; i < totalPoints; i++) {
-                points.Add(startPosition + new E6POS(
-                    deltaPosition.X * i,
-                    deltaPosition.Y * i,
-                    deltaPosition.Z * i,
-                    deltaPosition.A * i,
-                    deltaPosition.B * i,
-                    deltaPosition.C * i
-                ));
-            }
-
-            return points;
         }
 
     }
