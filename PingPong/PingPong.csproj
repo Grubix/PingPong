@@ -74,11 +74,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Server_files\Devices\KUKA\RobotVector.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\Transformation.cs" />
+    <Compile Include="src\Old_files\PolynominalTest.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RobotLimits.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
-    <Compile Include="src\Server_files\Devices\OptiTrack\OptiTrackCalibration.cs" />
+    <Compile Include="src\Old_files\OptiTrackCalibration.cs" />
     <Compile Include="src\Server_files\Forms\ThreadSafeChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -116,6 +117,8 @@
       <DependentUpon>Window.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="src\Doc_files\eggert_comparison_mva97.pdf" />
+    <None Include="src\Doc_files\LN9_TrajectoryGeneration.pdf" />
     <None Include="src\Doc_files\Meissner feat. Pazda.pdf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -140,7 +143,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\KUKA_files\RSI_EthernetConfig.xml" />
-    <Content Include="src\KUKA_files\Server\TestServer.exe" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

@@ -1,10 +1,11 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using PingPong.KUKA;
 using System;
 using System.Collections.Generic;
-using PingPong.KUKA;
 
 namespace PingPong.OptiTrack {
     class OptiTrackCalibration {
+
         private Vector<double> centroidKuka;
         private Vector<double> centroidOptiTrack;
         private Vector<double> trans;
@@ -29,18 +30,15 @@ namespace PingPong.OptiTrack {
             centroidKuka = Vector<double>.Build.Dense(3);
             centroidOptiTrack = Vector<double>.Build.Dense(3);
             trans = Vector<double>.Build.Dense(3);
-            trans.Clear();
             //ts = new CancellationTokenSource();
 
             matrixH = Matrix<double>.Build.Dense(3, 3);
-            matrixH.Clear();
             matrixR = Matrix<double>.Build.Dense(3, 3);
-            matrixR.Clear();
 
             //UseDefaultCalibration();
         }
 
-        public void addCalibrationPoints() {
+        public void AddCalibrationPoints() {
             Vector<double> vectorPointKuka = Vector<double>.Build.Dense(3);
             vectorPointKuka = currentPositionKuka.XYZ;
             vectorsFromKuka.Add(vectorPointKuka);
@@ -59,7 +57,7 @@ namespace PingPong.OptiTrack {
             vectorsFromOptiTrack.Add(positionPointOptiTrack);
         }
 
-        public void calculateCentroids() {
+        public void CalculateCentroids() {
             centroidKuka.Clear();
             centroidOptiTrack.Clear();
 
@@ -76,7 +74,7 @@ namespace PingPong.OptiTrack {
 
         }
 
-        public void calculateMatrixH() {
+        public void CalculateMatrixH() {
             Matrix<double> matrixPointOptiTrackk = Matrix<double>.Build.Dense(3, 1);
             Matrix<double> matrixPointKuka = Matrix<double>.Build.Dense(1, 3);
             Vector<double> pointOptiTrack = Vector<double>.Build.Dense(3);
@@ -100,7 +98,7 @@ namespace PingPong.OptiTrack {
             }
         }
 
-        public void calculateRotationAndTranslation() { 
+        public void CalculateRotationAndTranslation() {
             // Rozklad SVD --> matrixH = U*W*VT 
             var SVD = matrixH.Svd(true); // tworzy rozklad wedlug wartosci osobistych macierzy matrixH
 
@@ -114,14 +112,13 @@ namespace PingPong.OptiTrack {
             }
 
             trans = -1 * matrixR * centroidOptiTrack + centroidKuka;
-
         }
 
-        public void calibration() {
-            addCalibrationPoints();
-            calculateCentroids();
-            calculateMatrixH();
-            calculateRotationAndTranslation();
+        public void Calibration() {
+            AddCalibrationPoints();
+            CalculateCentroids();
+            CalculateMatrixH();
+            CalculateRotationAndTranslation();
         }
     }
 }

@@ -1,19 +1,50 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 
 namespace PingPong.KUKA {
-    public class E6POS : RobotVector, ICloneable {
+    public class E6POS : ICloneable {
 
-        private const double XYZComparsionTolerance = 0.01;
+        private const double XYZComparsionTolerance = 0.001;
 
-        private const double ABCComparsionTolerance = 0.001;
+        private const double ABCComparsionTolerance = 0.00001;
+
+        public double X { get; }
+
+        public double Y { get; }
+
+        public double Z { get; }
+
+        public double A { get; }
+
+        public double B { get; }
+
+        public double C { get; }
+
+        public Vector<double> XYZ {
+            get {
+                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z });
+            }
+        }
+
+        public Vector<double> ABC {
+            get {
+                return Vector<double>.Build.DenseOfArray(new double[] { A, B, C });
+            }
+        }
+
+        public Vector<double> XYZABC {
+            get {
+                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z, A, B, C });
+            }
+        }
 
         public E6POS(double X, double Y, double Z, double A, double B, double C) {
             this.X = X;
             this.Y = Y;
             this.Z = Z;
-            this.A = A % 180.0;
-            this.B = B % 180.0;
-            this.C = C % 180.0; //TODO: to modulo moze byc problemem dlaczego generator trajektorii srednio dziala dla abc
+            this.A = A < 0 ? 360.0 + A : A;
+            this.B = B < 0 ? 360.0 + B : B;
+            this.C = C < 0 ? 360.0 + C : C;
         }
 
         public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0, 0, 0) {
@@ -47,10 +78,16 @@ namespace PingPong.KUKA {
         }
 
         public override string ToString() {
-            return $"X={X}, Y={Y}, Z={Z}, A={A}, B={B}, C={C}";
+            return 
+                $"X={Math.Round(X * 1000) / 1000}, " +
+                $"Y={Math.Round(Y * 1000) / 1000}, " +
+                $"Z={Math.Round(Z * 1000) / 1000}, " +
+                $"A={Math.Round(A * 10000) / 10000}, " +
+                $"B={Math.Round(B * 10000) / 10000}, " +
+                $"C={Math.Round(C * 10000) / 10000}";
         }
 
-        public static E6POS operator + (E6POS pos1, E6POS pos2) {
+        public static E6POS operator +(E6POS pos1, E6POS pos2) {
             return new E6POS(
                 pos1.X + pos2.X,
                 pos1.Y + pos2.Y,
@@ -61,7 +98,7 @@ namespace PingPong.KUKA {
             );
         }
 
-        public static E6POS operator - (E6POS pos1, E6POS pos2) {
+        public static E6POS operator -(E6POS pos1, E6POS pos2) {
             return new E6POS(
                 pos1.X - pos2.X,
                 pos1.Y - pos2.Y,
@@ -72,7 +109,7 @@ namespace PingPong.KUKA {
             );
         }
 
-        public static bool operator == (E6POS pos1, E6POS pos2) {
+        public static bool operator ==(E6POS pos1, E6POS pos2) {
             return
                 Math.Abs(pos1.X - pos2.X) <= XYZComparsionTolerance &&
                 Math.Abs(pos1.Y - pos2.Y) <= XYZComparsionTolerance &&
@@ -82,7 +119,7 @@ namespace PingPong.KUKA {
                 Math.Abs(pos1.C - pos2.C) <= ABCComparsionTolerance;
         }
 
-        public static bool operator != (E6POS pos1, E6POS pos2) {
+        public static bool operator !=(E6POS pos1, E6POS pos2) {
             return !(pos1 == pos2);
         }
 
