@@ -53,21 +53,21 @@ namespace PingPong.KUKA {
 
         public InputFrame(string data) {
             Data = data;
+            IPOC = long.Parse(new Tag(data, "IPOC").Value);
 
-            Tag IPOCTag = new Tag(data, "IPOC");
-            Tag cartesianPositionTag = new Tag(data, "RIst");
+            Tag positionTag = new Tag(data, "RIst");
+            double X = double.Parse(positionTag.Attributes["X"]);
+            double Y = double.Parse(positionTag.Attributes["Y"]);
+            double Z = double.Parse(positionTag.Attributes["Z"]);
+            double A = double.Parse(positionTag.Attributes["A"]);
+            double B = double.Parse(positionTag.Attributes["B"]);
+            double C = double.Parse(positionTag.Attributes["C"]);
 
-            IPOC = long.Parse(IPOCTag.Value);
-            Position = new E6POS(
-                double.Parse(cartesianPositionTag.Attributes["X"]),
-                double.Parse(cartesianPositionTag.Attributes["Y"]),
-                double.Parse(cartesianPositionTag.Attributes["Z"]),
-                double.Parse(cartesianPositionTag.Attributes["A"]),
-                double.Parse(cartesianPositionTag.Attributes["B"]),
-                double.Parse(cartesianPositionTag.Attributes["C"])
-            );
+            A = A < 0 ? 360.0 + A : A;
+            B = B < 0 ? 360.0 + B : B;
+            C = C < 0 ? 360.0 + C : C;
 
-            //TODO: Sparsowanie reszty tagow
+            Position = new E6POS(X, Y, Z, A, B, C);
         }
 
         public override string ToString() {

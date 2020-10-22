@@ -4,9 +4,9 @@ using System;
 namespace PingPong.KUKA {
     public class E6POS : ICloneable {
 
-        private const double XYZComparsionTolerance = 0.001;
+        private const double XYZComparsionTolerance = 0.0001;
 
-        private const double ABCComparsionTolerance = 0.00001;
+        private const double ABCComparsionTolerance = 0.0001;
 
         public double X { get; }
 
@@ -32,19 +32,13 @@ namespace PingPong.KUKA {
             }
         }
 
-        public Vector<double> XYZABC {
-            get {
-                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z, A, B, C });
-            }
-        }
-
         public E6POS(double X, double Y, double Z, double A, double B, double C) {
             this.X = X;
             this.Y = Y;
             this.Z = Z;
-            this.A = A < 0 ? 360.0 + A : A;
-            this.B = B < 0 ? 360.0 + B : B;
-            this.C = C < 0 ? 360.0 + C : C;
+            this.A = A;
+            this.B = B;
+            this.C = C;
         }
 
         public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0, 0, 0) {

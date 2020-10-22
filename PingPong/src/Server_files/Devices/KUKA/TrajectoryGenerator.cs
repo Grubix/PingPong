@@ -58,6 +58,7 @@ namespace PingPong.KUKA {
 
         public E6POS GetNextPosition(E6POS currentPosition, E6POS targetPosition, double time) {
             if (currentPosition == targetPosition) {
+                //TODO: wedlug mnie w tym miejscu powinien byc reset predkosci w kazdym wielomianie
                 return targetPosition;
             }
             if (totalTime2Dest != time || this.targetPosition != targetPosition) {
@@ -80,6 +81,7 @@ namespace PingPong.KUKA {
                     C.GetNextValue()
                 );
             } else {
+                //TODO: wedlug mnie w tym miejscu powinien byc reset predkosci w kazdym wielomianie
                 totalTime2Dest = 0.0;
                 return targetPosition;
             }

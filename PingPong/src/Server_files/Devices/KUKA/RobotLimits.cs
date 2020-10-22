@@ -51,6 +51,11 @@ namespace PingPong.KUKA {
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position">position to check</param>
+        /// <returns></returns>
         public bool CheckPosition(E6POS position) {
             return
                 position.X >= workspaceLowerPoint[0] && position.X <= workspaceUpperPoint[0] &&
@@ -58,6 +63,23 @@ namespace PingPong.KUKA {
                 position.Z >= workspaceLowerPoint[2] && position.Z <= workspaceUpperPoint[2];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position">position to check</param>
+        /// <returns></returns>
+        public bool CheckABCAngles(E6POS position) {
+            return
+                position.A >= 0 && position.A <= 360.0 &&
+                position.B >= 0 && position.B <= 360.0 &&
+                position.C >= 0 && position.C <= 360.0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="correction">correction to check</param>
+        /// <returns></returns>
         public bool CheckCorrection(E6POS correction) {
             return
                 Math.Abs(correction.X) <= MaxXYZCorrection &&
