@@ -60,6 +60,8 @@ namespace PingPong.KUKA {
             }
         }
 
+        public Transformation OptitrackTransformation { get; set; }
+
         /// <summary>
         /// Occurs when the robot is initialized (connection has been established)
         /// </summary>
@@ -135,42 +137,45 @@ namespace PingPong.KUKA {
         /// </summary>
         private void MoveToTargetPosition() {
             string errorMessage = "";
-            bool limitExceeded = false;
+            bool errorOccured = false;
             E6POS correction = new E6POS();
 
             lock (targetPositionSyncLock) {
                 if (limits.CheckPosition(targetPosition.position)) {
-                    E6POS nextPosition = generator.GetNextPosition(
-                        currentPosition,
-                        targetPosition.position,
-                        targetPosition.duration
-                    );
+                    if (limits.CheckABCAngles(targetPosition.position)) {
+                        E6POS nextPosition = generator.GetNextPosition(
+                            currentPosition,
+                            targetPosition.position,
+                            targetPosition.duration
+                        );
 
-                    E6POS nextCorrection = nextPosition - currentPosition; 
+                        E6POS nextCorrection = nextPosition - currentPosition;
 
-                    if (limits.CheckCorrection(nextCorrection)) {
-                        //TODO: 
-                        Console.WriteLine(correction);
-                        //correction = nextCorrection;
+                        if (limits.CheckCorrection(nextCorrection)) {
+                            correction = nextCorrection;
+                        } else {
+                            errorOccured = true;
+                            errorMessage = "Correction limit has been exceeded";
+                        }
                     } else {
-                        limitExceeded = true;
-                        errorMessage = "Correction limit has been exceeded";
+                        errorOccured = true;
+                        errorMessage = "ABC value err";
                     }
                 } else {
-                    limitExceeded = true;
+                    errorOccured = true;
                     errorMessage = "The available workspace limit has been exceeded";
                 }
             }
 
             OutputFrame outputFrame = new OutputFrame() {
-                Message = limitExceeded ? $"Error: {errorMessage}" : "PingPong",
+                Message = errorOccured ? $"Error: {errorMessage}" : "PingPong",
                 Correction = correction,
                 IPOC = currentIPOC
             };
 
             rsiAdapter.SendData(outputFrame);
 
-            if (limitExceeded) {
+            if (errorOccured) {
                 Uninitialize();
                 throw new InvalidOperationException(errorMessage);
             }
@@ -179,7 +184,7 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Moves the robot to specified position
+        /// Moves the robot to specified position (Sets target position)
         /// </summary>
         /// <param name="position">target position</param>
         /// <param name="duration">desired movement duration in seconds</param>
@@ -200,9 +205,9 @@ namespace PingPong.KUKA {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="deltaPosition"></param>
+        /// <param name="deltaPosition">desired position change</param>
         /// <param name="duration">desired movement duration in seconds</param>
-        public void ShiftBy(E6POS deltaPosition, double duration = defaultMovementDuration) {
+        public void Shift(E6POS deltaPosition, double duration = defaultMovementDuration) {
             MoveTo(TargetPosition + deltaPosition, duration);
         }
 
@@ -245,9 +250,9 @@ namespace PingPong.KUKA {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="deltaPosition"></param>
+        /// <param name="deltaPosition">desired position change</param>
         /// <param name="duration">desired movement duration in seconds</param>
-        public void ForceShiftBy(E6POS deltaPosition, double duration = defaultMovementDuration) {
+        public void ForceShift(E6POS deltaPosition, double duration = defaultMovementDuration) {
             ForceMoveTo(TargetPosition + deltaPosition, duration);
         }
 

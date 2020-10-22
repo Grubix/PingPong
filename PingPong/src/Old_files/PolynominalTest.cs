@@ -7,9 +7,9 @@ namespace PingPong {
 
         private double a0, a1, a2, a3, a4, a5;
 
-        private double previousTargetValue;
+        private double prevTargetValue;
 
-        private double previousTargetDuration;
+        private double prevTargetDuration;
 
         private double startVelocity;
 
@@ -18,49 +18,48 @@ namespace PingPong {
         private double elapsedTime;
 
         public Polynominal(double currentValue) {
-            previousTargetValue = currentValue;
+            prevTargetValue = currentValue;
         }
 
         private void UpdateCoefficients(double startValue, double targetValue, double targetDuration) {
-            double T1 = targetDuration;
-            double T2 = Math.Pow(targetDuration, 2);
-            double T3 = Math.Pow(targetDuration, 3);
-            double T4 = Math.Pow(targetDuration, 4);
-            double T5 = Math.Pow(targetDuration, 5);
+            double d1 = targetDuration;
+            double d2 = d1 * d1;
+            double d3 = d1 * d2;
+            double d4 = d2 * d2;
+            double d5 = d1 * d4;
 
             a0 = startValue;
             a1 = startVelocity;
             a2 = startAcceleration / 2;
-            a3 = 1 / (2 * T3) * (-3 * startAcceleration * T2 - T1 * 12 * startVelocity + 20 * (targetValue - startValue));
-            a4 = 1 / (2 * T4) * (+3 * startAcceleration * T2 + T1 * 16 * startVelocity + 30 * (startValue - targetValue));
-            a5 = 1 / (2 * T5) * (-1 * startAcceleration * T2 - T1 * 6 * startVelocity + 12 * (targetValue - startValue));
+            a3 = 1 / (2 * d3) * (-3 * startAcceleration * d2 - d1 * 12 * startVelocity + 20 * (targetValue - startValue));
+            a4 = 1 / (2 * d4) * (3 * startAcceleration * d2 + d1 * 16 * startVelocity + 30 * (startValue - targetValue));
+            a5 = 1 / (2 * d5) * (-1 * startAcceleration * d2 - d1 * 6 * startVelocity + 12 * (targetValue - startValue));
         }
 
-        public double GoTo(double startValue, double targetValue, double targetDuration) {
+        public double GetNextValue(double startValue, double targetValue, double targetDuration) {
             if (targetDuration <= 0) {
-                throw new Exception();
+                throw new ArgumentException("Duration value must be grater than zero");
             }
 
             if (Math.Abs(targetValue - startValue) <= 0.001) {
-                return startValue; // return 0;
+                return startValue;
             }
 
-            if (Math.Abs(targetValue - previousTargetValue) >= 0.001 || Math.Abs(targetDuration - previousTargetDuration) >= 0.001) {
-                //start new movement
+            if (targetDuration != prevTargetDuration) {
                 elapsedTime = 0;
                 UpdateCoefficients(startValue, targetValue, targetDuration);
             } else {
                 elapsedTime += deltaTime;
             }
 
-            previousTargetValue = targetValue;
-            previousTargetDuration = targetDuration;
+            prevTargetValue = targetValue;
+            prevTargetDuration = targetDuration;
 
             double t1 = elapsedTime;
-            double t2 = Math.Pow(elapsedTime, 2);
-            double t3 = Math.Pow(elapsedTime, 3);
-            double t4 = Math.Pow(elapsedTime, 4);
-            double t5 = Math.Pow(elapsedTime, 5);
+            double t2 = t1 * t1;
+            double t3 = t1 * t2;
+            double t4 = t2 * t2;
+            double t5 = t1 * t4;
 
             startVelocity = a1 + 2 * a2 * t1 + 3 * a3 * t2 + 4 * a4 * t3 + 5 * a5 * t4;
             startAcceleration = 2 * a2 + 6 * a3 * t1 + 12 * a4 * t2 + 20 * a5 * t3;

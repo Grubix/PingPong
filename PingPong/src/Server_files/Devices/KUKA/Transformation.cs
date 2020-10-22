@@ -76,7 +76,7 @@ namespace PingPong.KUKA {
             }
 
             rotation = V * UT; //TODO: rotacja A do B ?? OGARNĄĆ!
-            translation = centroidA -1 * rotation * centroidB;
+            translation = -1 * rotation * centroidA + centroidB;
         }
 
         public Transformation(Matrix<double> rotation, Vector<double> translation) {
