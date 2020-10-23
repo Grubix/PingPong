@@ -20,27 +20,13 @@ namespace PingPong.Forms {
         public Window() {
             InitializeComponent();
             InitializeControls();
-            robot1 = InitializeRobot1();
-            robot2 = InitializeRobot2();
-            optiTrack = InitializeOptiTrackSystem();
-        }
-
-        private void UpdateUI(Action updateAction) {
-            if (InvokeRequired) {
-                Action actionWrapper = () => {
-                    updateAction.Invoke();
-                };
-
-                Invoke(actionWrapper);
-                return;
-            }
-
-            updateAction.Invoke();
+            InitializeRobot1();
+            InitializeRobot2();
+            //optiTrack = InitializeOptiTrackSystem();
         }
 
         private void InitializeControls() {
-            incXBtn.Click += CalibrationTest;
-            //incXBtn.Click += (s, e) => robot1.ShiftBy(new E6POS(50, 0, 0));
+            incXBtn.Click += (s, e) => robot1.Shift(new E6POS(50, 0, 0));
             decXBtn.Click += (s, e) => robot1.Shift(new E6POS(-50, 0, 0));
 
             incYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 50, 0));
@@ -59,13 +45,21 @@ namespace PingPong.Forms {
             decCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, -1));
         }
 
-        private KUKARobot InitializeRobot1() {
-            KUKARobot robot1 = new KUKARobot(8081, new RobotLimits {
-                WorkspaceLowerPoint = new double[] { 40.0, -100.0, 350.0 },
-                WorkspaceUpperPoint = new double[] { 390.0, 250.0, 600.0 },
-                MaxXYZCorrection = 0.5,
-                MaxABCCorrection = 0.05
-            });
+        private void InitializeRobot1() {
+            RobotLimits limits = new RobotLimits {
+                LimitX = (40, 390),
+                LimitY = (-100, 250),
+                LimitZ = (350, 600),
+                LimitA1 = (0, 360),
+                LimitA2 = (0, 360),
+                LimitA3 = (0, 360),
+                LimitA4 = (0, 360),
+                LimitA5 = (0, 360),
+                LimitA6 = (0, 360),
+                LimitCorrection = (0.5, 0.05)
+            };
+
+            KUKARobot robot1 = new KUKARobot(8081, limits);
 
             robot1.FrameReceived += frameReceived => {
                 UpdateUI(() => {
@@ -83,19 +77,47 @@ namespace PingPong.Forms {
             };
 
             robot1.Initialize();
-
-            return robot1;
         }
 
         private KUKARobot InitializeRobot2() {
-            return null; //TODO:
+            RobotLimits limits = new RobotLimits {
+                LimitX = (40, 390),
+                LimitY = (-100, 250),
+                LimitZ = (350, 600),
+                LimitA1 = (0, 360),
+                LimitA2 = (0, 360),
+                LimitA3 = (0, 360),
+                LimitA4 = (0, 360),
+                LimitA5 = (0, 360),
+                LimitA6 = (0, 360),
+                LimitCorrection = (0.5, 0.05)
+            };
+
+            KUKARobot robot2 = new KUKARobot(8082, limits);
+
+            robot2.Initialize();
+
+            return robot2;
         }
 
         private OptiTrackSystem InitializeOptiTrackSystem() {
             OptiTrackSystem optiTrack = new OptiTrackSystem();
-            //optiTrack.Initialize();
+            optiTrack.Initialize();
 
             return optiTrack;
+        }
+
+        private void UpdateUI(Action updateAction) {
+            if (InvokeRequired) {
+                Action actionWrapper = () => {
+                    updateAction.Invoke();
+                };
+
+                Invoke(actionWrapper);
+                return;
+            }
+
+            updateAction.Invoke();
         }
 
         private void CalibrationTest(object sender, System.EventArgs e) {
@@ -109,7 +131,7 @@ namespace PingPong.Forms {
             var optiTrackPoints = new List<Vector<double>>();
 
             Task.Run(() => {
-                foreach (var point in calibrationPoints) {
+                foreach (E6POS point in calibrationPoints) {
                     robot1.ForceMoveTo(point);
                     kukaPoints.Add(point.XYZ);
                     optiTrackPoints.Add(optiTrack.GetAveragePosition(200));

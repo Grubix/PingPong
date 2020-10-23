@@ -27,7 +27,7 @@ namespace PingPong.OptiTrack {
 
         public Vector<double> GetAveragePosition(uint samples) {
             if (!isInitialized) {
-                throw new InvalidOperationException("Device is not initialized");
+                throw new InvalidOperationException("OptiTrack system is not initialized");
             }
 
             ManualResetEvent getSamplesEvent = new ManualResetEvent(false);

@@ -32,7 +32,7 @@ namespace PingPong.KUKA {
             frameTemplate = sBuilder.ToString();
         }
 
-        public string Message { get; set; } = "";
+        public string Message { get; set; } = "Ping Pong";
 
         public E6POS Correction { get; set; } = new E6POS();
 

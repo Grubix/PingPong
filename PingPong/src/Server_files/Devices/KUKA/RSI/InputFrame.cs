@@ -12,7 +12,19 @@ namespace PingPong.KUKA {
 
             public string Value { get; private set; }
 
-            public NameValueCollection Attributes { get; private set; }
+            private readonly NameValueCollection attributes;
+
+            public string this[string attributeName] {
+                get {
+                    string value = attributes[attributeName];
+
+                    if (value == null) {
+                        throw new ArgumentException($"Attribute '{attributeName}' not found");
+                    }
+
+                    return value;
+                }
+            }
 
             public Tag(string data, string tag) {
                 Regex tagRegex = new Regex($"<{tag}([^/>]*)/?>(([^<]*)</{tag}>)?");
@@ -20,7 +32,7 @@ namespace PingPong.KUKA {
 
                 if (match.Success) {
                     Value = match.Groups[3].Value.Trim();
-                    Attributes = ExtractAttributes(match.Groups[1].Value.Trim());
+                    attributes = ExtractAttributes(match.Groups[1].Value.Trim());
                 } else {
                     throw new Exception($"Tag <{tag}> not found in data");
                 }
@@ -45,33 +57,42 @@ namespace PingPong.KUKA {
 
         }
 
-        public string Data { get; }
+        public long IPOC { get; }
 
         public E6POS Position { get; }
 
-        public long IPOC { get; }
+        public E6AXIS AxisPosition { get; }
 
         public InputFrame(string data) {
-            Data = data;
             IPOC = long.Parse(new Tag(data, "IPOC").Value);
+            Position = GetPosition(new Tag(data, "RIst"));
+            AxisPosition = GetAxisPosition(new Tag(data, "AIPos"));
+        }
 
-            Tag positionTag = new Tag(data, "RIst");
-            double X = double.Parse(positionTag.Attributes["X"]);
-            double Y = double.Parse(positionTag.Attributes["Y"]);
-            double Z = double.Parse(positionTag.Attributes["Z"]);
-            double A = double.Parse(positionTag.Attributes["A"]);
-            double B = double.Parse(positionTag.Attributes["B"]);
-            double C = double.Parse(positionTag.Attributes["C"]);
+        private E6POS GetPosition(Tag tag) {
+            double X = double.Parse(tag["X"]);
+            double Y = double.Parse(tag["Y"]);
+            double Z = double.Parse(tag["Z"]);
+            double A = double.Parse(tag["A"]);
+            double B = double.Parse(tag["B"]);
+            double C = double.Parse(tag["C"]);
 
             A = A < 0 ? 360.0 + A : A;
             B = B < 0 ? 360.0 + B : B;
             C = C < 0 ? 360.0 + C : C;
 
-            Position = new E6POS(X, Y, Z, A, B, C);
+            return new E6POS(X, Y, Z, A, B, C);
         }
 
-        public override string ToString() {
-            return Data;
+        private E6AXIS GetAxisPosition(Tag tag) {
+            double A1 = double.Parse(tag["A1"]);
+            double A2 = double.Parse(tag["A2"]);
+            double A3 = double.Parse(tag["A3"]);
+            double A4 = double.Parse(tag["A4"]);
+            double A5 = double.Parse(tag["A5"]);
+            double A6 = double.Parse(tag["A6"]);
+
+            return new E6AXIS(A1, A2, A3, A4, A5, A6);
         }
 
     }

@@ -4,7 +4,7 @@ using System;
 namespace PingPong.KUKA {
     public class E6POS : ICloneable {
 
-        private const double XYZComparsionTolerance = 0.0001;
+        private const double XYZComparsionTolerance = 0.001;
 
         private const double ABCComparsionTolerance = 0.0001;
 
@@ -76,9 +76,9 @@ namespace PingPong.KUKA {
                 $"X={Math.Round(X * 1000) / 1000}, " +
                 $"Y={Math.Round(Y * 1000) / 1000}, " +
                 $"Z={Math.Round(Z * 1000) / 1000}, " +
-                $"A={Math.Round(A * 10000) / 10000}, " +
-                $"B={Math.Round(B * 10000) / 10000}, " +
-                $"C={Math.Round(C * 10000) / 10000}";
+                $"A={Math.Round(A * 1000) / 1000}, " +
+                $"B={Math.Round(B * 1000) / 1000}, " +
+                $"C={Math.Round(C * 1000) / 1000}";
         }
 
         public static E6POS operator +(E6POS pos1, E6POS pos2) {
