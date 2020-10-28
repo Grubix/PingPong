@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace PingPong.KUKA {
     /// <summary>
-    /// Represents frame (data) received from the KUKA robot.
+    /// Represents frame (data) received from the KUKA robot
     /// </summary>
     public class InputFrame {
 

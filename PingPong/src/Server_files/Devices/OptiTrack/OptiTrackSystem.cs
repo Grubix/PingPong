@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 
 namespace PingPong.OptiTrack {
-    class OptiTrackSystem : IDevice {
+    public class OptiTrackSystem : IDevice {
 
         private bool isInitialized = false;
 

@@ -2,7 +2,7 @@
 using NatNetML;
 
 namespace PingPong.OptiTrack {
-    class InputFrame {
+    public class InputFrame {
 
         public Vector<double> Position { get; } //TODO: 
 

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PingPong.KUKA {
+namespace PingPong.Maths {
     /// <summary>
     /// Represents transformation between two coordinate systems (A to B)
     /// </summary>
@@ -75,7 +75,7 @@ namespace PingPong.KUKA {
                 V[2, 2] *= -1;
             }
 
-            rotation = V * UT; //TODO: rotacja A do B ?? OGARNĄĆ!
+            rotation = V * UT;
             translation = -1 * rotation * centroidA + centroidB;
         }
 
@@ -84,7 +84,7 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Converts point in A coordinate system to B coordinate system
+        /// Converts point in A coordinate system to point B coordinate system
         /// </summary>
         /// <param name="pointInA">point in A coordinate system</param>
         /// <returns></returns>

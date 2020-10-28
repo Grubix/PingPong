@@ -1,6 +1,6 @@
 ﻿namespace PingPong.Forms
 {
-    partial class Window
+    partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -165,7 +165,6 @@
             // 
             // posXText
             // 
-            this.posXText.Enabled = false;
             this.posXText.Location = new System.Drawing.Point(32, 186);
             this.posXText.Name = "posXText";
             this.posXText.ReadOnly = true;
@@ -174,7 +173,6 @@
             // 
             // posYText
             // 
-            this.posYText.Enabled = false;
             this.posYText.Location = new System.Drawing.Point(32, 212);
             this.posYText.Name = "posYText";
             this.posYText.ReadOnly = true;
@@ -183,7 +181,6 @@
             // 
             // posZText
             // 
-            this.posZText.Enabled = false;
             this.posZText.Location = new System.Drawing.Point(32, 238);
             this.posZText.Name = "posZText";
             this.posZText.ReadOnly = true;
@@ -192,7 +189,6 @@
             // 
             // posAText
             // 
-            this.posAText.Enabled = false;
             this.posAText.Location = new System.Drawing.Point(32, 264);
             this.posAText.Name = "posAText";
             this.posAText.ReadOnly = true;
@@ -201,7 +197,6 @@
             // 
             // posBText
             // 
-            this.posBText.Enabled = false;
             this.posBText.Location = new System.Drawing.Point(32, 290);
             this.posBText.Name = "posBText";
             this.posBText.ReadOnly = true;
@@ -210,7 +205,6 @@
             // 
             // posCText
             // 
-            this.posCText.Enabled = false;
             this.posCText.Location = new System.Drawing.Point(32, 316);
             this.posCText.Name = "posCText";
             this.posCText.ReadOnly = true;
@@ -286,7 +280,7 @@
             this.realTimeChart.Size = new System.Drawing.Size(957, 324);
             this.realTimeChart.TabIndex = 12;
             // 
-            // Window
+            // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -318,7 +312,7 @@
             this.Controls.Add(this.decXBtn);
             this.Controls.Add(this.incXBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "Window";
+            this.Name = "MainWindow";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RSI connection test";

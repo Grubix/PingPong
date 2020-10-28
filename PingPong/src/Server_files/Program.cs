@@ -16,7 +16,7 @@ namespace PingPong {
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Window());
+            Application.Run(new MainWindow());
         }
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]

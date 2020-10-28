@@ -76,10 +76,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Old_files\TrajectoryGenerator.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\E6AXIS.cs" />
-    <Compile Include="src\Server_files\Devices\KUKA\Transformation.cs" />
+    <Compile Include="src\Server_files\Devices\OptiTrack\BallData.cs" />
+    <Compile Include="src\Server_files\Forms\CalibrationWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Server_files\Forms\CalibrationWindow.Designer.cs">
+      <DependentUpon>CalibrationWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Server_files\Maths\Transformation.cs" />
     <Compile Include="src\Old_files\PolynominalTest.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RobotLimits.cs" />
+    <Compile Include="src\Server_files\Devices\OptiTrack\CalibrationTool.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
     <Compile Include="src\Old_files\OptiTrackCalibration.cs" />
     <Compile Include="src\Server_files\Forms\ThreadSafeChart.cs">
@@ -88,13 +96,13 @@
     <Compile Include="src\Server_files\Forms\ThreadSafeChart.Designer.cs">
       <DependentUpon>ThreadSafeChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Server_files\Tasks\ITask.cs" />
+    <Compile Include="src\Server_files\Applications\IApplication.cs" />
     <Compile Include="src\Server_files\Devices\IDevice.cs" />
-    <Compile Include="src\Server_files\Forms\Window.cs">
+    <Compile Include="src\Server_files\Forms\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\Server_files\Forms\Window.Designer.cs">
-      <DependentUpon>Window.cs</DependentUpon>
+    <Compile Include="src\Server_files\Forms\MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Server_files\Devices\KUKA\E6POS.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\KUKARobot.cs" />
@@ -103,6 +111,8 @@
     <Compile Include="src\Server_files\Devices\KUKA\RSI\InputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\OutputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\RSIAdapter.cs" />
+    <Compile Include="src\Server_files\Applications\Ping.cs" />
+    <Compile Include="src\Server_files\Applications\PingPong.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -112,16 +122,19 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="src\Server_files\Forms\CalibrationWindow.resx">
+      <DependentUpon>CalibrationWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Server_files\Forms\ThreadSafeChart.resx">
       <DependentUpon>ThreadSafeChart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Server_files\Forms\Window.resx">
-      <DependentUpon>Window.cs</DependentUpon>
+    <EmbeddedResource Include="src\Server_files\Forms\MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
-    <None Include="src\Doc_files\eggert_comparison_mva97.pdf" />
-    <None Include="src\Doc_files\LN9_TrajectoryGeneration.pdf" />
-    <None Include="src\Doc_files\Meissner feat. Pazda.pdf" />
+    <None Include="src\Docs_files\eggert_comparison_mva97.pdf" />
+    <None Include="src\Docs_files\LN9_TrajectoryGeneration.pdf" />
+    <None Include="src\Docs_files\Meissner feat. Pazda.pdf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -131,9 +144,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="src\Doc_files\NatNetUsersGuide.pdf" />
-    <None Include="src\Doc_files\RSI_40.pdf" />
-    <None Include="src\Doc_files\Trajectory generator.pdf" />
+    <None Include="src\Docs_files\NatNetUsersGuide.pdf" />
+    <None Include="src\Docs_files\RSI_40.pdf" />
+    <None Include="src\Docs_files\Trajectory generator.pdf" />
     <None Include="src\KUKA_files\RSI_Ethernet.rsix" />
     <None Include="src\KUKA_files\RSI_Ethernet.src" />
   </ItemGroup>

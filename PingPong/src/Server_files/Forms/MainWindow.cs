@@ -1,13 +1,11 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using PingPong.KUKA;
+﻿using PingPong.KUKA;
+using PingPong.Maths;
 using PingPong.OptiTrack;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PingPong.Forms {
-    public partial class Window : Form {
+    public partial class MainWindow : Form {
 
         private readonly KUKARobot robot1;
 
@@ -15,14 +13,15 @@ namespace PingPong.Forms {
 
         private readonly OptiTrackSystem optiTrack;
 
-        //private ITask task; //TODO: docelowo po odebraniu ramki z optitracka wywołanie metody ComputeTargetPosition()
+        //private IApplication application; //TODO: docelowo po odebraniu ramki z optitracka metoda compute(...)
 
-        public Window() {
+        public MainWindow() {
             InitializeComponent();
             InitializeControls();
-            InitializeRobot1();
-            InitializeRobot2();
+            robot1 = InitializeRobot1();
+            robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
+            //new CalibrationWindow(robot1, robot2, optiTrack).Show();
         }
 
         private void InitializeControls() {
@@ -45,7 +44,7 @@ namespace PingPong.Forms {
             decCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, -1));
         }
 
-        private void InitializeRobot1() {
+        private KUKARobot InitializeRobot1() {
             RobotLimits limits = new RobotLimits {
                 LimitX = (40, 390),
                 LimitY = (-100, 250),
@@ -71,12 +70,13 @@ namespace PingPong.Forms {
                     posCText.Text = frameReceived.Position.C.ToString();
                 });
             };
-
             robot1.FrameSent += frameSent => {
                 realTimeChart.AddPoint(robot1.CurrentPosition.X, robot1.TargetPosition.X);
             };
 
             robot1.Initialize();
+
+            return robot1;
         }
 
         private KUKARobot InitializeRobot2() {
@@ -118,55 +118,6 @@ namespace PingPong.Forms {
             }
 
             updateAction.Invoke();
-        }
-
-        private void CalibrationTest(object sender, System.EventArgs e) {
-            List<E6POS> calibrationPoints = GetCalibrationPoints(
-                robot1.CurrentPosition, 
-                robot1.CurrentPosition + new E6POS(150, 0, 0),
-                20
-            );
-
-            var kukaPoints = new List<Vector<double>>();
-            var optiTrackPoints = new List<Vector<double>>();
-
-            Task.Run(() => {
-                foreach (E6POS point in calibrationPoints) {
-                    robot1.ForceMoveTo(point);
-                    kukaPoints.Add(point.XYZ);
-                    optiTrackPoints.Add(optiTrack.GetAveragePosition(200));
-                }
-            });
-
-            // Transformacja z ukladu optitracka do kuki
-            Transformation transformation = new Transformation(optiTrackPoints, kukaPoints);
-        }
-
-        private List<E6POS> GetCalibrationPoints(E6POS startPosition, E6POS endPosition, uint intermediatePoints) {
-            List<E6POS> points = new List<E6POS>();
-            uint totalPoints = 2 + intermediatePoints;
-
-            E6POS deltaPosition = new E6POS(
-                (endPosition.X - startPosition.X) / (intermediatePoints + 1),
-                (endPosition.Y - startPosition.Y) / (intermediatePoints + 1),
-                (endPosition.Z - startPosition.Z) / (intermediatePoints + 1),
-                (endPosition.A - startPosition.A) / (intermediatePoints + 1),
-                (endPosition.B - startPosition.B) / (intermediatePoints + 1),
-                (endPosition.C - startPosition.C) / (intermediatePoints + 1)
-            );
-
-            for (int i = 0; i < totalPoints; i++) {
-                points.Add(startPosition + new E6POS(
-                    deltaPosition.X * i,
-                    deltaPosition.Y * i,
-                    deltaPosition.Z * i,
-                    deltaPosition.A * i,
-                    deltaPosition.B * i,
-                    deltaPosition.C * i
-                ));
-            }
-
-            return points;
         }
 
     }
