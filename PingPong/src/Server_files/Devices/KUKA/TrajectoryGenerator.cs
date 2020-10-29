@@ -11,7 +11,7 @@ namespace PingPong.KUKA {
             private double velocity;
             private double nextValue;
 
-            public Parameter() {
+            public Parameter(bool isAngle) {
                 a0 = 0.0;
                 a1 = 0.0;
                 a2 = 0.0;
@@ -38,6 +38,10 @@ namespace PingPong.KUKA {
             public double GetNextValue() {
                 return nextValue;
             }
+			
+			public ResetVelocity() {
+				velocity = 0.0;
+			}
         }
 
         private readonly Parameter X = new Parameter();
@@ -58,6 +62,7 @@ namespace PingPong.KUKA {
 
         public E6POS GetNextPosition(E6POS currentPosition, E6POS targetPosition, double time) {
             if (currentPosition == targetPosition) {
+				resetVelocity();
                 return targetPosition;
             }
             if (totalTime2Dest != time || this.targetPosition != targetPosition) {
@@ -81,6 +86,7 @@ namespace PingPong.KUKA {
                 );
             } else {
                 totalTime2Dest = 0.0;
+				resetVelocity();
                 return targetPosition;
             }
         }
@@ -90,8 +96,21 @@ namespace PingPong.KUKA {
             X.UpdateCoefficients(currentPosition.X, targetPosition.X, 0.0, time2Dest);
             Y.UpdateCoefficients(currentPosition.Y, targetPosition.Y, 0.0, time2Dest);
             Z.UpdateCoefficients(currentPosition.Z, targetPosition.Z, 0.0, time2Dest);
+			
+			if (targetPosition.A - currentPosition.A > 180.0 || targetPosition.A - currentPosition.A < -180.0) {
+				currentPosition.A = (currentPosition.A + 360.0) % 360;
+				targetPosition.A = (targetPosition.A + 360.0) % 360;
+			}
             A.UpdateCoefficients(currentPosition.A, targetPosition.A, 0.0, time2Dest);
+			if (targetPosition.B - currentPosition.B > 180.0 || targetPosition.B - currentPosition.B < -180.0) {
+				currentPosition.B = (currentPosition.B + 360.0) % 360;
+				targetPosition.B = (targetPosition.B + 360.0) % 360;
+			}
             B.UpdateCoefficients(currentPosition.B, targetPosition.B, 0.0, time2Dest);
+			if (targetPosition.C - currentPosition.C > 180.0 || targetPosition.C - currentPosition.C < -180.0) {
+				currentPosition.C = (currentPosition.C + 360.0) % 360;
+				targetPosition.C = (targetPosition.C + 360.0) % 360;
+			}
             C.UpdateCoefficients(currentPosition.C, targetPosition.C, 0.0, time2Dest);
         }
 
@@ -112,6 +131,14 @@ namespace PingPong.KUKA {
             B.UpdateVelocity(period);
             C.UpdateVelocity(period);
         }
-
+		
+		public void ResetVelocity() {
+			X.ResetVelocity();
+			Y.ResetVelocity();
+			Z.ResetVelocity();
+			A.ResetVelocity();
+			B.ResetVelocity();
+			C.ResetVelocity();
+		}
     }
 }
