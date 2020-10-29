@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace PingPong.KUKA {
     /// <summary>
     /// Provides methods for receiving and sending data to the KUKA robot
-    /// with RSI (Robot Sensor Interface) library installed
+    /// with RSI (Robot Sensor Interface) installed
     /// </summary>
     public class RSIAdapter {
 

@@ -111,8 +111,6 @@
     <Compile Include="src\Server_files\Devices\KUKA\RSI\InputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\OutputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\RSIAdapter.cs" />
-    <Compile Include="src\Server_files\Applications\Ping.cs" />
-    <Compile Include="src\Server_files\Applications\PingPong.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

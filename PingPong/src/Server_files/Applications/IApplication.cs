@@ -7,7 +7,7 @@ namespace PingPong.Applications {
 
         void Stop();
 
-        void Process(BallData ballData);
+        void ProcessData(BallData ballData);
 
     }
 }

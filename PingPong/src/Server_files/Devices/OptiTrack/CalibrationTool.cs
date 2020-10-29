@@ -4,39 +4,61 @@ using PingPong.Maths;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 
 namespace PingPong.OptiTrack {
     class CalibrationTool {
 
-        private readonly OptiTrackSystem optiTrack;
-
         private readonly BackgroundWorker worker;
 
+        /// <summary>
+        /// Occurs when calibration is started
+        /// </summary>
         public event StartedEventHandler Started;
 
+        /// <summary>
+        /// Occurs when calibration progress changed
+        /// </summary>
         public event ProgressChangedEventHandler ProgressChanged;
 
+        /// <summary>
+        /// Occurs when calibration is completed
+        /// </summary>
         public event CompletedEventHandler Completed;
 
         public delegate void StartedEventHandler();
 
-        public delegate void ProgressChangedEventHandler(int progress, Transformation transformation);
+        public delegate void ProgressChangedEventHandler(int progress);
 
         public delegate void CompletedEventHandler(Transformation transformation);
 
-        public CalibrationTool(OptiTrackSystem optiTrack) {
+        public CalibrationTool() {
+            worker = new BackgroundWorker() {
+                WorkerSupportsCancellation = true
+            };
+        }
+
+        /// <summary>
+        /// Finds <see cref="Transformation">transformation</see> between OptiTrack coordinate system 
+        /// and specified KUKA robot coordinate system
+        /// </summary>
+        /// <param name="optiTrack">optitrack system</param>
+        /// <param name="robot">target KUKA robot</param>
+        /// <param name="interPoints">number of intermediate points</param>
+        /// <param name="optiTrackSamples">optitrack samples per each calibration point</param>
+        /// <param name="duration">duration of robot movement (in seconds) between each calibration point</param>
+        public void Calibrate(OptiTrackSystem optiTrack, KUKARobot robot, 
+            uint interPoints = 25, uint optiTrackSamples = 200, double duration = 3) {
+
+            if (worker.IsBusy) {
+                throw new InvalidOperationException("Calibration in progress");
+            }
+
             if (!optiTrack.IsInitialized()) {
                 throw new InvalidOperationException("OptiTrack system is not initialized");
             }
 
-            this.optiTrack = optiTrack;
-            worker = new BackgroundWorker();
-        }
-
-        public void Calibrate(KUKARobot robot, uint interPoints, double duration = 5) {
-            if (worker.IsBusy) {
-                throw new InvalidOperationException("Calibration in progress");
+            if (!robot.IsInitialized()) {
+                throw new InvalidOperationException("KUKA robot is not initialized");
             }
 
             E6POS startPoint = robot.LowerWorkspacePoint;
@@ -45,11 +67,12 @@ namespace PingPong.OptiTrack {
             List<E6POS> calibrationPoints = GetCalibrationPoints(startPoint, endPoint, interPoints);
             var kukaPoints = new List<Vector<double>>();
             var optiTrackPoints = new List<Vector<double>>();
-
             int pointsCount = calibrationPoints.Count;
-            Transformation transformation = null;
 
             void collectPoints(object sender, DoWorkEventArgs args) {
+                // Safe (slow) move to start point
+                robot.ForceMoveTo(startPoint, 15);
+
                 for (int i = 0; i < pointsCount; i++) {
                     E6POS point = calibrationPoints[i];
                     robot.ForceMoveTo(point, duration);
@@ -57,16 +80,13 @@ namespace PingPong.OptiTrack {
                     var kukaPoint = point.XYZ;
                     kukaPoints.Add(kukaPoint);
 
-                    var optiTrackPoint = optiTrack.GetAveragePosition(200);
+                    var optiTrackPoint = optiTrack.GetAveragePosition(optiTrackSamples);
                     optiTrackPoints.Add(optiTrackPoint);
 
-                    int progress = i * 100 / (pointsCount - 1);
-                    transformation = new Transformation(optiTrackPoints, kukaPoints);
-
-                    ProgressChanged?.Invoke(progress, transformation);
+                    ProgressChanged?.Invoke(i * 100 / (pointsCount - 1));
                 }
             }
-
+            
             worker.DoWork += collectPoints;
             worker.RunWorkerCompleted += (sender, args) => {
                 worker.DoWork -= collectPoints;
@@ -75,11 +95,17 @@ namespace PingPong.OptiTrack {
                     throw args.Error;
                 }
 
-                Completed?.Invoke(transformation);
+                if (!args.Cancelled) {
+                    Completed?.Invoke(new Transformation(optiTrackPoints, kukaPoints));
+                }
             };
 
             worker.RunWorkerAsync();
             Started?.Invoke();
+        }
+
+        public void Cancel() {
+            worker.CancelAsync();
         }
 
         private List<E6POS> GetCalibrationPoints(E6POS startPoint, E6POS endPoint, uint interPoints) {

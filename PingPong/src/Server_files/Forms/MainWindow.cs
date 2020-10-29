@@ -1,5 +1,4 @@
 ﻿using PingPong.KUKA;
-using PingPong.Maths;
 using PingPong.OptiTrack;
 using System;
 using System.Windows.Forms;
@@ -15,13 +14,14 @@ namespace PingPong.Forms {
 
         //private IApplication application; //TODO: docelowo po odebraniu ramki z optitracka metoda compute(...)
 
+        private CalibrationWindow calibrationWindow;
+
         public MainWindow() {
             InitializeComponent();
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
-            //new CalibrationWindow(robot1, robot2, optiTrack).Show();
         }
 
         private void InitializeControls() {
@@ -42,6 +42,15 @@ namespace PingPong.Forms {
 
             incCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, 1));
             decCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, -1));
+
+            calibrationBtn.Click += (s, e) => {
+                if (calibrationWindow == null || calibrationWindow.IsDisposed) {
+                    calibrationWindow = new CalibrationWindow(optiTrack, robot1, robot2);
+                }
+
+                calibrationWindow.Show();
+                calibrationWindow.Activate();
+            };
         }
 
         private KUKARobot InitializeRobot1() {

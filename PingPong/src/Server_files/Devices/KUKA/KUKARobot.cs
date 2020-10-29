@@ -201,7 +201,7 @@ namespace PingPong.KUKA {
                         -nextCorrection.C
                     );
 
-                    //TODO: ogarnac dlaczego dodanie magicznych dwoch minusow sprawia ze wszystko dziala ( ͡° ͜ʖ ͡°)
+                    //TODO: ogarnac dlaczego dodanie magicznych dwoch minusow sprawia ze wszystko dziala (° ͜ʖ °)
 
                     if (limits.CheckCorrection(nextCorrection)) {
                         correction = nextCorrection;

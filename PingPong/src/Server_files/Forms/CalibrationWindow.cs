@@ -1,5 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using PingPong.KUKA;
+﻿using PingPong.KUKA;
 using PingPong.OptiTrack;
 using System;
 using System.ComponentModel;
@@ -12,101 +11,122 @@ namespace PingPong.Forms {
 
         private readonly CalibrationTool calibrationTool;
 
-        public CalibrationWindow(KUKARobot robot1, KUKARobot robot2, OptiTrackSystem optiTrack) {
+        private KUKARobot selectedRobot;
+
+        public CalibrationWindow(OptiTrackSystem optiTrack, KUKARobot robot1, KUKARobot robot2) {
             InitializeComponent();
             ResetMatrix();
             Text = title;
 
             BindingList<KUKARobot> robotsList = new BindingList<KUKARobot>();
 
-            //if (robot1.IsInitialized()) {
-            //    robotsList.Add(robot1);
-            //}
+            robotSelect.DropDown += (s, e) => {
+                if (robotsList.Contains(robot1)) {
+                    if(!robot1.IsInitialized()) {
+                        robotsList.Remove(robot1);
+                    }
+                } else {
+                    if (robot1.IsInitialized()) {
+                        robotsList.Add(robot1);
+                    }
+                }
 
-            //if (robot2.IsInitialized()) {
-            //    robotsList.Add(robot2);
-            //}
+                if (robotsList.Contains(robot2)) {
+                    if (!robot2.IsInitialized()) {
+                        robotsList.Remove(robot2);
+                    }
+                } else {
+                    if (robot2.IsInitialized()) {
+                        robotsList.Add(robot2);
+                    }
+                }
+            };
+            robotSelect.TextChanged += (s, e) => {
+                selectedRobot = (KUKARobot) robotSelect.SelectedItem;
 
-            robotsList.Add(robot1);
-            robotsList.Add(robot2);
-
-            robotSelect.Text = "KUKA robot";
-            robotSelect.DataSource = robotsList;
+                if (selectedRobot != null) {
+                    startBtn.Enabled = true;
+                } else {
+                    startBtn.Enabled = false;
+                }
+            };
             robotSelect.DisplayMember = "IP";
+            robotSelect.DataSource = robotsList;
+            robotSelect.Text = "- Select robot -";
 
-            calibrationTool = new CalibrationTool(optiTrack);
+            calibrationTool = new CalibrationTool();
             calibrationTool.Started += () => {
                 Text = title + " (0%)";
                 progressBar.Value = 0;
                 robotSelect.Enabled = false;
                 startBtn.Enabled = false;
             };
-            calibrationTool.ProgressChanged += (progress, transformation) => {
+            calibrationTool.ProgressChanged += progress => {
                 UpdateUI(() => {
                     Text = title + $" ({progress}%)";
                     progressBar.Value = progress;
-
-                    Matrix<double> rotation = transformation.Rotation;
-                    Vector<double> translation = transformation.Translation;
-
-                    m11.Text = rotation[0, 0].ToString("F3");
-                    m12.Text = rotation[0, 1].ToString("F3");
-                    m13.Text = rotation[0, 2].ToString("F3");
-                    m14.Text = translation[0].ToString("F3");
-
-                    m21.Text = rotation[1, 0].ToString("F3");
-                    m22.Text = rotation[1, 1].ToString("F3");
-                    m23.Text = rotation[1, 2].ToString("F3");
-                    m24.Text = translation[1].ToString("F3");
-
-                    m31.Text = rotation[2, 0].ToString("F3");
-                    m32.Text = rotation[2, 1].ToString("F3");
-                    m33.Text = rotation[2, 2].ToString("F3");
-                    m34.Text = translation[2].ToString("F3");
-
-                    m41.Text = (0.0).ToString("F3");
-                    m42.Text = (0.0).ToString("F3");
-                    m43.Text = (0.0).ToString("F3");
-                    m44.Text = (1.0).ToString("F3");
                 });
             };
             calibrationTool.Completed += transformation => {
-                robotSelect.Enabled = true;
-                startBtn.Enabled = true;
-                //TODO: co z transformacja ?
+                UpdateUI(() => {
+                    robotSelect.Enabled = true;
+                    startBtn.Enabled = true;
+
+                    m11.Text = transformation[0, 0].ToString("F3");
+                    m12.Text = transformation[0, 1].ToString("F3");
+                    m13.Text = transformation[0, 2].ToString("F3");
+                    m14.Text = transformation[0, 3].ToString("F3");
+
+                    m21.Text = transformation[1, 0].ToString("F3");
+                    m22.Text = transformation[1, 1].ToString("F3");
+                    m23.Text = transformation[1, 2].ToString("F3");
+                    m24.Text = transformation[1, 3].ToString("F3");
+
+                    m31.Text = transformation[2, 0].ToString("F3");
+                    m32.Text = transformation[2, 1].ToString("F3");
+                    m33.Text = transformation[2, 2].ToString("F3");
+                    m34.Text = transformation[2, 3].ToString("F3");
+
+                    m41.Text = transformation[3, 0].ToString("F3");
+                    m42.Text = transformation[3, 1].ToString("F3");
+                    m43.Text = transformation[3, 2].ToString("F3");
+                    m44.Text = transformation[3, 3].ToString("F3");
+                });
+
+                //TODO: co z transformacja gdzie ją trzymać ??? w BallData, w Optitracku, w kazdym robocie z osobna ??
             };
+
+            startBtn.Click += (s, e) => {
+                if (selectedRobot.IsInitialized()) {
+                    calibrationTool.Calibrate(optiTrack, selectedRobot, 50);
+                } else {
+                    startBtn.Enabled = false;
+                }
+            };
+
+            FormClosing += (s, e) => calibrationTool.Cancel();
         }
 
         private void ResetMatrix() {
-            m11.Text = (1.0).ToString("F3");
-            m12.Text = (0.0).ToString("F3");
-            m13.Text = (0.0).ToString("F3");
-            m14.Text = (0.0).ToString("F3");
+            m11.Text = (1.0).ToString("F1");
+            m12.Text = (0.0).ToString("F1");
+            m13.Text = (0.0).ToString("F1");
+            m14.Text = (0.0).ToString("F1");
 
-            m21.Text = (0.0).ToString("F3");
-            m22.Text = (1.0).ToString("F3");
-            m23.Text = (0.0).ToString("F3");
-            m24.Text = (0.0).ToString("F3");
+            m21.Text = (0.0).ToString("F1");
+            m22.Text = (1.0).ToString("F1");
+            m23.Text = (0.0).ToString("F1");
+            m24.Text = (0.0).ToString("F1");
 
-            m31.Text = (0.0).ToString("F3");
-            m32.Text = (0.0).ToString("F3");
-            m33.Text = (1.0).ToString("F3");
-            m34.Text = (0.0).ToString("F3");
+            m31.Text = (0.0).ToString("F1");
+            m32.Text = (0.0).ToString("F1");
+            m33.Text = (1.0).ToString("F1");
+            m34.Text = (0.0).ToString("F1");
 
-            m41.Text = (0.0).ToString("F3");
-            m42.Text = (0.0).ToString("F3");
-            m43.Text = (0.0).ToString("F3");
-            m44.Text = (1.0).ToString("F3");
-        }
-
-        private void StartCalibration(object sender, EventArgs e) {
-            KUKARobot selectedRobot = (KUKARobot) robotSelect.SelectedItem;
-
-            //if (!selectedRobot.IsInitialized()) {
-            //    throw new InvalidOperationException("Robot is not initialized");
-            //}
-
-            calibrationTool.Calibrate(selectedRobot, 50);
+            m41.Text = (0.0).ToString("F1");
+            m42.Text = (0.0).ToString("F1");
+            m43.Text = (0.0).ToString("F1");
+            m44.Text = (1.0).ToString("F1");
         }
 
         private void UpdateUI(Action updateAction) {

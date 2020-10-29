@@ -4,23 +4,43 @@ using System.Collections.Generic;
 
 namespace PingPong.Maths {
     /// <summary>
-    /// Represents transformation between two coordinate systems (A to B)
+    /// Represents 4x4 transformation matrix between two coordinate systems (A to B)
     /// </summary>
     class Transformation {
 
-        private readonly Matrix<double> rotation;
+        private readonly Matrix<double> rotationMatrix;
 
-        public Matrix<double> Rotation {
+        public Matrix<double> RotationMatrix {
             get {
-                return rotation.Clone();
+                return rotationMatrix.Clone();
             }
         }
 
-        private readonly Vector<double> translation;
+        private readonly Vector<double> translationVector;
 
-        public Vector<double> Translation {
+        public Vector<double> TranslationVector {
             get {
-                return translation.Clone();
+                return translationVector.Clone();
+            }
+        }
+
+        private readonly Matrix<double> matrix;
+
+        public Matrix<double> Matrix {
+            get {
+                return matrix.Clone();
+            }
+        }
+
+        /// <summary>
+        /// Gets the value of <see cref="Matrix"></see> at the given row and column
+        /// </summary>
+        /// <param name="i">row</param>
+        /// <param name="j">column</param>
+        /// <returns></returns>
+        public double this[int i, int j] {
+            get {
+                return matrix[i, j];
             }
         }
 
@@ -75,12 +95,15 @@ namespace PingPong.Maths {
                 V[2, 2] *= -1;
             }
 
-            rotation = V * UT;
-            translation = -1 * rotation * centroidA + centroidB;
-        }
+            rotationMatrix = V * UT;
+            translationVector = -1 * rotationMatrix * centroidA + centroidB;
 
-        public Transformation(Matrix<double> rotation, Vector<double> translation) {
-            //TODO: Taki kontstruktor moze byc potrzebny do utworzenia transormacji pomiędzy dwoma KUKAmi
+            matrix = Matrix<double>.Build.DenseOfArray(new double[,] {
+                { rotationMatrix[0, 0], rotationMatrix[0, 1], rotationMatrix[0, 2], translationVector[0] },
+                { rotationMatrix[1, 0], rotationMatrix[1, 1], rotationMatrix[1, 2], translationVector[1] },
+                { rotationMatrix[2, 0], rotationMatrix[2, 1], rotationMatrix[2, 2], translationVector[2] },
+                { 0.0, 0.0, 0.0, 1.0 }
+            });
         }
 
         /// <summary>
@@ -89,10 +112,8 @@ namespace PingPong.Maths {
         /// <param name="pointInA">point in A coordinate system</param>
         /// <returns></returns>
         public Vector<double> ConvertPoint(Vector<double> pointInA) {
-            return rotation * pointInA + translation;
+            return rotationMatrix * pointInA + translationVector;
         }
-
-        //TODO: jakies dwie metody do zapisu i odczytu danych
 
     }
 }

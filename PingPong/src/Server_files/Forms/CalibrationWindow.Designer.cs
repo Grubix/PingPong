@@ -244,18 +244,12 @@
             this.progressBar.Location = new System.Drawing.Point(12, 171);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(264, 23);
+            this.progressBar.Step = 1;
             this.progressBar.TabIndex = 2;
             // 
             // robotSelect
             // 
             this.robotSelect.FormattingEnabled = true;
-            this.robotSelect.Items.AddRange(new object[] {
-            "asdasd",
-            "asdasd",
-            "ffsdf",
-            "asdaf",
-            "sgdsd",
-            "dasdf"});
             this.robotSelect.Location = new System.Drawing.Point(12, 12);
             this.robotSelect.Name = "robotSelect";
             this.robotSelect.Size = new System.Drawing.Size(129, 21);
@@ -263,13 +257,12 @@
             // 
             // startBtn
             // 
-            this.startBtn.Location = new System.Drawing.Point(148, 12);
+            this.startBtn.Location = new System.Drawing.Point(147, 11);
             this.startBtn.Name = "startBtn";
-            this.startBtn.Size = new System.Drawing.Size(128, 23);
+            this.startBtn.Size = new System.Drawing.Size(129, 23);
             this.startBtn.TabIndex = 4;
             this.startBtn.Text = "Start calibration";
             this.startBtn.UseVisualStyleBackColor = true;
-            this.startBtn.Click += new System.EventHandler(this.StartCalibration);
             // 
             // CalibrationWindow
             // 
@@ -283,6 +276,7 @@
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "CalibrationWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);

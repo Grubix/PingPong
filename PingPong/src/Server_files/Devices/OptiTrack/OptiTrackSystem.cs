@@ -25,32 +25,6 @@ namespace PingPong.OptiTrack {
             serverDescription = new ServerDescription();
         }
 
-        public Vector<double> GetAveragePosition(uint samples) {
-            if (!isInitialized) {
-                throw new InvalidOperationException("OptiTrack system is not initialized");
-            }
-
-            ManualResetEvent getSamplesEvent = new ManualResetEvent(false);
-            Vector<double> position = Vector<double>.Build.Dense(3);
-
-            int currentSample = 0;
-
-            void checkSample(InputFrame inputFrame) {
-                position += inputFrame.Position;
-                currentSample++;
-
-                if (currentSample == samples) {
-                    FrameReceived -= checkSample;
-                    getSamplesEvent.Set();
-                }
-            }
-
-            FrameReceived += checkSample;
-            getSamplesEvent.WaitOne();
-
-            return position / samples;
-        }
-
         public void Initialize() {
             if (isInitialized) {
                 return;
@@ -83,6 +57,32 @@ namespace PingPong.OptiTrack {
         public void Uninitialize() {
             isInitialized = false;
             natNetClient.Uninitialize();
+        }
+
+        public Vector<double> GetAveragePosition(uint samples) {
+            if (!isInitialized) {
+                throw new InvalidOperationException("OptiTrack system is not initialized");
+            }
+
+            ManualResetEvent getSamplesEvent = new ManualResetEvent(false);
+            Vector<double> position = Vector<double>.Build.Dense(3);
+
+            int currentSample = 0;
+
+            void checkSample(InputFrame inputFrame) {
+                position += inputFrame.Position;
+                currentSample++;
+
+                if (currentSample == samples) {
+                    FrameReceived -= checkSample;
+                    getSamplesEvent.Set();
+                }
+            }
+
+            FrameReceived += checkSample;
+            getSamplesEvent.WaitOne();
+
+            return position / samples;
         }
 
     }

@@ -53,6 +53,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.realTimeChart = new PingPong.Forms.ThreadSafeChart();
+            this.calibrationBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // incXBtn
@@ -277,15 +278,25 @@
             this.realTimeChart.MaxSamples = 7000;
             this.realTimeChart.Name = "realTimeChart";
             this.realTimeChart.RefreshTime = 16;
-            this.realTimeChart.Size = new System.Drawing.Size(957, 324);
+            this.realTimeChart.Size = new System.Drawing.Size(957, 354);
             this.realTimeChart.TabIndex = 12;
+            // 
+            // calibrationBtn
+            // 
+            this.calibrationBtn.Location = new System.Drawing.Point(13, 342);
+            this.calibrationBtn.Name = "calibrationBtn";
+            this.calibrationBtn.Size = new System.Drawing.Size(96, 23);
+            this.calibrationBtn.TabIndex = 26;
+            this.calibrationBtn.Text = "Calibration tool";
+            this.calibrationBtn.UseVisualStyleBackColor = true;
             // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1084, 346);
+            this.ClientSize = new System.Drawing.Size(1084, 376);
+            this.Controls.Add(this.calibrationBtn);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -348,5 +359,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button calibrationBtn;
     }
 }
