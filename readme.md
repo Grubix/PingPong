@@ -31,6 +31,12 @@ Poprawne wygenerowanie trajektorii ruchu (xyz), locki
 ## 16
 Ustawienie ograniczeń w programie (na podstawie dojechania do pozycji), praca nad trajektorią ABC
 
+## 21
+Krystian + Bartosz
+
+## 23
+Zmiana korekcji dla kątów B i C na - (robimy - z tego co zwraca algorytm), plan przechowywania info o kierunku zmian w danym kącie ABC (w celu przejścia przez punkt +-180), połączenie z 2gim robotem
+
 # Info
 
 ## Sieć komputerowa
