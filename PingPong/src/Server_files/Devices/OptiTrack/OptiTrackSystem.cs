@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 
 namespace PingPong.OptiTrack {
-    class OptiTrackSystem : IDevice {
+    public class OptiTrackSystem : IDevice {
 
         private bool isInitialized = false;
 
@@ -23,32 +23,6 @@ namespace PingPong.OptiTrack {
         public OptiTrackSystem(int connectionType = 0) {
             natNetClient = new NatNetClientML(connectionType);
             serverDescription = new ServerDescription();
-        }
-
-        public Vector<double> GetAveragePosition(uint samples) {
-            if (!isInitialized) {
-                throw new InvalidOperationException("Device is not initialized");
-            }
-
-            ManualResetEvent getSamplesEvent = new ManualResetEvent(false);
-            Vector<double> position = Vector<double>.Build.Dense(3);
-
-            int currentSample = 0;
-
-            void checkSample(InputFrame inputFrame) {
-                position += inputFrame.Position;
-                currentSample++;
-
-                if (currentSample == samples) {
-                    FrameReceived -= checkSample;
-                    getSamplesEvent.Set();
-                }
-            }
-
-            FrameReceived += checkSample;
-            getSamplesEvent.WaitOne();
-
-            return position / samples;
         }
 
         public void Initialize() {
@@ -83,6 +57,32 @@ namespace PingPong.OptiTrack {
         public void Uninitialize() {
             isInitialized = false;
             natNetClient.Uninitialize();
+        }
+
+        public Vector<double> GetAveragePosition(uint samples) {
+            if (!isInitialized) {
+                throw new InvalidOperationException("OptiTrack system is not initialized");
+            }
+
+            ManualResetEvent getSamplesEvent = new ManualResetEvent(false);
+            Vector<double> position = Vector<double>.Build.Dense(3);
+
+            int currentSample = 0;
+
+            void checkSample(InputFrame inputFrame) {
+                position += inputFrame.Position;
+                currentSample++;
+
+                if (currentSample == samples) {
+                    FrameReceived -= checkSample;
+                    getSamplesEvent.Set();
+                }
+            }
+
+            FrameReceived += checkSample;
+            getSamplesEvent.WaitOne();
+
+            return position / samples;
         }
 
     }

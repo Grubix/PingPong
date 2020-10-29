@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace PingPong.KUKA {
     /// <summary>
     /// Provides methods for receiving and sending data to the KUKA robot
-    /// with RSI (Robot Sensor Interface) library installed
+    /// with RSI (Robot Sensor Interface) installed
     /// </summary>
     public class RSIAdapter {
 
@@ -15,9 +15,13 @@ namespace PingPong.KUKA {
         private IPEndPoint remoteEndPoint;
 
         /// <summary>
-        /// Time in seconds between two last received frames
+        /// Remote endpoint IP (KUKA robot IP)
         /// </summary>
-        public double DeltaTime { get; private set; }
+        public string IP {
+            get {
+                return remoteEndPoint.Address.ToString();
+            }
+        }
 
         public RSIAdapter(int port) {
             client = new UdpClient(new IPEndPoint(IPAddress.Any, port));
@@ -40,10 +44,11 @@ namespace PingPong.KUKA {
         /// </summary>
         public void Disconnect() {
             client.Close();
+            remoteEndPoint = null;
         }
 
         /// <summary>
-        /// Receives data from the remoteEndPoint asynchronously
+        /// Receives data from the remoteEndPoint (KUKA robot) asynchronously
         /// </summary>
         /// <returns>Parsed data as InputFrame</returns>
         public async Task<InputFrame> ReceiveDataAsync() {
@@ -54,7 +59,7 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Sends data to the remoteEndPoint
+        /// Sends data to the remoteEndPoint (KUKA robot) 
         /// </summary>
         /// <param name="data">data to sent</param>
         public void SendData(OutputFrame data) {

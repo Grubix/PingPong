@@ -87,7 +87,7 @@ namespace PingPong.KUKA {
             }
         }
 
-        public void UpdateCoefficients(E6POS currentPosition, E6POS targetPosition) {
+        private void UpdateCoefficients(E6POS currentPosition, E6POS targetPosition) {
             // guessing targetVelocity == 0.0
             X.UpdateCoefficients(currentPosition.X, targetPosition.X, 0.0, time2Dest);
             Y.UpdateCoefficients(currentPosition.Y, targetPosition.Y, 0.0, time2Dest);
@@ -97,7 +97,7 @@ namespace PingPong.KUKA {
             C.UpdateCoefficients(currentPosition.C, targetPosition.C, 0.0, time2Dest);
         }
 
-        public void ComputeNextPoint() {
+        private void ComputeNextPoint() {
             X.ComputeNextValue(period);
             Y.ComputeNextValue(period);
             Z.ComputeNextValue(period);
@@ -106,7 +106,7 @@ namespace PingPong.KUKA {
             C.ComputeNextValue(period);
         }
 
-        public void UpdateVelocity() {
+        private void UpdateVelocity() {
             X.UpdateVelocity(period);
             Y.UpdateVelocity(period);
             Z.UpdateVelocity(period);

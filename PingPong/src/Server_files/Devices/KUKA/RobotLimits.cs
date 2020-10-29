@@ -1,55 +1,20 @@
 ﻿using System;
 
 namespace PingPong.KUKA {
-    class RobotLimits {
+    public class RobotLimits {
 
-        private double[] workspaceLowerPoint = new double[3];
-        public double[] WorkspaceLowerPoint { 
-            get {
-                return workspaceLowerPoint.Clone() as double[];
-            } 
-            set {
-                if (value.Length != 3) {
-                    throw new ArgumentException("Invalid workspace point length");
-                }
+        public (double min, double max) LimitX { get; set; } = (-1000, 1000);
+        public (double min, double max) LimitY { get; set; } = (-1000, 1000);
+        public (double min, double max) LimitZ { get; set; } = (-1000, 1000);
 
-                workspaceLowerPoint = value.Clone() as double[];
-            }
-        }
+        public (double min, double max) LimitA1 { get; set; } = (0, 360.0);
+        public (double min, double max) LimitA2 { get; set; } = (0, 360.0);
+        public (double min, double max) LimitA3 { get; set; } = (0, 360.0);
+        public (double min, double max) LimitA4 { get; set; } = (0, 360.0);
+        public (double min, double max) LimitA5 { get; set; } = (0, 360.0);
+        public (double min, double max) LimitA6 { get; set; } = (0, 360.0);
 
-        private double[] workspaceUpperPoint = new double[3];
-        public double[] WorkspaceUpperPoint {
-            get {
-                return workspaceUpperPoint.Clone() as double[];
-            }
-            set {
-                if (value.Length != 3) {
-                    throw new ArgumentException("Invalid workspace point length");
-                }
-
-                workspaceUpperPoint = value.Clone() as double[];
-            }
-        }
-
-        private double maxXYZCorrection;
-        public double MaxXYZCorrection { 
-            get {
-                return maxXYZCorrection;
-            }
-            set {
-                maxXYZCorrection = Math.Abs(value);
-            } 
-        }
-
-        private double maxABCCorrection;
-        public double MaxABCCorrection {
-            get {
-                return maxABCCorrection;
-            }
-            set {
-                maxABCCorrection = Math.Abs(value);
-            }
-        }
+        public (double maxXYZ, double maxABC) LimitCorrection;
 
         /// <summary>
         /// 
@@ -58,21 +23,19 @@ namespace PingPong.KUKA {
         /// <returns></returns>
         public bool CheckPosition(E6POS position) {
             return
-                position.X >= workspaceLowerPoint[0] && position.X <= workspaceUpperPoint[0] &&
-                position.Y >= workspaceLowerPoint[1] && position.Y <= workspaceUpperPoint[1] &&
-                position.Z >= workspaceLowerPoint[2] && position.Z <= workspaceUpperPoint[2];
+                position.X >= LimitX.min && position.X <= LimitX.max &&
+                position.Y >= LimitY.min && position.Y <= LimitY.max &&
+                position.Z >= LimitZ.min && position.Z <= LimitZ.max;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="position">position to check</param>
-        /// <returns></returns>
-        public bool CheckABCAngles(E6POS position) {
+        public bool CheckAxisPosition(E6AXIS axisPosition) {
             return
-                position.A >= 0 && position.A <= 360.0 &&
-                position.B >= 0 && position.B <= 360.0 &&
-                position.C >= 0 && position.C <= 360.0;
+                axisPosition.A1 >= LimitA1.min && axisPosition.A1 <= LimitA1.max &&
+                axisPosition.A2 >= LimitA2.min && axisPosition.A2 <= LimitA2.max &&
+                axisPosition.A3 >= LimitA3.min && axisPosition.A3 <= LimitA3.max &&
+                axisPosition.A4 >= LimitA4.min && axisPosition.A4 <= LimitA4.max &&
+                axisPosition.A5 >= LimitA5.min && axisPosition.A5 <= LimitA5.max &&
+                axisPosition.A6 >= LimitA6.min && axisPosition.A6 <= LimitA6.max;
         }
 
         /// <summary>
@@ -82,12 +45,12 @@ namespace PingPong.KUKA {
         /// <returns></returns>
         public bool CheckCorrection(E6POS correction) {
             return
-                Math.Abs(correction.X) <= MaxXYZCorrection &&
-                Math.Abs(correction.Y) <= MaxXYZCorrection &&
-                Math.Abs(correction.Z) <= MaxXYZCorrection &&
-                Math.Abs(correction.A) <= MaxABCCorrection &&
-                Math.Abs(correction.B) <= MaxABCCorrection &&
-                Math.Abs(correction.C) <= MaxABCCorrection;
+                Math.Abs(correction.X) <= LimitCorrection.maxXYZ &&
+                Math.Abs(correction.Y) <= LimitCorrection.maxXYZ &&
+                Math.Abs(correction.Z) <= LimitCorrection.maxXYZ &&
+                Math.Abs(correction.A) <= LimitCorrection.maxABC &&
+                Math.Abs(correction.B) <= LimitCorrection.maxABC &&
+                Math.Abs(correction.C) <= LimitCorrection.maxABC;
         }
 
     }
