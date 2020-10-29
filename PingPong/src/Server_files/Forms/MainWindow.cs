@@ -50,6 +50,7 @@ namespace PingPong.Forms {
 
                 calibrationWindow.Show();
                 calibrationWindow.Activate();
+                calibrationWindow.WindowState = FormWindowState.Normal;
             };
         }
 

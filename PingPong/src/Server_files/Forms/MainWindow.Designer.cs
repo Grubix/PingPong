@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.incXBtn = new System.Windows.Forms.Button();
             this.decXBtn = new System.Windows.Forms.Button();
             this.incYBtn = new System.Windows.Forms.Button();
@@ -52,8 +53,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.realTimeChart = new PingPong.Forms.ThreadSafeChart();
             this.calibrationBtn = new System.Windows.Forms.Button();
+            this.realTimeChart = new PingPong.Forms.ThreadSafeChart();
             this.SuspendLayout();
             // 
             // incXBtn
@@ -267,6 +268,15 @@
             this.label6.TabIndex = 25;
             this.label6.Text = "C";
             // 
+            // calibrationBtn
+            // 
+            this.calibrationBtn.Location = new System.Drawing.Point(13, 342);
+            this.calibrationBtn.Name = "calibrationBtn";
+            this.calibrationBtn.Size = new System.Drawing.Size(96, 23);
+            this.calibrationBtn.TabIndex = 26;
+            this.calibrationBtn.Text = "Calibration tool";
+            this.calibrationBtn.UseVisualStyleBackColor = true;
+            // 
             // realTimeChart
             // 
             this.realTimeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -280,15 +290,6 @@
             this.realTimeChart.RefreshTime = 16;
             this.realTimeChart.Size = new System.Drawing.Size(957, 354);
             this.realTimeChart.TabIndex = 12;
-            // 
-            // calibrationBtn
-            // 
-            this.calibrationBtn.Location = new System.Drawing.Point(13, 342);
-            this.calibrationBtn.Name = "calibrationBtn";
-            this.calibrationBtn.Size = new System.Drawing.Size(96, 23);
-            this.calibrationBtn.TabIndex = 26;
-            this.calibrationBtn.Text = "Calibration tool";
-            this.calibrationBtn.UseVisualStyleBackColor = true;
             // 
             // MainWindow
             // 
@@ -322,11 +323,14 @@
             this.Controls.Add(this.incYBtn);
             this.Controls.Add(this.decXBtn);
             this.Controls.Add(this.incXBtn);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.RightToLeftLayout = true;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "RSI connection test";
+            this.Text = "Ping Pong";
             this.ResumeLayout(false);
             this.PerformLayout();
 

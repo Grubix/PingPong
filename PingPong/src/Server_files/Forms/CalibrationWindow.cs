@@ -2,6 +2,7 @@
 using PingPong.OptiTrack;
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace PingPong.Forms {
@@ -17,6 +18,8 @@ namespace PingPong.Forms {
             InitializeComponent();
             ResetMatrix();
             Text = title;
+            MinimumSize = new Size(Width, Height);
+            MaximumSize = new Size(Width, Height);
 
             BindingList<KUKARobot> robotsList = new BindingList<KUKARobot>();
 

@@ -50,6 +50,9 @@
   <PropertyGroup>
     <StartupObject>PingPong.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ping-pong.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Numerics, Version=4.12.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.12.0\lib\net461\MathNet.Numerics.dll</HintPath>
@@ -155,6 +158,7 @@
     <Folder Include="src\OptiTrack_files\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ping-pong.ico" />
     <Content Include="src\KUKA_files\RSI_EthernetConfig.xml" />
   </ItemGroup>
   <ItemGroup>
