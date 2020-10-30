@@ -4,9 +4,9 @@ using System;
 namespace PingPong.KUKA {
     public class E6POS : ICloneable {
 
-        private const double XYZComparsionTolerance = 0.001;
+        private const double XYZComparsionTolerance = 0.01;
 
-        private const double ABCComparsionTolerance = 0.0001;
+        private const double ABCComparsionTolerance = 0.01;
 
         public double X { get; }
 

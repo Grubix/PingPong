@@ -70,14 +70,14 @@
             this.robotSelect.FormattingEnabled = true;
             this.robotSelect.Location = new System.Drawing.Point(12, 12);
             this.robotSelect.Name = "robotSelect";
-            this.robotSelect.Size = new System.Drawing.Size(153, 21);
+            this.robotSelect.Size = new System.Drawing.Size(168, 21);
             this.robotSelect.TabIndex = 3;
             // 
             // startBtn
             // 
-            this.startBtn.Location = new System.Drawing.Point(171, 11);
+            this.startBtn.Location = new System.Drawing.Point(186, 11);
             this.startBtn.Name = "startBtn";
-            this.startBtn.Size = new System.Drawing.Size(105, 23);
+            this.startBtn.Size = new System.Drawing.Size(90, 23);
             this.startBtn.TabIndex = 4;
             this.startBtn.Text = "Start calibration";
             this.startBtn.UseVisualStyleBackColor = true;

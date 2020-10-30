@@ -15,9 +15,9 @@ namespace PingPong.KUKA {
         private IPEndPoint remoteEndPoint;
 
         /// <summary>
-        /// Remote endpoint IP (KUKA robot IP)
+        /// Remote endpoint Ip (RSI ip)
         /// </summary>
-        public string IP {
+        public string Ip {
             get {
                 return remoteEndPoint.Address.ToString();
             }

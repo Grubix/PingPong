@@ -1,6 +1,7 @@
 ﻿using PingPong.KUKA;
 using PingPong.OptiTrack;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace PingPong.Forms {
@@ -51,6 +52,7 @@ namespace PingPong.Forms {
                 calibrationWindow.Show();
                 calibrationWindow.Activate();
                 calibrationWindow.WindowState = FormWindowState.Normal;
+                calibrationWindow.Location = new Point(Location.X, Location.Y + Height);
             };
         }
 
@@ -72,12 +74,12 @@ namespace PingPong.Forms {
 
             robot1.FrameReceived += frameReceived => {
                 UpdateUI(() => {
-                    posXText.Text = frameReceived.Position.X.ToString();
-                    posYText.Text = frameReceived.Position.Y.ToString();
-                    posZText.Text = frameReceived.Position.Z.ToString();
-                    posAText.Text = frameReceived.Position.A.ToString();
-                    posBText.Text = frameReceived.Position.B.ToString();
-                    posCText.Text = frameReceived.Position.C.ToString();
+                    posXText.Text = frameReceived.Position.X.ToString("F3");
+                    posYText.Text = frameReceived.Position.Y.ToString("F3");
+                    posZText.Text = frameReceived.Position.Z.ToString("F3");
+                    posAText.Text = frameReceived.Position.A.ToString("F3");
+                    posBText.Text = frameReceived.Position.B.ToString("F3");
+                    posCText.Text = frameReceived.Position.C.ToString("F3");
                 });
             };
             robot1.FrameSent += frameSent => {

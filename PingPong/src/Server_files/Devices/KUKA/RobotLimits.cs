@@ -7,12 +7,12 @@ namespace PingPong.KUKA {
         public (double min, double max) LimitY { get; set; } = (-1000, 1000);
         public (double min, double max) LimitZ { get; set; } = (-1000, 1000);
 
-        public (double min, double max) LimitA1 { get; set; } = (0, 360.0);
-        public (double min, double max) LimitA2 { get; set; } = (0, 360.0);
-        public (double min, double max) LimitA3 { get; set; } = (0, 360.0);
-        public (double min, double max) LimitA4 { get; set; } = (0, 360.0);
-        public (double min, double max) LimitA5 { get; set; } = (0, 360.0);
-        public (double min, double max) LimitA6 { get; set; } = (0, 360.0);
+        public (double min, double max) LimitA1 { get; set; } = (-180.0, 180.0);
+        public (double min, double max) LimitA2 { get; set; } = (-180.0, 180.0);
+        public (double min, double max) LimitA3 { get; set; } = (-180.0, 180.0);
+        public (double min, double max) LimitA4 { get; set; } = (-180.0, 180.0);
+        public (double min, double max) LimitA5 { get; set; } = (-180.0, 180.0);
+        public (double min, double max) LimitA6 { get; set; } = (-180.0, 180.0);
 
         public (double maxXYZ, double maxABC) LimitCorrection;
 

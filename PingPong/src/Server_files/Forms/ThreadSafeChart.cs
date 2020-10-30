@@ -25,7 +25,7 @@ namespace PingPong.Forms {
             InitializeComponent();
 
             MaxSamples = 7000;
-            RefreshTime = 16;
+            RefreshTime = 70;
 
             series1 = new Series {
                 ChartType = SeriesChartType.FastLine,
@@ -40,8 +40,8 @@ namespace PingPong.Forms {
             chart.ChartAreas[0].AxisX.Minimum = 0;
             chart.ChartAreas[0].AxisX.Maximum = MaxSamples;
 
-            chart.ChartAreas[0].AxisY.Minimum = 100;
-            chart.ChartAreas[0].AxisY.Maximum = 200;
+            //chart.ChartAreas[0].AxisY.Minimum = 100;
+            //chart.ChartAreas[0].AxisY.Maximum = 200;
 
             chart.Series.Add(series1);
             chart.Series.Add(series2);

@@ -59,7 +59,7 @@ namespace PingPong.OptiTrack {
             natNetClient.Uninitialize();
         }
 
-        public Vector<double> GetAveragePosition(uint samples) {
+        public Vector<double> GetAveragePosition(int samples) {
             if (!isInitialized) {
                 throw new InvalidOperationException("OptiTrack system is not initialized");
             }
@@ -73,7 +73,7 @@ namespace PingPong.OptiTrack {
                 position += inputFrame.Position;
                 currentSample++;
 
-                if (currentSample == samples) {
+                if (currentSample >= samples) {
                     FrameReceived -= checkSample;
                     getSamplesEvent.Set();
                 }

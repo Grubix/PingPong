@@ -47,7 +47,7 @@ namespace PingPong.OptiTrack {
         /// <param name="optiTrackSamples">optitrack samples per each calibration point</param>
         /// <param name="duration">duration of robot movement (in seconds) between each calibration point</param>
         public void Calibrate(OptiTrackSystem optiTrack, KUKARobot robot, 
-            uint interPoints = 25, uint optiTrackSamples = 200, double duration = 3) {
+            int interPoints = 25, int optiTrackSamples = 200, double duration = 3) {
 
             if (worker.IsBusy) {
                 throw new InvalidOperationException("Calibration in progress");
@@ -64,16 +64,15 @@ namespace PingPong.OptiTrack {
             E6POS startPoint = robot.LowerWorkspacePoint;
             E6POS endPoint = robot.UpperWorkspacePoint;
 
-            List<E6POS> calibrationPoints = GetCalibrationPoints(startPoint, endPoint, interPoints);
             var kukaPoints = new List<Vector<double>>();
             var optiTrackPoints = new List<Vector<double>>();
-            int pointsCount = calibrationPoints.Count;
+            var calibrationPoints = GetCalibrationPoints(startPoint, endPoint, interPoints);
 
             void collectPoints(object sender, DoWorkEventArgs args) {
                 // Safe (slow) move to start point
-                robot.ForceMoveTo(startPoint, 15);
+                robot.ForceMoveTo(startPoint, 10);
 
-                for (int i = 0; i < pointsCount; i++) {
+                for (int i = 0; i < calibrationPoints.Count; i++) {
                     E6POS point = calibrationPoints[i];
                     robot.ForceMoveTo(point, duration);
 
@@ -83,7 +82,7 @@ namespace PingPong.OptiTrack {
                     var optiTrackPoint = optiTrack.GetAveragePosition(optiTrackSamples);
                     optiTrackPoints.Add(optiTrackPoint);
 
-                    ProgressChanged?.Invoke(i * 100 / (pointsCount - 1));
+                    ProgressChanged?.Invoke(i * 100 / (calibrationPoints.Count - 1));
                 }
             }
             
@@ -108,9 +107,9 @@ namespace PingPong.OptiTrack {
             worker.CancelAsync();
         }
 
-        private List<E6POS> GetCalibrationPoints(E6POS startPoint, E6POS endPoint, uint interPoints) {
+        private List<E6POS> GetCalibrationPoints(E6POS startPoint, E6POS endPoint, int interPoints) {
             List<E6POS> points = new List<E6POS>();
-            uint totalPoints = 2 + interPoints;
+            int totalPoints = 2 + interPoints;
 
             E6POS deltaPosition = new E6POS(
                 (endPoint.X - startPoint.X) / (interPoints + 1),
@@ -130,6 +129,10 @@ namespace PingPong.OptiTrack {
                     deltaPosition.B * i,
                     deltaPosition.C * i
                 ));
+            }
+
+            foreach (var el in points) {
+                Console.WriteLine(el);
             }
 
             return points;

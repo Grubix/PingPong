@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Old_files\TrajectoryGenerator.cs" />
+    <Compile Include="src\Server_files\Devices\KUKA\DummyKUKARobot.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\E6AXIS.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\BallData.cs" />
     <Compile Include="src\Server_files\Forms\CalibrationWindow.cs">
@@ -90,7 +91,7 @@
     <Compile Include="src\Old_files\PolynominalTest.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RobotLimits.cs" />
-    <Compile Include="src\Server_files\Devices\OptiTrack\CalibrationTool.cs" />
+    <Compile Include="src\Old_files\CalibrationTool.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
     <Compile Include="src\Old_files\OptiTrackCalibration.cs" />
     <Compile Include="src\Server_files\Forms\ThreadSafeChart.cs">
