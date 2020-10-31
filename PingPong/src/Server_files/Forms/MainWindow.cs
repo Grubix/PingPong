@@ -52,7 +52,7 @@ namespace PingPong.Forms {
                 calibrationWindow.Show();
                 calibrationWindow.Activate();
                 calibrationWindow.WindowState = FormWindowState.Normal;
-                calibrationWindow.Location = new Point(Location.X, Location.Y + Height);
+                calibrationWindow.Location = new Point(Location.X, Location.Y);
             };
         }
 

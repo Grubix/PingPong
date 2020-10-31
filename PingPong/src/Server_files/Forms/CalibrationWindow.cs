@@ -166,7 +166,6 @@ namespace PingPong.Forms {
             worker.RunWorkerAsync();
         }
 
-
         private List<E6POS> GetCalibrationPoints(E6POS startPoint, E6POS endPoint, int interPoints) {
             List<E6POS> points = new List<E6POS>();
             int totalPoints = 2 + interPoints;
@@ -189,10 +188,6 @@ namespace PingPong.Forms {
                     deltaPosition.B * i,
                     deltaPosition.C * i
                 ));
-            }
-
-            foreach (var el in points) {
-                Console.WriteLine(el);
             }
 
             return points;

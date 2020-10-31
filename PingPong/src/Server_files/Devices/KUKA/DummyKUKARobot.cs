@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace PingPong.KUKA {
 
@@ -29,11 +28,7 @@ namespace PingPong.KUKA {
 
         private TrajectoryGenerator generator;
 
-        private long currentIPOC;
-
         private E6POS currentPosition;
-
-        private E6AXIS currentAxisPosition;
 
         private (E6POS position, double duration) targetPosition;
 

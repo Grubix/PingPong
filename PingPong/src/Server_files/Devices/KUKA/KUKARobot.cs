@@ -19,7 +19,7 @@ namespace PingPong.KUKA {
 
         private readonly BackgroundWorker worker;
 
-        private readonly ManualResetEvent reachTargetPositionEvent = new ManualResetEvent(false);
+        private readonly AutoResetEvent targetPositionReached = new AutoResetEvent(false);
 
         private readonly object robotDataSyncLock = new object();
 
@@ -188,7 +188,7 @@ namespace PingPong.KUKA {
 
             if (limits.CheckAxisPosition(currentAxisPosition)) {
                 if (currentPosition == targetPosition.position) {
-                    reachTargetPositionEvent.Set();
+                    targetPositionReached.Set();
                 }
 
                 FrameReceived?.Invoke(receivedFrame);
@@ -322,8 +322,7 @@ namespace PingPong.KUKA {
                 forceMoveMode = true;
             }
 
-            reachTargetPositionEvent.Reset();
-            reachTargetPositionEvent.WaitOne();
+            targetPositionReached.WaitOne();
 
             lock (targetPositionSyncLock) {
                 forceMoveMode = false;
