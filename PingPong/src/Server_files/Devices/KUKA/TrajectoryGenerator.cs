@@ -40,7 +40,7 @@ namespace PingPong.KUKA {
                 return nextValue;
             }
 			
-			public ResetVelocity() {
+			public void ResetVelocity() {
 				velocity = 0.0;
 			}
         }
@@ -63,7 +63,7 @@ namespace PingPong.KUKA {
 
         public E6POS GetNextCorrection(E6POS currentPosition, E6POS targetPosition, double time) {
             if (currentPosition == targetPosition) {
-				resetVelocity();
+				ResetVelocity();
                 return targetPosition;
             }
             if (totalTime2Dest != time || this.targetPosition != targetPosition) {
@@ -87,7 +87,7 @@ namespace PingPong.KUKA {
                 );
             } else {
                 totalTime2Dest = 0.0;
-				resetVelocity();
+				ResetVelocity();
                 return targetPosition;
             }
         }
