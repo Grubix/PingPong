@@ -24,7 +24,7 @@ namespace PingPong.Forms {
         public ThreadSafeChart() {
             InitializeComponent();
 
-            MaxSamples = 3000;
+            MaxSamples = 7000;
             RefreshTime = 70;
 
             series1 = new Series {
@@ -39,6 +39,9 @@ namespace PingPong.Forms {
 
             chart.ChartAreas[0].AxisX.Minimum = 0;
             chart.ChartAreas[0].AxisX.Maximum = MaxSamples;
+
+            //chart.ChartAreas[0].AxisY.Minimum = 100;
+            //chart.ChartAreas[0].AxisY.Maximum = 200;
 
             chart.Series.Add(series1);
             chart.Series.Add(series2);

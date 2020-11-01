@@ -1,6 +1,6 @@
 ﻿namespace PingPong.Forms
 {
-    partial class Window
+    partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.incXBtn = new System.Windows.Forms.Button();
             this.decXBtn = new System.Windows.Forms.Button();
             this.incYBtn = new System.Windows.Forms.Button();
@@ -52,12 +53,12 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.calibrationBtn = new System.Windows.Forms.Button();
             this.realTimeChart = new PingPong.Forms.ThreadSafeChart();
             this.SuspendLayout();
             // 
             // incXBtn
             // 
-            this.incXBtn.Enabled = false;
             this.incXBtn.Location = new System.Drawing.Point(13, 12);
             this.incXBtn.Name = "incXBtn";
             this.incXBtn.Size = new System.Drawing.Size(45, 23);
@@ -67,7 +68,6 @@
             // 
             // decXBtn
             // 
-            this.decXBtn.Enabled = false;
             this.decXBtn.Location = new System.Drawing.Point(64, 12);
             this.decXBtn.Name = "decXBtn";
             this.decXBtn.Size = new System.Drawing.Size(45, 23);
@@ -77,7 +77,6 @@
             // 
             // incYBtn
             // 
-            this.incYBtn.Enabled = false;
             this.incYBtn.Location = new System.Drawing.Point(13, 41);
             this.incYBtn.Name = "incYBtn";
             this.incYBtn.Size = new System.Drawing.Size(45, 23);
@@ -87,7 +86,6 @@
             // 
             // decYBtn
             // 
-            this.decYBtn.Enabled = false;
             this.decYBtn.Location = new System.Drawing.Point(64, 41);
             this.decYBtn.Name = "decYBtn";
             this.decYBtn.Size = new System.Drawing.Size(45, 23);
@@ -97,7 +95,6 @@
             // 
             // incZBtn
             // 
-            this.incZBtn.Enabled = false;
             this.incZBtn.Location = new System.Drawing.Point(13, 70);
             this.incZBtn.Name = "incZBtn";
             this.incZBtn.Size = new System.Drawing.Size(45, 23);
@@ -107,7 +104,6 @@
             // 
             // decZBtn
             // 
-            this.decZBtn.Enabled = false;
             this.decZBtn.Location = new System.Drawing.Point(64, 70);
             this.decZBtn.Name = "decZBtn";
             this.decZBtn.Size = new System.Drawing.Size(45, 23);
@@ -117,7 +113,6 @@
             // 
             // incABtn
             // 
-            this.incABtn.Enabled = false;
             this.incABtn.Location = new System.Drawing.Point(13, 99);
             this.incABtn.Name = "incABtn";
             this.incABtn.Size = new System.Drawing.Size(45, 23);
@@ -127,7 +122,6 @@
             // 
             // decABtn
             // 
-            this.decABtn.Enabled = false;
             this.decABtn.Location = new System.Drawing.Point(64, 99);
             this.decABtn.Name = "decABtn";
             this.decABtn.Size = new System.Drawing.Size(45, 23);
@@ -137,7 +131,6 @@
             // 
             // incBBtn
             // 
-            this.incBBtn.Enabled = false;
             this.incBBtn.Location = new System.Drawing.Point(13, 128);
             this.incBBtn.Name = "incBBtn";
             this.incBBtn.Size = new System.Drawing.Size(45, 23);
@@ -147,7 +140,6 @@
             // 
             // decBBtn
             // 
-            this.decBBtn.Enabled = false;
             this.decBBtn.Location = new System.Drawing.Point(64, 128);
             this.decBBtn.Name = "decBBtn";
             this.decBBtn.Size = new System.Drawing.Size(45, 23);
@@ -157,7 +149,6 @@
             // 
             // incCBtn
             // 
-            this.incCBtn.Enabled = false;
             this.incCBtn.Location = new System.Drawing.Point(64, 157);
             this.incCBtn.Name = "incCBtn";
             this.incCBtn.Size = new System.Drawing.Size(45, 23);
@@ -167,7 +158,6 @@
             // 
             // decCBtn
             // 
-            this.decCBtn.Enabled = false;
             this.decCBtn.Location = new System.Drawing.Point(13, 157);
             this.decCBtn.Name = "decCBtn";
             this.decCBtn.Size = new System.Drawing.Size(45, 23);
@@ -177,7 +167,6 @@
             // 
             // posXText
             // 
-            this.posXText.Enabled = false;
             this.posXText.Location = new System.Drawing.Point(32, 186);
             this.posXText.Name = "posXText";
             this.posXText.ReadOnly = true;
@@ -186,7 +175,6 @@
             // 
             // posYText
             // 
-            this.posYText.Enabled = false;
             this.posYText.Location = new System.Drawing.Point(32, 212);
             this.posYText.Name = "posYText";
             this.posYText.ReadOnly = true;
@@ -195,7 +183,6 @@
             // 
             // posZText
             // 
-            this.posZText.Enabled = false;
             this.posZText.Location = new System.Drawing.Point(32, 238);
             this.posZText.Name = "posZText";
             this.posZText.ReadOnly = true;
@@ -204,7 +191,6 @@
             // 
             // posAText
             // 
-            this.posAText.Enabled = false;
             this.posAText.Location = new System.Drawing.Point(32, 264);
             this.posAText.Name = "posAText";
             this.posAText.ReadOnly = true;
@@ -213,7 +199,6 @@
             // 
             // posBText
             // 
-            this.posBText.Enabled = false;
             this.posBText.Location = new System.Drawing.Point(32, 290);
             this.posBText.Name = "posBText";
             this.posBText.ReadOnly = true;
@@ -222,7 +207,6 @@
             // 
             // posCText
             // 
-            this.posCText.Enabled = false;
             this.posCText.Location = new System.Drawing.Point(32, 316);
             this.posCText.Name = "posCText";
             this.posCText.ReadOnly = true;
@@ -284,6 +268,15 @@
             this.label6.TabIndex = 25;
             this.label6.Text = "C";
             // 
+            // calibrationBtn
+            // 
+            this.calibrationBtn.Location = new System.Drawing.Point(13, 342);
+            this.calibrationBtn.Name = "calibrationBtn";
+            this.calibrationBtn.Size = new System.Drawing.Size(96, 23);
+            this.calibrationBtn.TabIndex = 26;
+            this.calibrationBtn.Text = "Calibration tool";
+            this.calibrationBtn.UseVisualStyleBackColor = true;
+            // 
             // realTimeChart
             // 
             this.realTimeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -292,18 +285,19 @@
             this.realTimeChart.BackColor = System.Drawing.SystemColors.Control;
             this.realTimeChart.Enabled = false;
             this.realTimeChart.Location = new System.Drawing.Point(115, 12);
-            this.realTimeChart.MaxSamples = 3000;
+            this.realTimeChart.MaxSamples = 7000;
             this.realTimeChart.Name = "realTimeChart";
-            this.realTimeChart.RefreshTime = 70;
-            this.realTimeChart.Size = new System.Drawing.Size(957, 324);
+            this.realTimeChart.RefreshTime = 16;
+            this.realTimeChart.Size = new System.Drawing.Size(957, 354);
             this.realTimeChart.TabIndex = 12;
             // 
-            // Window
+            // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1084, 346);
+            this.ClientSize = new System.Drawing.Size(1084, 376);
+            this.Controls.Add(this.calibrationBtn);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -329,10 +323,14 @@
             this.Controls.Add(this.incYBtn);
             this.Controls.Add(this.decXBtn);
             this.Controls.Add(this.incXBtn);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "Window";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.Name = "MainWindow";
+            this.RightToLeftLayout = true;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "RSI connection test";
+            this.Text = "Ping Pong";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -365,5 +363,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button calibrationBtn;
     }
 }

@@ -4,9 +4,9 @@ using System;
 namespace PingPong.KUKA {
     public class E6POS : ICloneable {
 
-        private const double XYZComparsionTolerance = 0.001;
+        private const double XYZComparsionTolerance = 0.01;
 
-        private const double ABCComparsionTolerance = 0.00001;
+        private const double ABCComparsionTolerance = 0.01;
 
         public double X { get; }
 
@@ -32,19 +32,13 @@ namespace PingPong.KUKA {
             }
         }
 
-        public Vector<double> XYZABC {
-            get {
-                return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z, A, B, C });
-            }
-        }
-
         public E6POS(double X, double Y, double Z, double A, double B, double C) {
             this.X = X;
             this.Y = Y;
             this.Z = Z;
-            this.A = A < 0 ? 360.0 + A : A;
-            this.B = B < 0 ? 360.0 + B : B;
-            this.C = C < 0 ? 360.0 + C : C;
+            this.A = A;
+            this.B = B;
+            this.C = C;
         }
 
         public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0, 0, 0) {
@@ -82,9 +76,9 @@ namespace PingPong.KUKA {
                 $"X={Math.Round(X * 1000) / 1000}, " +
                 $"Y={Math.Round(Y * 1000) / 1000}, " +
                 $"Z={Math.Round(Z * 1000) / 1000}, " +
-                $"A={Math.Round(A * 10000) / 10000}, " +
-                $"B={Math.Round(B * 10000) / 10000}, " +
-                $"C={Math.Round(C * 10000) / 10000}";
+                $"A={Math.Round(A * 1000) / 1000}, " +
+                $"B={Math.Round(B * 1000) / 1000}, " +
+                $"C={Math.Round(C * 1000) / 1000}";
         }
 
         public static E6POS operator +(E6POS pos1, E6POS pos2) {

@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace PingPong.KUKA {
     /// <summary>
-    /// Represents frame (data) sent to the KUKA robot.
+    /// Represents frame (data) sent to the KUKA robot
     /// </summary>
     public class OutputFrame {
 
@@ -32,7 +32,7 @@ namespace PingPong.KUKA {
             frameTemplate = sBuilder.ToString();
         }
 
-        public string Message { get; set; } = "";
+        public string Message { get; set; } = "Ping Pong";
 
         public E6POS Correction { get; set; } = new E6POS();
 
