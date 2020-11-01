@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 
 namespace PingPong.KUKA {
     public class TrajectoryGenerator {
@@ -11,7 +12,7 @@ namespace PingPong.KUKA {
             private double velocity;
             private double nextValue;
 
-            public Parameter(bool isAngle) {
+            public Parameter() {
                 a0 = 0.0;
                 a1 = 0.0;
                 a2 = 0.0;
@@ -28,7 +29,7 @@ namespace PingPong.KUKA {
             }
 
             public void ComputeNextValue(double period) {
-                nextValue = a3 * Math.Pow(period, 3) + a2 * Math.Pow(period, 2) + a1 * period + a0;
+                nextValue = a3 * Math.Pow(period, 3) + a2 * Math.Pow(period, 2) + a1 * period;
             }
 
             public void UpdateVelocity(double period) {
@@ -60,7 +61,7 @@ namespace PingPong.KUKA {
             targetPosition = currentPosition;
         }
 
-        public E6POS GetNextPosition(E6POS currentPosition, E6POS targetPosition, double time) {
+        public E6POS GetNextCorrection(E6POS currentPosition, E6POS targetPosition, double time) {
             if (currentPosition == targetPosition) {
 				resetVelocity();
                 return targetPosition;
@@ -96,21 +97,26 @@ namespace PingPong.KUKA {
             X.UpdateCoefficients(currentPosition.X, targetPosition.X, 0.0, time2Dest);
             Y.UpdateCoefficients(currentPosition.Y, targetPosition.Y, 0.0, time2Dest);
             Z.UpdateCoefficients(currentPosition.Z, targetPosition.Z, 0.0, time2Dest);
-			
-			if (targetPosition.A - currentPosition.A > 180.0 || targetPosition.A - currentPosition.A < -180.0) {
-				currentPosition.A = (currentPosition.A + 360.0) % 360;
-				targetPosition.A = (targetPosition.A + 360.0) % 360;
+
+            Vector<double> currentABC = currentPosition.ABC;
+            Vector<double> targetABC = targetPosition.ABC;
+            // handling passing through +-180
+			if (targetABC[0] - currentABC[0] > 180.0 || targetABC[0] - currentABC[0] < -180.0) {
+				currentABC[0] = (currentABC[0] + 360.0) % 360 - currentABC[0];
+				targetABC[0] = (targetABC[0] + 360.0) % 360 - targetABC[0];
 			}
+            if (targetABC[1] - currentABC[1] > 180.0 || targetABC[1] - currentABC[1] < -180.0) {
+				currentABC[1] = (currentABC[1] + 360.0) % 360 - currentABC[1];
+				targetABC[1] = (targetABC[1] + 360.0) % 360 - targetABC[1];
+			}
+            if (targetABC[2] - currentABC[2] > 180.0 || targetABC[2] - currentABC[2] < -180.0) {
+				currentABC[2] = (currentABC[2] + 360.0) % 360 - currentABC[2];
+				targetABC[2] = (targetABC[2] + 360.0) % 360 - targetABC[2];
+			}
+            currentPosition += new E6POS(0.0, 0.0, 0.0, currentABC[0], currentABC[1], currentABC[2]);
+            targetPosition += new E6POS(0.0, 0.0, 0.0, targetABC[0], targetABC[1], targetABC[2]);
             A.UpdateCoefficients(currentPosition.A, targetPosition.A, 0.0, time2Dest);
-			if (targetPosition.B - currentPosition.B > 180.0 || targetPosition.B - currentPosition.B < -180.0) {
-				currentPosition.B = (currentPosition.B + 360.0) % 360;
-				targetPosition.B = (targetPosition.B + 360.0) % 360;
-			}
             B.UpdateCoefficients(currentPosition.B, targetPosition.B, 0.0, time2Dest);
-			if (targetPosition.C - currentPosition.C > 180.0 || targetPosition.C - currentPosition.C < -180.0) {
-				currentPosition.C = (currentPosition.C + 360.0) % 360;
-				targetPosition.C = (targetPosition.C + 360.0) % 360;
-			}
             C.UpdateCoefficients(currentPosition.C, targetPosition.C, 0.0, time2Dest);
         }
 
