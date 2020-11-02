@@ -26,23 +26,23 @@ namespace PingPong.Forms {
         }
 
         private void InitializeControls() {
-            incXBtn.Click += (s, e) => robot1.Shift(new E6POS(50, 0, 0));
-            decXBtn.Click += (s, e) => robot1.Shift(new E6POS(-50, 0, 0));
+            incXBtn.Click += (s, e) => robot1.Shift(new E6POS(50, 0, 0), 10.0);
+            decXBtn.Click += (s, e) => robot1.Shift(new E6POS(-50, 0, 0), 10.0);
 
-            incYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 50, 0));
-            decYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, -50, 0));
+            incYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 50, 0), 10.0);
+            decYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, -50, 0), 10.0);
 
-            incZBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 50));
-            decZBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, -50));
+            incZBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 50), 10.0);
+            decZBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, -50), 10.0);
 
-            incABtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 1, 0, 0));
-            decABtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, -1, 0, 0));
+            incABtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 1, 0, 0), 10.0);
+            decABtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, -1, 0, 0), 10.0);
 
-            incBBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 1, 0));
-            decBBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, -1, 0));
+            incBBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 1, 0), 10.0);
+            decBBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, -1, 0), 10.0);
 
-            incCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, 1));
-            decCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, -1));
+            incCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, 1), 10.0);
+            decCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, -1), 10.0);
 
             calibrationBtn.Click += (s, e) => {
                 if (calibrationWindow == null || calibrationWindow.IsDisposed) {
@@ -58,15 +58,15 @@ namespace PingPong.Forms {
 
         private KUKARobot InitializeRobot1() {
             RobotLimits limits = new RobotLimits {
-                LimitX = (40, 390),
-                LimitY = (-100, 250),
-                LimitZ = (350, 600),
-                LimitA1 = (0, 360),
-                LimitA2 = (0, 360),
-                LimitA3 = (0, 360),
-                LimitA4 = (0, 360),
-                LimitA5 = (0, 360),
-                LimitA6 = (0, 360),
+                LimitX = (-390, 390),
+                LimitY = (180, 400),
+                LimitZ = (390, 650),
+                LimitA1 = (-360, 360),
+                LimitA2 = (-360, 360),
+                LimitA3 = (-360, 360),
+                LimitA4 = (-360, 360),
+                LimitA5 = (-360, 360),
+                LimitA6 = (-360, 360),
                 LimitCorrection = (0.5, 0.05)
             };
 
@@ -74,12 +74,12 @@ namespace PingPong.Forms {
 
             robot1.FrameReceived += frameReceived => {
                 UpdateUI(() => {
-                    posXText.Text = frameReceived.Position.X.ToString("F3");
-                    posYText.Text = frameReceived.Position.Y.ToString("F3");
-                    posZText.Text = frameReceived.Position.Z.ToString("F3");
-                    posAText.Text = frameReceived.Position.A.ToString("F3");
-                    posBText.Text = frameReceived.Position.B.ToString("F3");
-                    posCText.Text = frameReceived.Position.C.ToString("F3");
+                    posXText.Text = frameReceived.Position.X.ToString();
+                    posYText.Text = frameReceived.Position.Y.ToString();
+                    posZText.Text = frameReceived.Position.Z.ToString();
+                    posAText.Text = frameReceived.Position.A.ToString();
+                    posBText.Text = frameReceived.Position.B.ToString();
+                    posCText.Text = frameReceived.Position.C.ToString();
                 });
             };
             robot1.FrameSent += frameSent => {
@@ -93,15 +93,7 @@ namespace PingPong.Forms {
 
         private KUKARobot InitializeRobot2() {
             RobotLimits limits = new RobotLimits {
-                LimitX = (40, 390),
-                LimitY = (-100, 250),
-                LimitZ = (350, 600),
-                LimitA1 = (0, 360),
-                LimitA2 = (0, 360),
-                LimitA3 = (0, 360),
-                LimitA4 = (0, 360),
-                LimitA5 = (0, 360),
-                LimitA6 = (0, 360),
+                //TODO: limity dla drugiego robota!
                 LimitCorrection = (0.5, 0.05)
             };
 

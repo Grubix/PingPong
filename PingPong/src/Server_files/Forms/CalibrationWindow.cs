@@ -67,18 +67,11 @@ namespace PingPong.Forms {
             robotSelect.DataSource = robotsList;
             robotSelect.Text = "- Select robot -";
 
-            startBtn.Click += (s, e) => Calibrate(50);
+            startBtn.Click += (s, e) => Calibrate(50, 3);
             FormClosing += (s, e) => worker.CancelAsync();
         }
 
-        /// <summary>
-        /// Finds <see cref="Transformation">transformation</see> between OptiTrack coordinate system 
-        /// and selected KUKA robot coordinate system
-        /// </summary>
-        /// <param name="interPoints">number of intermediate points</param>
-        /// <param name="optiTrackSamples">number of optitrack samples per each calibration point</param>
-        /// <param name="duration">duration of robot movement (in seconds) between each calibration point</param>
-        private void Calibrate(int interPoints, int optiTrackSamples = 200, double duration = 3) {
+        private void Calibrate(int interPoints, double duration, int optiTrackSamples = 200) {
             if (worker.IsBusy) {
                 throw new InvalidOperationException("Calibration in progress");
             }
@@ -98,16 +91,15 @@ namespace PingPong.Forms {
 
             var kukaPoints = new List<Vector<double>>();
             var optiTrackPoints = new List<Vector<double>>();
-            var calibrationPoints = GetCalibrationPoints(selectedRobot.LowerWorkspacePoint, selectedRobot.UpperWorkspacePoint, interPoints);
+            var calibrationPoints = GetCalibrationPoints(selectedRobot, interPoints);
 
             void collectPoints(object sender, DoWorkEventArgs args) {
-                selectedRobot.ForceMoveTo(calibrationPoints[0], 10);
+                selectedRobot.ForceMoveTo(new E6POS(calibrationPoints[0], selectedRobot.CurrentPosition.ABC), 15);
 
                 for (int i = 0; i < calibrationPoints.Count; i++) {
-                    E6POS point = calibrationPoints[i];
-                    selectedRobot.ForceMoveTo(point, duration);
+                    selectedRobot.ForceMoveTo(new E6POS(calibrationPoints[i], selectedRobot.CurrentPosition.ABC), duration);
 
-                    var kukaPoint = point.XYZ;
+                    var kukaPoint = selectedRobot.CurrentPosition.XYZ;
                     kukaPoints.Add(kukaPoint);
 
                     var optiTrackPoint = optiTrack.GetAveragePosition(optiTrackSamples);
@@ -166,31 +158,28 @@ namespace PingPong.Forms {
             worker.RunWorkerAsync();
         }
 
-        private List<E6POS> GetCalibrationPoints(E6POS startPoint, E6POS endPoint, int interPoints) {
-            List<E6POS> points = new List<E6POS>();
+        private List<Vector<double>> GetCalibrationPoints(KUKARobot selectedRobot, int interPoints) {
+            var startPoint = selectedRobot.LowerWorkspacePoint;
+            var endPoint = selectedRobot.UpperWorkspacePoint;
+
+            var offset = Vector<double>.Build.DenseOfArray(new double[] {
+                endPoint[0] > startPoint[0] ? 10.0 : -10.0,
+                endPoint[1] > startPoint[1] ? 10.0 : -10.0,
+                endPoint[2] > startPoint[2] ? 10.0 : -10.0
+            });
+
+            var shiftedStartPoint = startPoint + offset;
+            var shiftedEndPoint = endPoint - offset;
+            var deltaPosition = (shiftedEndPoint - shiftedStartPoint) / (interPoints + 1);
+
+            var calibrationPoints = new List<Vector<double>>();
             int totalPoints = 2 + interPoints;
 
-            E6POS deltaPosition = new E6POS(
-                (endPoint.X - startPoint.X) / (interPoints + 1),
-                (endPoint.Y - startPoint.Y) / (interPoints + 1),
-                (endPoint.Z - startPoint.Z) / (interPoints + 1),
-                (endPoint.A - startPoint.A) / (interPoints + 1),
-                (endPoint.B - startPoint.B) / (interPoints + 1),
-                (endPoint.C - startPoint.C) / (interPoints + 1)
-            );
-
             for (int i = 0; i < totalPoints; i++) {
-                points.Add(startPoint + new E6POS(
-                    deltaPosition.X * i,
-                    deltaPosition.Y * i,
-                    deltaPosition.Z * i,
-                    deltaPosition.A * i,
-                    deltaPosition.B * i,
-                    deltaPosition.C * i
-                ));
+                calibrationPoints.Add(startPoint + deltaPosition * i);
             }
 
-            return points;
+            return calibrationPoints;
         }
 
         private void ResetMatrix() {

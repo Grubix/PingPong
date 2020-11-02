@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,15 +20,13 @@ namespace PingPong.KUKA {
 
         private readonly BackgroundWorker worker;
 
-        private readonly AutoResetEvent targetPositionReached = new AutoResetEvent(false);
-
         private readonly object robotDataSyncLock = new object();
 
         private readonly object targetPositionSyncLock = new object();
 
-        private volatile bool isInitialized = false;
+        private bool isInitialized = false; //TODO: volatile ??
 
-        private volatile bool forceMoveMode = false;
+        private bool forceMoveMode = false; //TODO: volatile ??
 
         private TrajectoryGenerator generator;
 
@@ -38,8 +37,6 @@ namespace PingPong.KUKA {
         private E6AXIS currentAxisPosition;
 
         private (E6POS position, double duration) targetPosition;
-
-        public const double defaultMovementDuration = 10.0;
 
         /// <summary>
         /// Robot Ip adress (RSI)
@@ -53,33 +50,29 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Robot lower workspace point
         /// </summary>
-        public E6POS LowerWorkspacePoint {
+        public Vector<double> LowerWorkspacePoint {
             get {
-                return new E6POS(
-                    limits.LimitX.min,
-                    limits.LimitY.min,
-                    limits.LimitZ.min,
-                    currentPosition.A,
-                    currentPosition.B,
-                    currentPosition.C
-                );
+                lock (robotDataSyncLock) {
+                    return Vector<double>.Build.DenseOfArray(new double[] {
+                        limits.LimitX.min,
+                        limits.LimitY.min,
+                        limits.LimitZ.min
+                    });
+                }
             }
         }
 
         /// <summary>
         /// Robot upper workspace point
         /// </summary>
-        public E6POS UpperWorkspacePoint {
+        public Vector<double> UpperWorkspacePoint {
             get {
                 lock (robotDataSyncLock) {
-                    return new E6POS(
+                    return Vector<double>.Build.DenseOfArray(new double[] {
                         limits.LimitX.max,
                         limits.LimitY.max,
-                        limits.LimitZ.max,
-                        currentPosition.A,
-                        currentPosition.B,
-                        currentPosition.C
-                    );
+                        limits.LimitZ.max
+                    });
                 }
             }
         }
@@ -150,7 +143,7 @@ namespace PingPong.KUKA {
                 lock (robotDataSyncLock) {
                     currentIPOC = receivedFrame.IPOC;
                     currentPosition = receivedFrame.Position;
-                    targetPosition = (currentPosition, defaultMovementDuration);
+                    targetPosition = (currentPosition, 9999);
                 }
 
                 // Send response (prevent connection timeout)
@@ -187,10 +180,6 @@ namespace PingPong.KUKA {
             }
 
             if (limits.CheckAxisPosition(currentAxisPosition)) {
-                if (currentPosition == targetPosition.position) {
-                    targetPositionReached.Set();
-                }
-
                 FrameReceived?.Invoke(receivedFrame);
             } else {
                 SendError("Axis position limit has been exceeded");
@@ -272,7 +261,7 @@ namespace PingPong.KUKA {
         /// </summary>
         /// <param name="position">target position</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
-        public void MoveTo(E6POS position, double movementDuration = defaultMovementDuration) {
+        public void MoveTo(E6POS position, double movementDuration) {
             if (!isInitialized) {
                 throw new InvalidOperationException("Robot is not initialized");
             }
@@ -289,22 +278,21 @@ namespace PingPong.KUKA {
                 targetPosition = (position, movementDuration);
             }
         }
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
-        public void Shift(E6POS deltaPosition, double movementDuration = defaultMovementDuration) {
+        public void Shift(E6POS deltaPosition, double movementDuration) {
             MoveTo(TargetPosition + deltaPosition, movementDuration);
         }
 
         /// <summary>
-        /// Moves robot to the specified position and blocks current thread until it is reached
+        /// Moves robot to the specified position and blocks current thr until it is reached
         /// </summary>
         /// <param name="position">target position</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
-        public void ForceMoveTo(E6POS position, double movementDuration = defaultMovementDuration) {
+        public void ForceMoveTo(E6POS position, double movementDuration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
             if (!isInitialized) {
                 throw new InvalidOperationException("Robot is not initialized");
             }
@@ -322,7 +310,17 @@ namespace PingPong.KUKA {
                 forceMoveMode = true;
             }
 
+            ManualResetEvent targetPositionReached = new ManualResetEvent(false);
+
+            void checkPosition(InputFrame frameReceived) {
+                if (currentPosition.Compare(targetPosition.position, xyzTolerance, abcTolerance)) {
+                    targetPositionReached.Set();
+                }
+            };
+
+            FrameReceived += checkPosition;
             targetPositionReached.WaitOne();
+            FrameReceived -= checkPosition;
 
             lock (targetPositionSyncLock) {
                 forceMoveMode = false;
@@ -334,8 +332,8 @@ namespace PingPong.KUKA {
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
-        public void ForceShift(E6POS deltaPosition, double movementDuration = defaultMovementDuration) {
-            ForceMoveTo(TargetPosition + deltaPosition, movementDuration);
+        public void ForceShift(E6POS deltaPosition, double movementDuration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
+            ForceMoveTo(TargetPosition + deltaPosition, movementDuration, xyzTolerance, abcTolerance);
         }
 
         public void Initialize() {

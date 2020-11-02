@@ -2,11 +2,7 @@
 using System;
 
 namespace PingPong.KUKA {
-    public class E6POS : ICloneable {
-
-        private const double XYZComparsionTolerance = 0.01;
-
-        private const double ABCComparsionTolerance = 0.01;
+    public class E6POS {
 
         public double X { get; }
 
@@ -47,28 +43,54 @@ namespace PingPong.KUKA {
         public E6POS() : this(0, 0, 0, 0, 0, 0) {
         }
 
+        public E6POS(Vector<double> XYZ, Vector<double> ABC) {
+            X = XYZ[0];
+            Y = XYZ[1];
+            Z = XYZ[2];
+            A = ABC[0];
+            B = ABC[1];
+            C = ABC[2];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public E6POS Clear() {
             return new E6POS();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public E6POS ClearXYZ() {
             return new E6POS(0, 0, 0, A, B, C);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public E6POS ClearABC() {
             return new E6POS(X, Y, Z, 0, 0, 0);
         }
 
-        public object Clone() {
-            return new E6POS(X, Y, Z, A, B, C);
-        }
-
-        public override bool Equals(object obj) {
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode() {
-            return base.GetHashCode();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="xyzTolerance"></param>
+        /// <param name="abcTolerance"></param>
+        /// <returns></returns>
+        public bool Compare(E6POS position, double xyzTolerance, double abcTolerance) {
+            return
+                Math.Abs(X - position.X) <= xyzTolerance &&
+                Math.Abs(Y - position.Y) <= xyzTolerance &&
+                Math.Abs(Z - position.Z) <= xyzTolerance &&
+                Math.Abs(A - position.A) <= abcTolerance &&
+                Math.Abs(B - position.B) <= abcTolerance &&
+                Math.Abs(C - position.C) <= abcTolerance;
         }
 
         public override string ToString() {
@@ -101,20 +123,6 @@ namespace PingPong.KUKA {
                 pos1.B - pos2.B,
                 pos1.C - pos2.C
             );
-        }
-
-        public static bool operator ==(E6POS pos1, E6POS pos2) {
-            return
-                Math.Abs(pos1.X - pos2.X) <= XYZComparsionTolerance &&
-                Math.Abs(pos1.Y - pos2.Y) <= XYZComparsionTolerance &&
-                Math.Abs(pos1.Z - pos2.Z) <= XYZComparsionTolerance &&
-                Math.Abs(pos1.A - pos2.A) <= ABCComparsionTolerance &&
-                Math.Abs(pos1.B - pos2.B) <= ABCComparsionTolerance &&
-                Math.Abs(pos1.C - pos2.C) <= ABCComparsionTolerance;
-        }
-
-        public static bool operator !=(E6POS pos1, E6POS pos2) {
-            return !(pos1 == pos2);
         }
 
     }
