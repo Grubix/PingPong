@@ -1,5 +1,7 @@
-﻿using PingPong.Applications;
+﻿using MathNet.Numerics.LinearAlgebra;
+using PingPong.Applications;
 using PingPong.KUKA;
+using PingPong.Maths;
 using PingPong.OptiTrack;
 using System;
 using System.Drawing;
