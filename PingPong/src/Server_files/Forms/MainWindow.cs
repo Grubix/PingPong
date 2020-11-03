@@ -1,5 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using PingPong.Applications;
+﻿using PingPong.Applications;
 using PingPong.KUKA;
 using PingPong.Maths;
 using PingPong.OptiTrack;
@@ -100,7 +99,6 @@ namespace PingPong.Forms {
         private KUKARobot InitializeRobot2() {
             RobotLimits limits = new RobotLimits {
                 //TODO: limity dla drugiego robota!
-                LimitCorrection = (0.5, 0.05)
             };
 
             KUKARobot robot2 = new KUKARobot(8082, limits);

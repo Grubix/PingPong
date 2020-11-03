@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace PingPong.Maths {
-    class SVD {
+    class SVD3 {
 
         private const int maxIterations = 100000; 
 
@@ -17,7 +17,7 @@ namespace PingPong.Maths {
 
         public Matrix3 VT { get; private set; }
 
-        public SVD(Matrix3 input, double tolerance) {
+        public SVD3(Matrix3 input, double tolerance) {
             S = input.Transpose() * input;
             V = Matrix3.Identity();
 

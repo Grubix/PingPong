@@ -23,6 +23,7 @@ namespace PingPong.OptiTrack {
             //TODO: odpalane w MainWindow.cs po otrzymaniu ramki z optitracka
             //TODO: apdejt predkosci, przyspieszenie, predykcja nastepnej pozycji etc.
             //TODO: tutaj moze sie przydac timer zeby liczyc predkosc!
+
         }
 
         public Vector<double> GetPosition(KUKARobot robot) {

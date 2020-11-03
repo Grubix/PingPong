@@ -3,7 +3,7 @@
 namespace PingPong.Maths {
     class Matrix3 {
 
-        private readonly double[,] matrix = new double[3, 3];
+        private readonly double[,] matrix;
 
         public double this[int i, int j] {
             get {
@@ -15,7 +15,11 @@ namespace PingPong.Maths {
         }
 
         public Matrix3() {
-
+            matrix = new double[,] {
+                { 0, 0, 0 },
+                { 0, 0, 0 },
+                { 0, 0, 0 }
+            };
         }
 
         public Matrix3(double[,] matrix) {
@@ -96,8 +100,12 @@ namespace PingPong.Maths {
             return inverse;
         }
 
-        public SVD SVD(double tolerance = 0.00001) {
-            return new SVD(this, tolerance);
+        public LUD3 LUD() {
+            return new LUD3(this);
+        }
+
+        public SVD3 SVD(double tolerance = 0.00001) {
+            return new SVD3(this, tolerance);
         }
 
         public override string ToString() {
@@ -151,6 +159,10 @@ namespace PingPong.Maths {
             return result;
         }
 
+        public static Matrix3 operator +(double value, Matrix3 mat) {
+            return mat + value;
+        }
+
         public static Matrix3 operator -(Matrix3 mat) {
             Matrix3 result = new Matrix3();
 
@@ -179,6 +191,22 @@ namespace PingPong.Maths {
             return mat + (-value);
         }
 
+        public static Matrix3 operator -(double value, Matrix3 mat) {
+            Matrix3 result = new Matrix3();
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    result[i, j] = -mat[i, j];
+                }
+            }
+
+            result[0, 0] += value;
+            result[1, 1] += value;
+            result[2, 2] += value;
+
+            return result;
+        }
+
         public static Matrix3 operator *(Matrix3 mat1, Matrix3 mat2) {
             Matrix3 result = new Matrix3();
 
@@ -205,16 +233,20 @@ namespace PingPong.Maths {
             };
         }
 
-        public static Matrix3 operator *(Matrix3 mat, double multiplier) {
+        public static Matrix3 operator *(Matrix3 mat, double value) {
             Matrix3 result = new Matrix3();
 
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    result[i, j] = mat[i, j] * multiplier;
+                    result[i, j] = mat[i, j] * value;
                 }
             }
 
             return result;
+        }
+
+        public static Matrix3 operator *(double value, Matrix3 mat) {
+            return mat * value;
         }
 
         public static Matrix3 operator /(Matrix3 mat1, Matrix3 mat2) {

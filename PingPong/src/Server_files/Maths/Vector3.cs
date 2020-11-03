@@ -1,11 +1,65 @@
-﻿namespace PingPong.Maths {
+﻿using System;
+
+namespace PingPong.Maths {
     class Vector3 {
 
-        public double X { get; set; }
+        private double[] components;
 
-        public double Y { get; set; }
+        public double X {
+            get {
+                return components[0];
+            }
+            set {
+                components[0] = value;
+            }
+        }
 
-        public double Z { get; set; }
+        public double Y {
+            get {
+                return components[1];
+            }
+            set {
+                components[1] = value;
+            }
+        }
+
+        public double Z {
+            get {
+                return components[2];
+            }
+            set {
+                components[2] = value;
+            }
+        }
+
+        public double this[uint i] {
+            get {
+                if (i >= 2) {
+                    throw new ArgumentException($"Index {i} out of bounds");
+                }
+
+                return components[i];
+            }
+            set {
+                if (i >= 2) {
+                    throw new ArgumentException($"Index {i} out of bounds");
+                }
+
+                components[i] = value;
+            }
+        }
+
+        public Vector3() {
+            components = new double[] {
+                0, 0, 0
+            };
+        }
+
+        public Vector3(double x, double y, double z) {
+            X = x;
+            Y = y;
+            Z = z;
+        }
 
         public double Dot(Vector3 vec) {
             return X * vec.X + Y * vec.Y + Z * vec.Z;
@@ -51,12 +105,16 @@
             };
         }
 
-        public static Vector3 operator *(Vector3 vec, double multiplier) {
+        public static Vector3 operator *(Vector3 vec, double value) {
             return new Vector3() {
-                X = vec.X * multiplier,
-                Y = vec.Y * multiplier,
-                Z = vec.Z * multiplier
+                X = vec.X * value,
+                Y = vec.Y * value,
+                Z = vec.Z * value
             };
+        }
+
+        public static Vector3 operator *(double value, Vector3 vec) {
+            return vec * value;
         }
 
         public static Vector3 operator *(Vector3 vec, Matrix3 mat) {

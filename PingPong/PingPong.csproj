@@ -87,8 +87,9 @@
     <Compile Include="src\Server_files\Forms\CalibrationWindow.Designer.cs">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\Server_files\Maths\LUD3.cs" />
     <Compile Include="src\Server_files\Maths\Matrix3.cs" />
-    <Compile Include="src\Server_files\Maths\SVD.cs" />
+    <Compile Include="src\Server_files\Maths\SVD3.cs" />
     <Compile Include="src\Server_files\Maths\Transformation.cs" />
     <Compile Include="src\Old_files\PolynominalTest.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
