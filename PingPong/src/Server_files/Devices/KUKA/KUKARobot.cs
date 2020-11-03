@@ -196,13 +196,12 @@ namespace PingPong.KUKA {
 
             lock (targetPositionSyncLock) {
                 if (limits.CheckPosition(targetPosition.position)) {
-                    E6POS nextPosition = generator.GetNextPosition(
+                    E6POS nextCorrection = generator.GetNextCorrection(
                         currentPosition,
                         targetPosition.position,
                         targetPosition.duration
                     );
-
-                    E6POS nextCorrection = nextPosition - currentPosition;
+                    
                     nextCorrection = new E6POS(
                         nextCorrection.X,
                         nextCorrection.Y,
