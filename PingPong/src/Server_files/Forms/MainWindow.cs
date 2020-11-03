@@ -1,4 +1,5 @@
-﻿using PingPong.KUKA;
+﻿using PingPong.Applications;
+using PingPong.KUKA;
 using PingPong.OptiTrack;
 using System;
 using System.Drawing;
@@ -13,7 +14,9 @@ namespace PingPong.Forms {
 
         private readonly OptiTrackSystem optiTrack;
 
-        //private IApplication application; //TODO: docelowo po odebraniu ramki z optitracka metoda compute(...)
+        private readonly BallData ballData;
+
+        private IApplication application;
 
         private CalibrationWindow calibrationWindow;
 
@@ -23,6 +26,7 @@ namespace PingPong.Forms {
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
+            ballData = new BallData();
         }
 
         private void InitializeControls() {
@@ -46,7 +50,7 @@ namespace PingPong.Forms {
 
             calibrationBtn.Click += (s, e) => {
                 if (calibrationWindow == null || calibrationWindow.IsDisposed) {
-                    calibrationWindow = new CalibrationWindow(optiTrack, robot1, robot2);
+                    calibrationWindow = new CalibrationWindow(optiTrack, ballData, robot1, robot2);
                 }
 
                 calibrationWindow.Show();
@@ -72,14 +76,14 @@ namespace PingPong.Forms {
 
             KUKARobot robot1 = new KUKARobot(8081, limits);
 
-            robot1.FrameReceived += frameReceived => {
+            robot1.FrameReceived += frame => {
                 UpdateUI(() => {
-                    posXText.Text = frameReceived.Position.X.ToString();
-                    posYText.Text = frameReceived.Position.Y.ToString();
-                    posZText.Text = frameReceived.Position.Z.ToString();
-                    posAText.Text = frameReceived.Position.A.ToString();
-                    posBText.Text = frameReceived.Position.B.ToString();
-                    posCText.Text = frameReceived.Position.C.ToString();
+                    posXText.Text = frame.Position.X.ToString();
+                    posYText.Text = frame.Position.Y.ToString();
+                    posZText.Text = frame.Position.Z.ToString();
+                    posAText.Text = frame.Position.A.ToString();
+                    posBText.Text = frame.Position.B.ToString();
+                    posCText.Text = frame.Position.C.ToString();
                 });
             };
             robot1.FrameSent += frameSent => {
@@ -106,6 +110,12 @@ namespace PingPong.Forms {
 
         private OptiTrackSystem InitializeOptiTrackSystem() {
             OptiTrackSystem optiTrack = new OptiTrackSystem();
+
+            optiTrack.FrameReceived += frame => {
+                ballData.Update(frame);
+                //application.ProcessData(ballData);
+            };
+
             optiTrack.Initialize();
 
             return optiTrack;

@@ -8,12 +8,6 @@ namespace PingPong.KUKA {
 
     public class KUKARobot : IDevice {
 
-        public delegate void InitializedEventHandler();
-
-        public delegate void FrameReceivedEventHandler(InputFrame receivedFrame);
-
-        public delegate void FrameSentEventHandler(OutputFrame frameSent);
-
         private readonly RSIAdapter rsiAdapter;
 
         private readonly RobotLimits limits;
@@ -39,7 +33,7 @@ namespace PingPong.KUKA {
         private (E6POS position, double duration) targetPosition;
 
         /// <summary>
-        /// Robot Ip adress (RSI)
+        /// Robot Ip adress (RSI interface)
         /// </summary>
         public string Ip {
             get {
@@ -113,17 +107,17 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Occurs when the robot is initialized (connection has been established)
         /// </summary>
-        public event InitializedEventHandler Initialized;
+        public event Action Initialized; //TODO: EventHandler?
 
         /// <summary>
         /// Occurs when <see cref="InputFrame"/> frame is received
         /// </summary>
-        public event FrameReceivedEventHandler FrameReceived;
+        public event Action<InputFrame> FrameReceived; //TODO: EventHandler?
 
         /// <summary>
         /// Occurs when <see cref="OutputFrame"/> frame is sent
         /// </summary>
-        public event FrameSentEventHandler FrameSent;
+        public event Action<OutputFrame> FrameSent; //TODO: EventHandler?
 
         /// <param name="port">Port defined in RSI_EthernetConfig.xml</param>
         /// <param name="robotLimits">robot limits</param>
@@ -277,8 +271,9 @@ namespace PingPong.KUKA {
                 targetPosition = (position, movementDuration);
             }
         }
+        
         /// <summary>
-        /// 
+        /// Shifts robot by the specified delta position
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
@@ -287,10 +282,12 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Moves robot to the specified position and blocks current thr until it is reached
+        /// Moves robot to the specified position and blocks current thread until position is reached
         /// </summary>
         /// <param name="position">target position</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
+        /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
+        /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
         public void ForceMoveTo(E6POS position, double movementDuration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
             if (!isInitialized) {
                 throw new InvalidOperationException("Robot is not initialized");
@@ -309,7 +306,7 @@ namespace PingPong.KUKA {
                 forceMoveMode = true;
             }
 
-            ManualResetEvent targetPositionReached = new ManualResetEvent(false);
+            AutoResetEvent targetPositionReached = new AutoResetEvent(false);
 
             void checkPosition(InputFrame frameReceived) {
                 if (currentPosition.Compare(targetPosition.position, xyzTolerance, abcTolerance)) {
@@ -327,10 +324,12 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// 
+        /// Shifts robot by the specified delta position and blocks current thread until new position is reached
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
+        /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
+        /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
         public void ForceShift(E6POS deltaPosition, double movementDuration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
             ForceMoveTo(TargetPosition + deltaPosition, movementDuration, xyzTolerance, abcTolerance);
         }

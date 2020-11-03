@@ -19,7 +19,7 @@ namespace PingPong.Forms {
 
         private KUKARobot selectedRobot;
 
-        public CalibrationWindow(OptiTrackSystem optiTrack, KUKARobot robot1, KUKARobot robot2) {
+        public CalibrationWindow(OptiTrackSystem optiTrack, BallData ballData, KUKARobot robot1, KUKARobot robot2) {
             this.optiTrack = optiTrack;
             worker = new BackgroundWorker() {
                 WorkerSupportsCancellation = true
@@ -67,11 +67,11 @@ namespace PingPong.Forms {
             robotSelect.DataSource = robotsList;
             robotSelect.Text = "- Select robot -";
 
-            startBtn.Click += (s, e) => Calibrate(50, 3);
+            startBtn.Click += (s, e) => Calibrate(ballData, 50, 3);
             FormClosing += (s, e) => worker.CancelAsync();
         }
 
-        private void Calibrate(int interPoints, double duration, int optiTrackSamples = 200) {
+        private void Calibrate(BallData ballData, int interPoints, double duration, int optiTrackSamples = 200) {
             if (worker.IsBusy) {
                 throw new InvalidOperationException("Calibration in progress");
             }
@@ -115,7 +115,7 @@ namespace PingPong.Forms {
             }
 
             worker.DoWork += collectPoints;
-            worker.RunWorkerCompleted += (sender, args) => {
+            worker.RunWorkerCompleted += (s, args) => {
                 worker.DoWork -= collectPoints;
 
                 if (args.Error != null) {
@@ -124,8 +124,7 @@ namespace PingPong.Forms {
 
                 if (!args.Cancelled) {
                     Transformation transformation = new Transformation(optiTrackPoints, kukaPoints);
-
-                    //TODO: co dalej z transformacją, gdzie ją trzymać, gdzie przekazać ?
+                    ballData.Transformations[selectedRobot] = transformation;
 
                     UpdateUI(() => {
                         Text = title;

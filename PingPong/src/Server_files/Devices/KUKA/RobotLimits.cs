@@ -14,7 +14,7 @@ namespace PingPong.KUKA {
         public (double min, double max) LimitA5 { get; set; } = (-180.0, 180.0);
         public (double min, double max) LimitA6 { get; set; } = (-180.0, 180.0);
 
-        public (double maxXYZ, double maxABC) LimitCorrection;
+        public (double maxXYZ, double maxABC) LimitCorrection { get; set; } = (0.5, 0.05);
 
         /// <summary>
         /// 

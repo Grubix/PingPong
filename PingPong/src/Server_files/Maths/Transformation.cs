@@ -6,7 +6,7 @@ namespace PingPong.Maths {
     /// <summary>
     /// Represents 4x4 transformation matrix between two coordinate systems (A to B)
     /// </summary>
-    class Transformation {
+    public class Transformation {
 
         private readonly Matrix<double> rotationMatrix;
 
@@ -111,7 +111,7 @@ namespace PingPong.Maths {
         /// </summary>
         /// <param name="pointInA">point in A coordinate system</param>
         /// <returns></returns>
-        public Vector<double> ConvertPoint(Vector<double> pointInA) {
+        public Vector<double> Convert(Vector<double> pointInA) {
             return rotationMatrix * pointInA + translationVector;
         }
 

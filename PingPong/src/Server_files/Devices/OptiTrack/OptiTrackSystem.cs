@@ -12,13 +12,9 @@ namespace PingPong.OptiTrack {
 
         private readonly ServerDescription serverDescription;
 
-        public event InitializedEventHandler Initialized;
+        public event Action Initialized; //TODO: EventHandler?
 
-        public event FrameReceivedEventHandler FrameReceived;
-
-        public delegate void InitializedEventHandler();
-
-        public delegate void FrameReceivedEventHandler(InputFrame receivedFrame);
+        public event Action<InputFrame> FrameReceived; //TODO: EventHandler?
 
         public OptiTrackSystem(int connectionType = 0) {
             natNetClient = new NatNetClientML(connectionType);
@@ -64,7 +60,7 @@ namespace PingPong.OptiTrack {
                 throw new InvalidOperationException("OptiTrack system is not initialized");
             }
 
-            ManualResetEvent getSamplesEvent = new ManualResetEvent(false);
+            AutoResetEvent getSamplesEvent = new AutoResetEvent(false);
             Vector<double> position = Vector<double>.Build.Dense(3);
 
             int currentSample = 0;
