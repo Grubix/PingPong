@@ -72,6 +72,29 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
+        /// Robot max XYZ movement velocity [m/s]
+        /// </summary>
+        public double MaxXYZVelocity {
+            get {
+                return limits.LimitCorrection.maxXYZ * 250.0;
+            }
+        }
+
+        /// <summary>
+        /// Robot max ABC rotation velocity [deg/s]
+        /// </summary>
+        public double MaxABCVelocity {
+            get {
+                return limits.LimitCorrection.maxABC * 250.0;
+            }
+        }
+
+        /// <summary>
+        /// Robot home position
+        /// </summary>
+        public E6POS HomePosition { get; private set; }
+
+        /// <summary>
         /// Robot current position
         /// </summary>
         public E6POS CurrentPosition {
@@ -94,6 +117,28 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
+        /// Theoretical XYZ movement velocity
+        /// </summary>
+        public Vector<double> CurrentXYZVelocity {
+            get {
+                lock (targetPositionSyncLock) {
+                    return null; //TODO: wyciagniecie danych z generatora
+                }
+            }
+        }
+
+        /// <summary>
+        /// Theoretical ABC rotation velocity
+        /// </summary>
+        public Vector<double> CurrentXYZAcceleration {
+            get {
+                lock (targetPositionSyncLock) {
+                    return null; //TODO: wyciagniecie danych z generatora
+                }
+            }
+        }
+
+        /// <summary>
         /// Robot target position
         /// </summary>
         public E6POS TargetPosition {
@@ -107,17 +152,17 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Occurs when the robot is initialized (connection has been established)
         /// </summary>
-        public event Action Initialized; //TODO: EventHandler?
+        public event Action Initialized;
 
         /// <summary>
         /// Occurs when <see cref="InputFrame"/> frame is received
         /// </summary>
-        public event Action<InputFrame> FrameReceived; //TODO: EventHandler?
+        public event Action<InputFrame> FrameReceived;
 
         /// <summary>
         /// Occurs when <see cref="OutputFrame"/> frame is sent
         /// </summary>
-        public event Action<OutputFrame> FrameSent; //TODO: EventHandler?
+        public event Action<OutputFrame> FrameSent;
 
         /// <param name="port">Port defined in RSI_EthernetConfig.xml</param>
         /// <param name="robotLimits">robot limits</param>
@@ -132,6 +177,8 @@ namespace PingPong.KUKA {
             worker.DoWork += async (sender, args) => {
                 // Connect with the robot
                 InputFrame receivedFrame = await rsiAdapter.Connect();
+
+                HomePosition = receivedFrame.Position;
                 generator = new TrajectoryGenerator(receivedFrame.Position);
 
                 lock (robotDataSyncLock) {
@@ -250,7 +297,8 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Moves the robot to specified position (Sets target position)
+        /// Moves the robot to specified position (Sets target position). 
+        /// If force move mode is enabled, method has no effect.
         /// </summary>
         /// <param name="position">target position</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
@@ -271,9 +319,10 @@ namespace PingPong.KUKA {
                 targetPosition = (position, movementDuration);
             }
         }
-        
+
         /// <summary>
-        /// Shifts robot by the specified delta position
+        /// Shifts robot by the specified delta position. 
+        /// If force move mode is enabled, method has no effect.
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
@@ -282,7 +331,8 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Moves robot to the specified position and blocks current thread until position is reached
+        /// Moves robot to the specified position and blocks current thread until position is reached.
+        /// Enables force move mode during the movement.
         /// </summary>
         /// <param name="position">target position</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
@@ -324,7 +374,8 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Shifts robot by the specified delta position and blocks current thread until new position is reached
+        /// Shifts robot by the specified delta position and blocks current thread until new position is reached.
+        /// Enables force move mode during the movement.
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
         /// <param name="movementDuration">desired movement duration in seconds</param>
@@ -350,6 +401,10 @@ namespace PingPong.KUKA {
 
         public bool IsInitialized() {
             return isInitialized;
+        }
+
+        public bool IsForceMoveModeEnabled() {
+            return forceMoveMode;
         }
 
         public override string ToString() {

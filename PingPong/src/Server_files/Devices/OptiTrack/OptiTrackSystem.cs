@@ -12,9 +12,9 @@ namespace PingPong.OptiTrack {
 
         private readonly ServerDescription serverDescription;
 
-        public event Action Initialized; //TODO: EventHandler?
+        public event Action Initialized;
 
-        public event Action<InputFrame> FrameReceived; //TODO: EventHandler?
+        public event Action<InputFrame> FrameReceived;
 
         public OptiTrackSystem(int connectionType = 0) {
             natNetClient = new NatNetClientML(connectionType);

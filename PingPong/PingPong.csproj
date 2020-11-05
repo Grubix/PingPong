@@ -81,15 +81,16 @@
     <Compile Include="src\Server_files\Devices\KUKA\DummyKUKARobot.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\E6AXIS.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\BallData.cs" />
+    <Compile Include="src\Server_files\Devices\OptiTrack\CalibrationTool.cs" />
     <Compile Include="src\Server_files\Forms\CalibrationWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\Server_files\Forms\CalibrationWindow.Designer.cs">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Server_files\Maths\LUD3.cs" />
-    <Compile Include="src\Server_files\Maths\Matrix3.cs" />
-    <Compile Include="src\Server_files\Maths\SVD3.cs" />
+    <Compile Include="src\Server_files\Maths\Old\LUD3.cs" />
+    <Compile Include="src\Server_files\Maths\Old\Matrix3.cs" />
+    <Compile Include="src\Server_files\Maths\Old\SVD3.cs" />
     <Compile Include="src\Server_files\Maths\Transformation.cs" />
     <Compile Include="src\Old_files\PolynominalTest.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
@@ -113,7 +114,7 @@
     <Compile Include="src\Server_files\Devices\KUKA\E6POS.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\KUKARobot.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\OptiTrackSystem.cs" />
-    <Compile Include="src\Server_files\Maths\Vector3.cs" />
+    <Compile Include="src\Server_files\Maths\Old\Vector3.cs" />
     <Compile Include="src\Server_files\Program.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\InputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\OutputFrame.cs" />

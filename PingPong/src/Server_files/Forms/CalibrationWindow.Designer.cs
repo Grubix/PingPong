@@ -45,6 +45,7 @@
             this.m41 = new System.Windows.Forms.Label();
             this.m11 = new System.Windows.Forms.Label();
             this.m33 = new System.Windows.Forms.Label();
+            this.stopBtn = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -70,16 +71,16 @@
             this.robotSelect.FormattingEnabled = true;
             this.robotSelect.Location = new System.Drawing.Point(12, 12);
             this.robotSelect.Name = "robotSelect";
-            this.robotSelect.Size = new System.Drawing.Size(168, 21);
+            this.robotSelect.Size = new System.Drawing.Size(142, 21);
             this.robotSelect.TabIndex = 3;
             // 
             // startBtn
             // 
-            this.startBtn.Location = new System.Drawing.Point(186, 11);
+            this.startBtn.Location = new System.Drawing.Point(160, 11);
             this.startBtn.Name = "startBtn";
-            this.startBtn.Size = new System.Drawing.Size(90, 23);
+            this.startBtn.Size = new System.Drawing.Size(55, 23);
             this.startBtn.TabIndex = 4;
-            this.startBtn.Text = "Start calibration";
+            this.startBtn.Text = "Start";
             this.startBtn.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel1
@@ -174,7 +175,7 @@
             this.m22.Name = "m22";
             this.m22.Size = new System.Drawing.Size(13, 13);
             this.m22.TabIndex = 6;
-            this.m22.Text = "0";
+            this.m22.Text = "1";
             // 
             // m21
             // 
@@ -224,7 +225,7 @@
             this.m44.Name = "m44";
             this.m44.Size = new System.Drawing.Size(13, 13);
             this.m44.TabIndex = 12;
-            this.m44.Text = "0";
+            this.m44.Text = "1";
             // 
             // m43
             // 
@@ -264,7 +265,7 @@
             this.m11.Name = "m11";
             this.m11.Size = new System.Drawing.Size(13, 13);
             this.m11.TabIndex = 0;
-            this.m11.Text = "0";
+            this.m11.Text = "1";
             // 
             // m33
             // 
@@ -274,13 +275,24 @@
             this.m33.Name = "m33";
             this.m33.Size = new System.Drawing.Size(13, 13);
             this.m33.TabIndex = 10;
-            this.m33.Text = "0";
+            this.m33.Text = "1";
+            // 
+            // stopBtn
+            // 
+            this.stopBtn.Enabled = false;
+            this.stopBtn.Location = new System.Drawing.Point(221, 11);
+            this.stopBtn.Name = "stopBtn";
+            this.stopBtn.Size = new System.Drawing.Size(55, 23);
+            this.stopBtn.TabIndex = 29;
+            this.stopBtn.Text = "Stop";
+            this.stopBtn.UseVisualStyleBackColor = true;
             // 
             // CalibrationWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(288, 206);
+            this.Controls.Add(this.stopBtn);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.startBtn);
             this.Controls.Add(this.robotSelect);
@@ -305,7 +317,6 @@
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.ComboBox robotSelect;
         private System.Windows.Forms.Button startBtn;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label m12;
         private System.Windows.Forms.Label m13;
         private System.Windows.Forms.Label m14;
@@ -322,5 +333,7 @@
         private System.Windows.Forms.Label m41;
         private System.Windows.Forms.Label m11;
         private System.Windows.Forms.Label m33;
+        private System.Windows.Forms.Button stopBtn;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }

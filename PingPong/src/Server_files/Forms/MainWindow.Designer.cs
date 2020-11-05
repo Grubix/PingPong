@@ -287,7 +287,6 @@
             this.realTimeChart.Location = new System.Drawing.Point(115, 12);
             this.realTimeChart.MaxSamples = 7000;
             this.realTimeChart.Name = "realTimeChart";
-            this.realTimeChart.RefreshTime = 16;
             this.realTimeChart.Size = new System.Drawing.Size(957, 354);
             this.realTimeChart.TabIndex = 12;
             // 
