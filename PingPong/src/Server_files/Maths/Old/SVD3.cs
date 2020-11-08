@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace PingPong.Maths {
+    /// <summary>
+    /// Represents Singular Value decomposition of real matrix using Jacobi method
+    /// </summary>
     class SVD3 {
 
         private const int maxIterations = 100000; 

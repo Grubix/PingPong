@@ -12,7 +12,7 @@ namespace PingPong.KUKA {
 
             public double startAcceleration;
 
-            public void UpdateCoefficients(double currentValue, double targetValue, double targetDuration) {
+            public void UpdateCoeffsWithDuration(double currentValue, double targetValue, double targetDuration) {
                 double d1 = targetDuration;
                 double d2 = d1 * d1;
                 double d3 = d1 * d2;
@@ -25,6 +25,11 @@ namespace PingPong.KUKA {
                 a3 = 1 / (2 * d3) * (-3 * startAcceleration * d2 - d1 * 12 * startVelocity + 20 * (targetValue - currentValue));
                 a4 = 1 / (2 * d4) * (3 * startAcceleration * d2 + d1 * 16 * startVelocity + 30 * (currentValue - targetValue));
                 a5 = 1 / (2 * d5) * (-1 * startAcceleration * d2 - d1 * 6 * startVelocity + 12 * (targetValue - currentValue));
+            }
+
+            public void UpdateCoeffsWithVelocity(double currentValue, double targetValue, double maxVelocity) {
+                double duration = CalculateDuration(currentValue, targetValue, maxVelocity);
+                UpdateCoeffsWithDuration(currentValue, targetValue, duration);
             }
 
             public void ResetStartValues() {
@@ -45,7 +50,7 @@ namespace PingPong.KUKA {
                 return a0 + a1 * t1 + a2 * t2 + a3 * t3 + a4 * t4 + a5 * t5;
             }
 
-            public double CalculateTime(double currentValue, double targetValue, double maxVelocity) {
+            private double CalculateDuration(double currentValue, double targetValue, double maxVelocity) {
                 if (maxVelocity <= 0.0) {
                     throw new ArgumentException("velocity err");
                 }
@@ -53,23 +58,22 @@ namespace PingPong.KUKA {
                 double a = -1 / 32 * startAcceleration;
                 double b = -7 / 16 * startVelocity - maxVelocity;
                 double c = 15 / 8 * (targetValue - currentValue);
-
                 double delta = b * b - 4 * a * c;
 
                 if (delta < 0.0) {
-                    throw new Exception("no real roots err");
+                    throw new ArgumentException("no real roots err");
                 } else if (delta == 0.0) {
                     double T = -b / (2 * a);
 
                     if (T >= 0) {
                         return T;
                     } else {
-                        throw new Exception("neg time err");
+                        throw new ArgumentException("neg time err");
                     }
                 } else {
-                    double bSqrt = Math.Sqrt(b);
-                    double T1 = (-b - bSqrt) / (2 * a);
-                    double T2 = (-b + bSqrt) / (2 * a);
+                    double deltaSqrt = Math.Sqrt(delta);
+                    double T1 = (-b - deltaSqrt) / (2 * a);
+                    double T2 = (-b + deltaSqrt) / (2 * a);
                     
                     if (T1 > 0.0 || T2 > 0.0) {
                         if (T1 < T2 && T1 > 0) {
@@ -78,7 +82,7 @@ namespace PingPong.KUKA {
                             return T2;
                         }
                     } else {
-                        throw new Exception("neg time err");
+                        throw new ArgumentException("neg time err");
                     }
                 }
             }
@@ -140,13 +144,17 @@ namespace PingPong.KUKA {
             return nextPosition - currentPosition;
         }
 
+        public void ComputeNextMoveWithTime() {
+
+        }
+
         private void UpdateCoefficients(E6POS currentPosition, E6POS targetPosition, double targetDuration) {
-            polyX.UpdateCoefficients(currentPosition.X, targetPosition.X, targetDuration);
-            polyY.UpdateCoefficients(currentPosition.Y, targetPosition.Y, targetDuration);
-            polyZ.UpdateCoefficients(currentPosition.Z, targetPosition.Z, targetDuration);
-            polyA.UpdateCoefficients(currentPosition.A, targetPosition.A, targetDuration);
-            polyB.UpdateCoefficients(currentPosition.B, targetPosition.B, targetDuration);
-            polyC.UpdateCoefficients(currentPosition.C, targetPosition.C, targetDuration);
+            polyX.UpdateCoeffsWithDuration(currentPosition.X, targetPosition.X, targetDuration);
+            polyY.UpdateCoeffsWithDuration(currentPosition.Y, targetPosition.Y, targetDuration);
+            polyZ.UpdateCoeffsWithDuration(currentPosition.Z, targetPosition.Z, targetDuration);
+            polyA.UpdateCoeffsWithDuration(currentPosition.A, targetPosition.A, targetDuration);
+            polyB.UpdateCoeffsWithDuration(currentPosition.B, targetPosition.B, targetDuration);
+            polyC.UpdateCoeffsWithDuration(currentPosition.C, targetPosition.C, targetDuration);
         }
 
         private void ResetStartValues() {

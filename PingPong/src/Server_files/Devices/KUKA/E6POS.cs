@@ -37,10 +37,10 @@ namespace PingPong.KUKA {
             this.C = C;
         }
 
-        public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0, 0, 0) {
+        public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0.0, 0.0, 0.0) {
         }
 
-        public E6POS() : this(0, 0, 0, 0, 0, 0) {
+        public E6POS() : this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0) {
         }
 
         public E6POS(Vector<double> XYZ, Vector<double> ABC) {
@@ -65,7 +65,7 @@ namespace PingPong.KUKA {
         /// </summary>
         /// <returns></returns>
         public E6POS ClearXYZ() {
-            return new E6POS(0, 0, 0, A, B, C);
+            return new E6POS(0.0, 0.0, 0.0, A, B, C);
         }
 
         /// <summary>

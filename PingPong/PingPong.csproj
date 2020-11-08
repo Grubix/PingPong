@@ -77,7 +77,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Old_files\TrajectoryGenerator.cs" />
+    <Compile Include="src\Old_files\TrajectoryGenerator2.cs" />
+    <Compile Include="src\Old_files\TrajectoryGenerator3.cs" />
+    <Compile Include="src\Old_files\TrajectoryGenerator4.cs" />
+    <Compile Include="src\Old_files\TrajectoryGenerator5.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\DummyKUKARobot.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\E6AXIS.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\BallData.cs" />
@@ -88,8 +91,16 @@
     <Compile Include="src\Server_files\Forms\CalibrationWindow.Designer.cs">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\Server_files\Forms\KUKADataPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="src\Server_files\Forms\KUKADataPanel.Designer.cs">
+      <DependentUpon>KUKADataPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Server_files\Maths\Old\CubicSolver.cs" />
     <Compile Include="src\Server_files\Maths\Old\LUD3.cs" />
     <Compile Include="src\Server_files\Maths\Old\Matrix3.cs" />
+    <Compile Include="src\Server_files\Maths\Old\QuatricSolver.cs" />
     <Compile Include="src\Server_files\Maths\Old\SVD3.cs" />
     <Compile Include="src\Server_files\Maths\Transformation.cs" />
     <Compile Include="src\Old_files\PolynominalTest.cs" />
@@ -136,6 +147,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Server_files\Forms\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Server_files\Forms\KUKADataPanel.resx">
+      <DependentUpon>KUKADataPanel.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="src\Docs_files\eggert_comparison_mva97.pdf" />

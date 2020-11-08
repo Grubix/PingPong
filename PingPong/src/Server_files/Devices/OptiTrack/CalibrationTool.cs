@@ -122,6 +122,7 @@ namespace PingPong.OptiTrack {
             var p6 = Vector<double>.Build.DenseOfArray(new double[] { startPoint[0], endPoint[1], endPoint[2] });
             var p7 = Vector<double>.Build.DenseOfArray(new double[] { endPoint[0], endPoint[1], endPoint[2] });
 
+            // p0 -> p5 -> p3 -> p6 -> p0 -> p4 -> p1 -> p7 -> p2 -> p0
             AddCalibrationPoints(p0, p5, pointsPerLine, calibrationPoints);
             AddCalibrationPoints(p5, p3, pointsPerLine, calibrationPoints);
             AddCalibrationPoints(p3, p6, pointsPerLine, calibrationPoints);

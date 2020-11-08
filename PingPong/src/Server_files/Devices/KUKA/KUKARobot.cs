@@ -403,10 +403,6 @@ namespace PingPong.KUKA {
             return isInitialized;
         }
 
-        public bool IsForceMoveModeEnabled() {
-            return forceMoveMode;
-        }
-
         public override string ToString() {
             return $"KUKA::{Ip}";
         }
