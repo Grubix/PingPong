@@ -31,28 +31,11 @@ namespace PingPong.Forms {
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
             ballData = new BallData();
-
-            double currentValue = 0;
-            double targetValue = 0.0;
-
-            TrajectoryGenerator5 generator = new TrajectoryGenerator5();
-
-            Task.Run(() => {
-                for (int i = 0; i < 200000; i++) {
-                    currentValue = generator.NextValue(currentValue, targetValue, 50);
-                    realTimeChart.AddPoint(currentValue, generator.X.velocity);
-
-                    Thread.Sleep(4);
-                }
-            });
-
-            incXBtn.Click += (s, e) => targetValue += 50;
-            decXBtn.Click += (s, e) => targetValue -= 50;
         }
 
         private void InitializeControls() {
-            //incXBtn.Click += (s, e) => robot1.Shift(new E6POS(50, 0, 0), 10.0);
-            //decXBtn.Click += (s, e) => robot1.Shift(new E6POS(-50, 0, 0), 10.0);
+            incXBtn.Click += (s, e) => robot1.Shift(new E6POS(50, 0, 0), 10.0);
+            decXBtn.Click += (s, e) => robot1.Shift(new E6POS(-50, 0, 0), 10.0);
 
             incYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 50, 0), 10.0);
             decYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, -50, 0), 10.0);

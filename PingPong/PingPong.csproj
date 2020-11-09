@@ -78,9 +78,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Old_files\TrajectoryGenerator2.cs" />
-    <Compile Include="src\Old_files\TrajectoryGenerator3.cs" />
-    <Compile Include="src\Old_files\TrajectoryGenerator4.cs" />
-    <Compile Include="src\Old_files\TrajectoryGenerator5.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\DummyKUKARobot.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\E6AXIS.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\BallData.cs" />
