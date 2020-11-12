@@ -287,6 +287,7 @@
             this.realTimeChart.Location = new System.Drawing.Point(115, 12);
             this.realTimeChart.MaxSamples = 7000;
             this.realTimeChart.Name = "realTimeChart";
+            this.realTimeChart.RefreshTime = 70;
             this.realTimeChart.Size = new System.Drawing.Size(957, 354);
             this.realTimeChart.TabIndex = 12;
             // 
@@ -324,7 +325,6 @@
             this.Controls.Add(this.incXBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.RightToLeftLayout = true;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;

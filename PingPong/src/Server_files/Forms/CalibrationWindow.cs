@@ -68,9 +68,11 @@ namespace PingPong.Forms {
             };
 
             calibrationTool.Start += () => {
-                Text = $"{title} (0%)";
-                robotSelect.Enabled = false;
-                startBtn.Enabled = false;
+                UpdateUI(() => {
+                    Text = $"{title} (0%)";
+                    robotSelect.Enabled = false;
+                    startBtn.Enabled = false;
+                });
             };
             calibrationTool.ProgressChanged += (progress, transformation) => {
                 ballData.Transformations[selectedRobot] = transformation;
@@ -100,8 +102,10 @@ namespace PingPong.Forms {
                 });
             };
             calibrationTool.Completed += (transformation) => {
-                robotSelect.Enabled = true;
-                startBtn.Enabled = true;
+                UpdateUI(() => {
+                    robotSelect.Enabled = true;
+                    startBtn.Enabled = true;
+                });
             };
         }
 

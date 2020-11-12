@@ -77,7 +77,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Old_files\Gen.cs" />
+    <Compile Include="src\Old_files\Gen3.cs" />
+    <Compile Include="src\Old_files\Gen2.cs" />
+    <Compile Include="src\Old_files\Generator.cs" />
     <Compile Include="src\Old_files\TrajectoryGenerator2.cs" />
+    <Compile Include="src\Old_files\TrajectoryGenerator7.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\DummyKUKARobot.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\E6AXIS.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\BallData.cs" />
@@ -97,7 +102,8 @@
     <Compile Include="src\Server_files\Maths\Old\CubicSolver.cs" />
     <Compile Include="src\Server_files\Maths\Old\LUD3.cs" />
     <Compile Include="src\Server_files\Maths\Old\Matrix3.cs" />
-    <Compile Include="src\Server_files\Maths\Old\QuatricSolver.cs" />
+    <Compile Include="src\Server_files\Maths\Old\QuadraticSolver.cs" />
+    <Compile Include="src\Server_files\Maths\Old\QuarticSolver.cs" />
     <Compile Include="src\Server_files\Maths\Old\SVD3.cs" />
     <Compile Include="src\Server_files\Maths\Transformation.cs" />
     <Compile Include="src\Old_files\PolynominalTest.cs" />

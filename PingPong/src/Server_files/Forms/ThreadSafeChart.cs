@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -36,6 +37,17 @@ namespace PingPong.Forms {
                 ChartType = SeriesChartType.FastLine,
                 BorderWidth = 3
             };
+
+            StripLine stripLine2 = new StripLine();
+            stripLine2.BackColor = Color.FromArgb(120, Color.Gold);
+            stripLine2.IntervalOffset = -1.5;
+            stripLine2.IntervalOffsetType = DateTimeIntervalType.Days;
+            stripLine2.Interval = 50;
+            stripLine2.IntervalType = DateTimeIntervalType.Weeks;
+            stripLine2.StripWidth = 2;
+            stripLine2.StripWidthType = DateTimeIntervalType.Days;
+            stripLine2.Text = "max velocity";
+            chart.ChartAreas[0].AxisY.StripLines.Add(stripLine2);
 
             chart.ChartAreas[0].AxisX.Minimum = 0;
             chart.ChartAreas[0].AxisX.Maximum = MaxSamples;
