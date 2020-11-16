@@ -80,6 +80,8 @@
     <Compile Include="src\Old_files\Gen.cs" />
     <Compile Include="src\Old_files\Gen3.cs" />
     <Compile Include="src\Old_files\Gen2.cs" />
+    <Compile Include="src\Old_files\Gen4.cs" />
+    <Compile Include="src\Old_files\gen5.cs" />
     <Compile Include="src\Old_files\Generator.cs" />
     <Compile Include="src\Old_files\TrajectoryGenerator2.cs" />
     <Compile Include="src\Old_files\TrajectoryGenerator7.cs" />

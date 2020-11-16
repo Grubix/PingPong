@@ -1,25 +1,22 @@
 ﻿using System;
-using System.Threading;
 
 namespace PingPong {
 
-    class Gen3 {
+    class Gen4 {
 
         public class SCurve {
 
             private const double Ts = 0.004;
 
-            private readonly double V, A, J;
-
             private double t;
 
             private double x, x0, x1;
 
-            public double vmin, vmax, v, v0;
+            public double V, vmin, vmax, v, v0;
 
-            public double amin, amax, alim, a, a0;
+            public double A, amin, amax, alim, a, a0;
 
-            public double jmin, jmax, j;
+            public double J, jmin, jmax, j;
 
             private double T1, T2, T3, T4, T5, T6, T7;
 
@@ -30,11 +27,8 @@ namespace PingPong {
             private bool invert = false;
 
             public SCurve() {
-                amax = 1;
-                amin = -amax;
-
-                jmax = 0.01;
-                jmin = -jmax;
+                A = 1;
+                J = 1;
             }
 
             public double GetNextValue(double start, double end, double maxVelocity) {
@@ -45,27 +39,24 @@ namespace PingPong {
                     return start;
                 }
 
-                if (Math.Abs(end) != Math.Abs(x1) || Math.Abs(maxVelocity) != Math.Abs(vmax)) {
+                if (Math.Abs(end) != Math.Abs(x1) || Math.Abs(maxVelocity) != Math.Abs(V)) {
                     t = 0.0;
-
-                    if (invert) {
-                        Invert();
-                    }
 
                     x0 = start;
                     x1 = end;
-                    invert = x1 - x0 < 0;
-
-                    //Console.WriteLine(invert);
 
                     v0 = v;
                     a0 = a;
-                    vmax = maxVelocity;
-                    vmin = -maxVelocity;
 
-                    if (invert) {
-                        Invert();
-                    }
+                    V = maxVelocity;
+                    vmax = V;
+                    vmin = -V;
+
+                    amax = A;
+                    amin = -A;
+
+                    jmax = J;
+                    jmin = -J;
 
                     T1 = (amax - a0) / jmax;
                     T3 = -amax / jmin;
@@ -75,56 +66,16 @@ namespace PingPong {
 
                     if (T2 < 0) {
                         Console.WriteLine("T2");
-                        foreach (var T in QuadraticSolver.SolveReal(jmax, a0, a0 * a0 / (2.0 * jmax) - vmax + v0)) {
-                            //Console.WriteLine($"{T}, {v0}, {a0}");
-                            //Console.WriteLine(v0 + a0 * T + jmax / 2.0 * T * T);
-                        }
 
-                        var roots = QuadraticSolver.SolveReal(jmax, a0, a0 * a0 / (2.0 * jmax) - vmax + v0);
-
-                        double amax2 = Math.Sqrt((2 * jmin * jmax * (vmax - v0) + jmin * a0 * a0) / (jmin - jmax));
-
+                        // Gwarancja T2 = 0 i osiągnięcia vmax po czasie T1 + T3
                         amax = Math.Sqrt((2 * jmin * jmax * (vmax - v0) + jmin * a0 * a0) / (jmin - jmax));
 
-                        //Console.WriteLine((2 * jmin * jmax * (vmax - v0) + jmin * a0 * a0) / (jmin - jmax));
-
-                        //Console.WriteLine(amax2);
-
-                        //Console.WriteLine($"a0={a0}, amax={amax}");
-
-                        //amax = a0;//
-
-                        //T1 = Math.Sqrt((2.0 * (vmax - v0) * jmax - a0 * a0) / (2.0 * jmax * jmax));
-                        //T3 = T1 + a0 / jmax;
-
-                        //amax = jmax * T1 + a0;
-
-                        T1 = (amax2 - a0) / jmax;
+                        T1 = (amax - a0) / J;
                         T2 = 0.0;
-                        T3 = -amax2 / jmin;
+                        T3 = amax / J;
 
-                        V1 = v0 + a0 * T1 + jmax / 2.0 * T1 * T1;
+                        V1 = v0 + a0 * T1 + J / 2.0 * T1 * T1;
                         V2 = amax * T2 + V1;
-
-                        Console.WriteLine($"{v0},     {V1},     {V2}");
-                        Console.WriteLine($"{T1},{T2},{T3}");
-
-                        //Console.WriteLine(1.0 / 2.0 * jmin * T3 * T3 + amax * T3 + V1);
-
-                        //T1 = roots[0];
-                        //T2 = 0.0;
-                        //T3 = T1 + a0 / jmax;
-
-                        //T1 = T2 = T3 = 0.0;
-
-                        //Console.WriteLine(T2);
-                        //T3 = a0 / jmax;
-
-                        //T1 = 0.0;
-                    }
-
-                    if (v0 == vmax) {
-                        T1 = T2 = T3 = 0.0;
                     }
 
                     T5 = amin / jmin;
@@ -135,7 +86,16 @@ namespace PingPong {
 
                     if (T6 < 0) {
                         Console.WriteLine("T6");
-                        Console.WriteLine(-1.0 / 2.0 * jmin * T5 * T5 - jmax / 2.0 * T7 * T7 + amin * T7);
+
+                        // Gwarancja T6 = 0 i osiągnięcia v = 0 po czasie T5 + T7 przy początkowej prędkości v = vmax
+                        amin = Math.Sqrt(2.0 * jmin * jmax * vmax / (jmax - jmin));
+
+                        T5 = amin / jmin;
+                        T6 = 0.0;
+                        T7 = -amin / jmax;
+
+                        V3 = 1.0 / 2.0 * jmin * T5 * T5 + vmax;
+                        V4 = amin * T6 + V3;
                     }
 
                     X1 = jmax / 6.0 * T1 * T1 * T1 + a0 / 2.0 * T1 * T1 + v0 * T1 + x0;
@@ -146,16 +106,85 @@ namespace PingPong {
 
                     if (T4 < 0) {
                         Console.WriteLine("T4");
-                        double h = T4 = -1.0 / T5 * (T7 * T7 * T7 * jmax / 6.0 + T5 * T5 * T5 * jmin / 6.0 + (T7 * T7 + T6 * T6) / 2.0 * amin + V4 * T7 + V3 * T6 - x1 + X3);
-                        //Console.WriteLine(vmax);
-                        //Console.WriteLine(h);
-                        //Console.WriteLine("---");
+                        double a = -jmax * jmax;
+                        double b = -jmax * (amax * amax + jmax * v0);
+                        double c = amax * jmax * jmax * (x1 - x0) + jmax * amax * v0 * a0 - amax * amax * jmax * v0 - a0 * a0 * jmax * v0/2.0 - amax * a0 * a0 * a0 / 3.0 + amax * amax * a0 * a0 / 4.0 + a0 * a0 * a0 * a0 / 8.0;
+
+                        double[] roots = QuadraticSolver.SolveReal(a, b, c);
+                        if (roots[0] < 0) {
+                            vmax = roots[1];
+                        } else {
+                            vmax = roots[0];
+                        }
+
+                        Console.WriteLine("v=" + vmax);
+
+                        //Console.WriteLine($"{roots[0]},{roots[1]}:::{vmax}");
+
+                        //A = 1, J = 1, disp = 12 => vmax = 3
+                        //vmax = 1;
+
+                        //    //if (roots.Length == 0) {
+                        //    //    throw new Exception("adasdasd");
+                        //    //}
+
+                        //    //vmax = -1.0 / (6.0 * amin * jmax) * (3 * jmax * jmax * x1 - 3 * amin * amin * amin - 3 * amax * amax * amax - 6 * amax * jmax * v0 - a0 * a0 * a0 + 3 * a0 * a0 * amax + 3 * jmax * a0 * v0 - 3 * jmax * jmax * x0);
+                        //    //Console.WriteLine(vmax);
+
+                        //T1 = (amax - a0) / jmax;
+                        //T2 = 1.0 / amax * (vmax + amax * amax * (jmax - jmin) / (2 * jmin * jmax) + a0 * a0 / (2 * jmax));
+                        //T3 = -amax / jmin;
+
+                        //T5 = amin / jmin;
+                        //T6 = -1.0 / amin * (vmax + amin * amin * (jmax - jmin) / (2 * jmin * jmax));
+                        //T7 = -amin / jmax;
+
+                        //V1 = v0 + a0 * T1 + jmax / 2.0 * T1 * T1;
+                        //V2 = amax * T2 + V1;
+                        //V3 = 1.0 / 2.0 * jmin * T5 * T5 + vmax;
+                        //V4 = amin * T6 + V3;
+
+                        T1 = (amax - a0) / jmax;
+                        T3 = -amax / jmin;
+                        V1 = v0 + a0 * T1 + jmax / 2.0 * T1 * T1;
+                        T2 = 1.0 / amax * (vmax - V1 - jmin / 2.0 * T3 * T3 - amax * T3);
+                        V2 = amax * T2 + V1;
+
+                        if (T2 < 0) {
+                            Console.WriteLine("T2");
+
+                            // Gwarancja T2 = 0 i osiągnięcia vmax po czasie T1 + T3
+                            amax = Math.Sqrt(Math.Abs((2 * jmin * jmax * (vmax - v0) + jmin * a0 * a0) / (jmin - jmax)));
+
+                            T1 = (amax - a0) / J;
+                            T2 = 0.0;
+                            T3 = amax / J;
+
+                            V1 = v0 + a0 * T1 + J / 2.0 * T1 * T1;
+                            V2 = amax * T2 + V1;
+                        }
+
+                        T5 = amin / jmin;
+                        T7 = -amin / jmax;
+                        V3 = 1.0 / 2.0 * jmin * T5 * T5 + vmax;
+                        T6 = -1.0 / amin * (V3 + jmax / 2.0 * T7 * T7 + amin * T7);
+                        V4 = amin * T6 + V3;
+
+                        X1 = jmax / 6.0 * T1 * T1 * T1 + a0 / 2.0 * T1 * T1 + v0 * T1 + x0;
+                        X2 = amax / 2.0 * T2 * T2 + V1 * T2 + X1;
+                        X3 = jmin / 6.0 * T3 * T3 * T3 + amax / 2.0 * T3 * T3 + V2 * T3 + X2;
+
+                        T4 = -1.0 / vmax * (T7 * T7 * T7 * jmax / 6.0 + T5 * T5 * T5 * jmin / 6.0 + (T7 * T7 + T6 * T6) / 2.0 * amin + V4 * T7 + V3 * T6 + T5 * vmax - x1 + X3); //x0 jest juz w X3 (X1) !
+                        Console.WriteLine($"{T1}, {T2}, {T3}, {T4}, {T5}, {T6}, {T7}");
+
                     }
 
                     X4 = vmax * T4 + X3;
                     X5 = jmin / 6.0 * T5 * T5 * T5 + vmax * T5 + X4;
                     X6 = amin / 2.0 * T6 * T6 + V3 * T6 + X5;
                     double X7 = jmax / 6.0 * T7 * T7 * T7 + amin / 2.0 * T7 * T7 + V4 * T7 + X6;
+
+                    Console.WriteLine(X7);
 
                     //Console.WriteLine($"{T1}, {T2}, {T3}, {T4}, {T5}, {T6}, {T7}");
                 }
@@ -213,6 +242,7 @@ namespace PingPong {
 
                 //Thread.Sleep(999999);
 
+                //Console.WriteLine(x);
                 t += Ts;
 
                 return x;

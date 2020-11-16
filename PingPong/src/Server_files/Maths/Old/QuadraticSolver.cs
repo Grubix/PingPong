@@ -16,8 +16,8 @@ namespace PingPong {
             if (delta >= 0) {
                 double deltaSqrt = Math.Sqrt(delta);
 
-                x1 = new Complex(-b + deltaSqrt / (2.0 * a), 0.0);
-                x2 = new Complex(-b - deltaSqrt / (2.0 * a), 0.0);
+                x1 = new Complex((-b + deltaSqrt) / (2.0 * a), 0.0);
+                x2 = new Complex((-b - deltaSqrt) / (2.0 * a), 0.0);
             } else {
                 double absDeltaSqrt = Math.Sqrt(Math.Abs(delta));
                 double realPart = -b / (2.0 * a);
