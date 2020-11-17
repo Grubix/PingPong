@@ -43,7 +43,7 @@ namespace PingPong.OptiTrack {
 
             worker.DoWork += (s, e) => {
                 Start?.Invoke();
-                robot.ForceMoveTo(new E6POS(calibrationPoints[0], robot.CurrentPosition.ABC), 15);
+                robot.ForceMoveTo(new E6POS(calibrationPoints[0], robot.CurrentPosition.ABC), 10);
 
                 for (int i = 0; i < calibrationPoints.Count; i++) {
                     robot.ForceMoveTo(new E6POS(calibrationPoints[i], robot.CurrentPosition.ABC), 3);
@@ -60,7 +60,7 @@ namespace PingPong.OptiTrack {
                     ProgressChanged?.Invoke(progress, transformation);
                 }
 
-                robot.ForceMoveTo(robot.HomePosition, 15);
+                robot.ForceMoveTo(robot.HomePosition, 10);
             };
 
             worker.RunWorkerCompleted += (s, e) => {
@@ -99,48 +99,39 @@ namespace PingPong.OptiTrack {
         private void CalculateCalibrationPoints(KUKARobot robot, int pointsPerLine) {
             calibrationPoints.Clear();
 
-            var startPoint = robot.LowerWorkspacePoint;
-            var endPoint = robot.UpperWorkspacePoint;
+            var x0 = robot.LowerWorkspacePoint;
+            var x1 = robot.UpperWorkspacePoint;
 
             // Shrink workspace by 5mm
             var offset = Vector<double>.Build.DenseOfArray(new double[] {
-                endPoint[0] > startPoint[0] ? 5.0 : -5.0,
-                endPoint[1] > startPoint[1] ? 5.0 : -5.0,
-                endPoint[2] > startPoint[2] ? 5.0 : -5.0
+                x1[0] > x0[0] ? 5.0 : -5.0,
+                x1[1] > x0[1] ? 5.0 : -5.0,
+                x1[2] > x0[2] ? 5.0 : -5.0
             });
 
-            startPoint += offset;
-            endPoint -= offset;
+            x0 += offset;
+            x1 -= offset;
 
             // Cubid points
-            var p0 = Vector<double>.Build.DenseOfArray(new double[] { startPoint[0], startPoint[1], startPoint[2] });
-            var p1 = Vector<double>.Build.DenseOfArray(new double[] { endPoint[0], startPoint[1], startPoint[2] });
-            var p2 = Vector<double>.Build.DenseOfArray(new double[] { startPoint[0], endPoint[1], startPoint[2] });
-            var p3 = Vector<double>.Build.DenseOfArray(new double[] { endPoint[0], endPoint[1], startPoint[2] });
-            var p4 = Vector<double>.Build.DenseOfArray(new double[] { startPoint[0], startPoint[1], endPoint[2] });
-            var p5 = Vector<double>.Build.DenseOfArray(new double[] { endPoint[0], startPoint[1], endPoint[2] });
-            var p6 = Vector<double>.Build.DenseOfArray(new double[] { startPoint[0], endPoint[1], endPoint[2] });
-            var p7 = Vector<double>.Build.DenseOfArray(new double[] { endPoint[0], endPoint[1], endPoint[2] });
+            var p0 = Vector<double>.Build.DenseOfArray(new double[] { x0[0], x0[1], x0[2] });
+            var p1 = Vector<double>.Build.DenseOfArray(new double[] { x1[0], x0[1], x0[2] });
+            var p2 = Vector<double>.Build.DenseOfArray(new double[] { x0[0], x1[1], x0[2] });
+            var p3 = Vector<double>.Build.DenseOfArray(new double[] { x1[0], x1[1], x0[2] });
+            var p4 = Vector<double>.Build.DenseOfArray(new double[] { x0[0], x0[1], x1[2] });
+            var p5 = Vector<double>.Build.DenseOfArray(new double[] { x1[0], x0[1], x1[2] });
+            var p6 = Vector<double>.Build.DenseOfArray(new double[] { x0[0], x1[1], x1[2] });
+            var p7 = Vector<double>.Build.DenseOfArray(new double[] { x1[0], x1[1], x1[2] });
 
-            // p0 -> p5 -> p3 -> p6 -> p0 -> p4 -> p1 -> p7 -> p2 -> p0
-            AddCalibrationPoints(p0, p5, pointsPerLine, calibrationPoints);
-            AddCalibrationPoints(p5, p3, pointsPerLine, calibrationPoints);
-            AddCalibrationPoints(p3, p6, pointsPerLine, calibrationPoints);
-            AddCalibrationPoints(p6, p0, pointsPerLine, calibrationPoints);
-            AddCalibrationPoints(p0, p4, pointsPerLine, calibrationPoints);
-            AddCalibrationPoints(p4, p1, pointsPerLine, calibrationPoints);
-            AddCalibrationPoints(p1, p7, pointsPerLine, calibrationPoints);
-            AddCalibrationPoints(p7, p2, pointsPerLine, calibrationPoints);
-            AddCalibrationPoints(p2, p0, pointsPerLine, calibrationPoints);
-        }
+            var points = new Vector<double>[] { p0, p5, p3, p6, p0, p4, p1, p7, p2, p0 };
 
-        private void AddCalibrationPoints(Vector<double> startPoint, Vector<double> endPoint, 
-            int pointsPerLine, List<Vector<double>> points) {
+            for (int i = 0; i < points.Length - 1; i++) {
+                var startPoint = points[i];
+                var endPoint = points[i + 1];
+                var delta = (startPoint - endPoint) / (pointsPerLine + 1);
 
-            var offset = (endPoint - startPoint) / (pointsPerLine + 1);
-
-            for (int i = 0; i < pointsPerLine + 1; i++) {
-                calibrationPoints.Add(startPoint + offset * i);
+                for (int j = 0; j < pointsPerLine + 1; j++) {
+                    calibrationPoints.Add(startPoint + delta * j);
+                }
             }
         }
 

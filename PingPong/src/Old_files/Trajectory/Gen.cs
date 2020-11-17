@@ -23,6 +23,8 @@ namespace PingPong {
 
             private double oldX;
 
+            private double sign;
+
             public SCurve() {
                 vmax = 125;
                 vmin = -vmax;
@@ -43,16 +45,30 @@ namespace PingPong {
                     return x0;
                 } else {
                     if (x1 != oldX) {
+                        oldX = x1;
                         decelerationPhase = false;
-                    }
 
-                    oldX = x1;
+                        if (x1 < x0) {
+                            x1 = -x1;
+
+                            Console.WriteLine("tt");
+
+                            vmin = -vmin;
+                            vmax = -vmax;
+                            amin = -amin;
+                            amax = -amax;
+                            jmin = -jmin;
+                            jmax = -jmax;
+                        }
+                    }
                 }
 
                 if (!decelerationPhase) {
                     Td1 = (amin - a) / jmin;
-                    Td2 = (0 - amin) / jmax; //TODO: tutaj a0
+                    Td2 = (0 - amin) / jmax; //TODO: tutaj a0 zamiast 0
                     Td = -v_1 / amin + Td1 * (amin - a_1) / (2.0 * amin) + Td2 / 2.0;
+
+                    Console.WriteLine($"{Td1}, {Td2}, {Td}");
 
                     if (Td < Td1 + Td2) {
                         Td1 = -a / jmin + 1.0 / (jmin * (jmin - jmax)) * Math.Sqrt((jmax - jmin) * (a * a * jmax - jmin * (2.0 * jmax * v_1)));
@@ -89,17 +105,10 @@ namespace PingPong {
                         int delta = k - p;
 
                         if (delta >= 0 && delta < Td1 / Ts) {
-                            //Console.WriteLine("1");
-
                             j = jmin;
                         } else if (delta >= Td1 / Ts && delta <= (Td - Td2) / Ts) {
-                            //Console.WriteLine($"{Td1 / Ts}[  {delta}  ]{(Td - Td2) / Ts}");
-                            //Console.WriteLine("2");
-
                             j = 0;
                         } else if (delta > (Td - Td2) / Ts && delta <= Td / Ts) {
-                            //Console.WriteLine("3");
-
                             j = jmax;
                         } else {
                             return x0;
@@ -109,19 +118,13 @@ namespace PingPong {
                     int delta = k - p;
 
                     if (delta >= 0 && delta < Td1 / Ts) {
-                        //Console.WriteLine("1");
-
                         j = jmin;
                     } else if (delta >= Td1 / Ts && delta <= (Td - Td2) / Ts) {
-                        //Console.WriteLine($"{Td1 / Ts}[  {delta}  ]{(Td - Td2) / Ts}");
-                        //Console.WriteLine("2");
-
                         j = 0;
                     } else if (delta > (Td - Td2) / Ts && delta <= Td / Ts) {
-                        //Console.WriteLine("3");
-
                         j = jmax;
                     } else {
+
                         return x0;
                     }
                 }
@@ -129,8 +132,6 @@ namespace PingPong {
                 a = a_1 + Ts / 2.0 * (j_1 + j);
                 v = v_1 + Ts / 2.0 * (a_1 + a);
                 x = x_1 + Ts / 2.0 * (v_1 + v);
-
-                Console.WriteLine(x - x_1);
 
                 j_1 = j;
                 a_1 = a;

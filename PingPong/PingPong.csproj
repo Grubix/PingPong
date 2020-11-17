@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7794D92C-D362-4585-959B-529621E29FAD}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>PingPong</RootNamespace>
     <AssemblyName>PingPong</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -77,15 +77,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Old_files\Gen.cs" />
-    <Compile Include="src\Old_files\Gen3.cs" />
-    <Compile Include="src\Old_files\Gen2.cs" />
-    <Compile Include="src\Old_files\Gen4.cs" />
-    <Compile Include="src\Old_files\gen5.cs" />
-    <Compile Include="src\Old_files\Generator.cs" />
-    <Compile Include="src\Old_files\TrajectoryGenerator2.cs" />
-    <Compile Include="src\Old_files\TrajectoryGenerator7.cs" />
-    <Compile Include="src\Server_files\Devices\KUKA\DummyKUKARobot.cs" />
+    <Compile Include="src\Old_files\Trajectory\Gen.cs" />
+    <Compile Include="src\Old_files\Trajectory\Gen3.cs" />
+    <Compile Include="src\Old_files\Trajectory\Gen2.cs" />
+    <Compile Include="src\Old_files\Trajectory\Gen4.cs" />
+    <Compile Include="src\Old_files\Trajectory\gen5.cs" />
+    <Compile Include="src\Old_files\Trajectory\Generator.cs" />
+    <Compile Include="src\Old_files\Trajectory\TrajectoryGenerator2.cs" />
+    <Compile Include="src\Old_files\Trajectory\TrajectoryGenerator7.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\E6AXIS.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\BallData.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\CalibrationTool.cs" />
@@ -95,24 +94,24 @@
     <Compile Include="src\Server_files\Forms\CalibrationWindow.Designer.cs">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Server_files\Forms\KUKADataPanel.cs">
+    <Compile Include="src\Server_files\Forms\KUKAChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="src\Server_files\Forms\KUKADataPanel.Designer.cs">
-      <DependentUpon>KUKADataPanel.cs</DependentUpon>
+    <Compile Include="src\Server_files\Forms\KUKAChart.Designer.cs">
+      <DependentUpon>KUKAChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Server_files\Maths\Old\CubicSolver.cs" />
-    <Compile Include="src\Server_files\Maths\Old\LUD3.cs" />
-    <Compile Include="src\Server_files\Maths\Old\Matrix3.cs" />
-    <Compile Include="src\Server_files\Maths\Old\QuadraticSolver.cs" />
-    <Compile Include="src\Server_files\Maths\Old\QuarticSolver.cs" />
-    <Compile Include="src\Server_files\Maths\Old\SVD3.cs" />
+    <Compile Include="src\Old_files\Maths\CubicSolver.cs" />
+    <Compile Include="src\Old_files\Maths\LUD3.cs" />
+    <Compile Include="src\Old_files\Maths\Matrix3.cs" />
+    <Compile Include="src\Old_files\Maths\QuadraticSolver.cs" />
+    <Compile Include="src\Old_files\Maths\QuarticSolver.cs" />
+    <Compile Include="src\Old_files\Maths\SVD3.cs" />
     <Compile Include="src\Server_files\Maths\Transformation.cs" />
-    <Compile Include="src\Old_files\PolynominalTest.cs" />
+    <Compile Include="src\Old_files\Trajectory\PolynominalTest.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\TrajectoryGenerator.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RobotLimits.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\InputFrame.cs" />
-    <Compile Include="src\Old_files\OptiTrackCalibration.cs" />
+    <Compile Include="src\Old_files\Trajectory\OptiTrackCalibration.cs" />
     <Compile Include="src\Server_files\Forms\ThreadSafeChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -130,7 +129,7 @@
     <Compile Include="src\Server_files\Devices\KUKA\E6POS.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\KUKARobot.cs" />
     <Compile Include="src\Server_files\Devices\OptiTrack\OptiTrackSystem.cs" />
-    <Compile Include="src\Server_files\Maths\Old\Vector3.cs" />
+    <Compile Include="src\Old_files\Maths\Vector3.cs" />
     <Compile Include="src\Server_files\Program.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\InputFrame.cs" />
     <Compile Include="src\Server_files\Devices\KUKA\RSI\OutputFrame.cs" />
@@ -153,8 +152,8 @@
     <EmbeddedResource Include="src\Server_files\Forms\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Server_files\Forms\KUKADataPanel.resx">
-      <DependentUpon>KUKADataPanel.cs</DependentUpon>
+    <EmbeddedResource Include="src\Server_files\Forms\KUKAChart.resx">
+      <DependentUpon>KUKAChart.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="src\Docs_files\eggert_comparison_mva97.pdf" />
@@ -178,9 +177,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\OptiTrack_files\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="ping-pong.ico" />
     <Content Include="src\KUKA_files\RSI_EthernetConfig.xml" />

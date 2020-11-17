@@ -3,18 +3,18 @@
 namespace PingPong.KUKA {
     public class RobotLimits {
 
-        public (double min, double max) LimitX { get; set; } = (-1000, 1000);
-        public (double min, double max) LimitY { get; set; } = (-1000, 1000);
-        public (double min, double max) LimitZ { get; set; } = (-1000, 1000);
+        public (double min, double max) LimitX { get; set; }
+        public (double min, double max) LimitY { get; set; }
+        public (double min, double max) LimitZ { get; set; }
 
-        public (double min, double max) LimitA1 { get; set; } = (-180.0, 180.0);
-        public (double min, double max) LimitA2 { get; set; } = (-180.0, 180.0);
-        public (double min, double max) LimitA3 { get; set; } = (-180.0, 180.0);
-        public (double min, double max) LimitA4 { get; set; } = (-180.0, 180.0);
-        public (double min, double max) LimitA5 { get; set; } = (-180.0, 180.0);
-        public (double min, double max) LimitA6 { get; set; } = (-180.0, 180.0);
+        public (double min, double max) LimitA1 { get; set; }
+        public (double min, double max) LimitA2 { get; set; }
+        public (double min, double max) LimitA3 { get; set; }
+        public (double min, double max) LimitA4 { get; set; }
+        public (double min, double max) LimitA5 { get; set; }
+        public (double min, double max) LimitA6 { get; set; }
 
-        public (double maxXYZ, double maxABC) LimitCorrection { get; set; } = (0.5, 0.05);
+        public (double maxXYZ, double maxABC) LimitCorrection { get; set; }
 
         /// <summary>
         /// 
