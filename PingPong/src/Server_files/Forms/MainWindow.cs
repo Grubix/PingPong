@@ -37,11 +37,11 @@ namespace PingPong.Forms {
 
             double current = 0.0;
             double target = 0.0;
-            double vel = 25.0;
+            double vel = 125.0;
 
             TrajectoryGenerator7 generator = new TrajectoryGenerator7();
             Generator generator1 = new Generator();
-            Gen4 gen = new Gen4();
+            Gen gen = new Gen();
 
             Task.Run(() => {
                 while(true) {
@@ -49,13 +49,13 @@ namespace PingPong.Forms {
 
                     current = gen.GetNextValue(current, target, vel);
 
-                    realTimeChart.AddPoint(gen.X.v, gen.X.a);
+                    realTimeChart.AddPoint(current, gen.X.v);
 
                 }
             });
 
-            incXBtn.Click += (s, e) => { target += 12.0; };
-            decXBtn.Click += (s, e) => target -= 10.0;
+            incXBtn.Click += (s, e) => { target += 150.0; };
+            decXBtn.Click += (s, e) => target -= 150.0;
         }
 
         private void InitializeControls() {

@@ -26,7 +26,7 @@ namespace PingPong.Forms {
             InitializeComponent();
 
             MaxSamples = 7000;
-            RefreshTime = 70;
+            RefreshTime = 30;
 
             series1 = new Series {
                 ChartType = SeriesChartType.FastLine,
@@ -38,16 +38,20 @@ namespace PingPong.Forms {
                 BorderWidth = 3
             };
 
-            StripLine stripLine2 = new StripLine();
-            stripLine2.BackColor = Color.FromArgb(120, Color.Gold);
-            stripLine2.IntervalOffset = -1.5;
-            stripLine2.IntervalOffsetType = DateTimeIntervalType.Days;
-            stripLine2.Interval = 50;
-            stripLine2.IntervalType = DateTimeIntervalType.Weeks;
-            stripLine2.StripWidth = 2;
-            stripLine2.StripWidthType = DateTimeIntervalType.Days;
-            stripLine2.Text = "max velocity";
-            chart.ChartAreas[0].AxisY.StripLines.Add(stripLine2);
+            double lineHeight = 125;
+            HorizontalLineAnnotation ann = new HorizontalLineAnnotation();
+
+            ann.AxisX = chart.ChartAreas[0].AxisX;
+            ann.AxisY = chart.ChartAreas[0].AxisY;
+            ann.IsSizeAlwaysRelative = false;
+            ann.AnchorY = lineHeight;
+            ann.IsInfinitive = true;
+            ann.ClipToChartArea = chart.ChartAreas[0].Name;
+            ann.LineColor = Color.Red; 
+            ann.LineWidth = 2;
+            ann.LineDashStyle = ChartDashStyle.DashDot;
+    
+            chart.Annotations.Add(ann);
 
             chart.ChartAreas[0].AxisX.Minimum = 0;
             chart.ChartAreas[0].AxisX.Maximum = MaxSamples;

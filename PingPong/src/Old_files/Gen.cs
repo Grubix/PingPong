@@ -15,75 +15,114 @@ namespace PingPong {
 
             public double jmin, jmax, j, j_1;
 
-            private uint k, p;
+            private int k, p;
 
             private bool decelerationPhase = false;
 
+            private double Td1, Td2, Td;
+
+            private double oldX;
+
             public SCurve() {
-                vmax = 0.5 / 0.004;
+                vmax = 125;
                 vmin = -vmax;
 
-                amax = vmax / 0.004;
+                amax = 50;
                 amin = -amax;
 
-                jmax = amax / 0.004;
+                jmax = 100;
                 jmin = -jmax;
-
-                Console.WriteLine(vmax);
-                Console.WriteLine(amax);
-                Console.WriteLine(jmax);
             }
 
-            public double GetNextValue(double x0, double x1, double vmax) {
-                if (Math.Abs(x0 - x1) <= 0.01) {
+            public double GetNextValue(double x0, double x1, double vel) {
+                if (Math.Abs(x0 - x1) <= 0.001) { //TODO: moze to wgl wywalic ??? wtedy ruch jest znacznie lepszy na koncowce
                     decelerationPhase = false;
                     v = a = j = v_1 = a_1 = j_1 = 0;
                     k = 0;
+                    v_1 = 0.0;
                     return x0;
+                } else {
+                    if (x1 != oldX) {
+                        decelerationPhase = false;
+                    }
+
+                    oldX = x1;
                 }
 
-                double Tj2a = (amin - a) / jmin; 
-                double Tj2b = (a - amin) / jmax;
-                double Td = -v / amin + Tj2a * (amin - a) / (2 * amin) + Tj2b / 2.0;
-                double Td_2 = Td * Td;
-                double Tj2a_2 = Tj2a * Tj2a;
-                double Tj2b_3 = Tj2b * Tj2b * Tj2b;
+                if (!decelerationPhase) {
+                    Td1 = (amin - a) / jmin;
+                    Td2 = (0 - amin) / jmax; //TODO: tutaj a0
+                    Td = -v_1 / amin + Td1 * (amin - a_1) / (2.0 * amin) + Td2 / 2.0;
 
-                double h = 1.0 / 2.0 * a * Td_2 + 
-                    (jmin * Tj2a * (3 * Td_2 - 3.0 * Td * Tj2a + Tj2a_2) + jmax * Tj2b_3) / 6.0 + 
-                    Td * v;
+                    if (Td < Td1 + Td2) {
+                        Td1 = -a / jmin + 1.0 / (jmin * (jmin - jmax)) * Math.Sqrt((jmax - jmin) * (a * a * jmax - jmin * (2.0 * jmax * v_1)));
+                        Td2 = 1.0 / (jmax * (jmax - jmin)) * Math.Sqrt((jmax - jmin) * (a * a * jmax - jmin * (2.0 * jmax * v_1)));
+                        Td = Td1 + Td2;
+                    }
 
-                if (h < x1 - x0) {
-                    // Phase 1 - acceleration
+                    double Td_2 = Td * Td;
+                    double Tj2a_2 = Td1 * Td1;
+                    double Tj2b_3 = Td2 * Td2 * Td2;
 
-                    if (v - a * a / (2 * jmin) < vmax) {
-                        if (a < amax) {
-                            j = jmax;
+                    double h = 1.0 / 2.0 * a * Td_2 +
+                        (jmin * Td1 * (3 * Td_2 - 3.0 * Td * Td1 + Tj2a_2) + jmax * Tj2b_3) / 6.0 +
+                        Td * v_1;
+
+                    if (h < x1 - x) {
+                        if (v - a * a / (2 * jmin) < vmax) {
+                            if (a < amax) {
+                                j = jmax;
+                            } else {
+                                j = 0.0;
+                            }
                         } else {
-                            j = 0.0;
+                            if (a > 0) {
+                                j = jmin;
+                            } else {
+                                j = 0.0;
+                            }
                         }
                     } else {
-                        if (a > 0) {
+                        p = k;
+                        decelerationPhase = true;
+
+                        int delta = k - p;
+
+                        if (delta >= 0 && delta < Td1 / Ts) {
+                            //Console.WriteLine("1");
+
                             j = jmin;
+                        } else if (delta >= Td1 / Ts && delta <= (Td - Td2) / Ts) {
+                            //Console.WriteLine($"{Td1 / Ts}[  {delta}  ]{(Td - Td2) / Ts}");
+                            //Console.WriteLine("2");
+
+                            j = 0;
+                        } else if (delta > (Td - Td2) / Ts && delta <= Td / Ts) {
+                            //Console.WriteLine("3");
+
+                            j = jmax;
                         } else {
-                            j = 0.0;
+                            return x0;
                         }
                     }
                 } else {
-                    // Phase 2 - deceleration
-                    decelerationPhase = true;
-                    p = k;
-                }
+                    int delta = k - p;
 
-                if (decelerationPhase) {
-                    uint delta = k - p;
+                    if (delta >= 0 && delta < Td1 / Ts) {
+                        //Console.WriteLine("1");
 
-                    if (delta >= 0 && delta < Tj2a / Ts) {
                         j = jmin;
-                    } else if(delta >= Tj2a / Ts && delta <= (Td - Tj2b) / Ts) {
-                        j = 0.0;
-                    } else {
+                    } else if (delta >= Td1 / Ts && delta <= (Td - Td2) / Ts) {
+                        //Console.WriteLine($"{Td1 / Ts}[  {delta}  ]{(Td - Td2) / Ts}");
+                        //Console.WriteLine("2");
+
+                        j = 0;
+                    } else if (delta > (Td - Td2) / Ts && delta <= Td / Ts) {
+                        //Console.WriteLine("3");
+
                         j = jmax;
+                    } else {
+                        return x0;
                     }
                 }
 
@@ -91,12 +130,12 @@ namespace PingPong {
                 v = v_1 + Ts / 2.0 * (a_1 + a);
                 x = x_1 + Ts / 2.0 * (v_1 + v);
 
+                Console.WriteLine(x - x_1);
+
                 j_1 = j;
                 a_1 = a;
                 v_1 = v;
                 x_1 = x;
-
-                Console.WriteLine(v);
 
                 k++;
                 return x;
