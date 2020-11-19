@@ -27,7 +27,7 @@ namespace PingPong.Forms {
 
             robotSelect.DropDown += (s, e) => {
                 if (robotsList.Contains(robot1)) {
-                    if(!robot1.IsInitialized()) {
+                    if (!robot1.IsInitialized()) {
                         robotsList.Remove(robot1);
                     }
                 } else {
@@ -47,7 +47,7 @@ namespace PingPong.Forms {
                 }
             };
             robotSelect.TextChanged += (s, e) => {
-                selectedRobot = (KUKARobot) robotSelect.SelectedItem;
+                selectedRobot = (KUKARobot)robotSelect.SelectedItem;
 
                 if (selectedRobot != null) {
                     startBtn.Enabled = true;
@@ -100,7 +100,7 @@ namespace PingPong.Forms {
                 });
             };
             calibrationTool.Completed += (transformation) => {
-                ballData.Transformations[selectedRobot] = transformation;
+                ballData.SetTransformation(selectedRobot, transformation);
                 UpdateUI(() => {
                     robotSelect.Enabled = true;
                     startBtn.Enabled = true;

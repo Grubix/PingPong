@@ -1,5 +1,5 @@
 ﻿namespace PingPong.Forms {
-    partial class KUKADataPanel {
+    partial class RobotDataPanel {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -23,10 +23,10 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.panel2 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.positionChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -116,13 +116,13 @@
             // 
             // positionChart
             // 
-            chartArea3.Name = "ChartArea1";
-            this.positionChart.ChartAreas.Add(chartArea3);
+            chartArea1.Name = "ChartArea1";
+            this.positionChart.ChartAreas.Add(chartArea1);
             this.positionChart.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend3.Alignment = System.Drawing.StringAlignment.Center;
-            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-            legend3.Name = "Legend1";
-            this.positionChart.Legends.Add(legend3);
+            legend1.Alignment = System.Drawing.StringAlignment.Center;
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+            legend1.Name = "Legend1";
+            this.positionChart.Legends.Add(legend1);
             this.positionChart.Location = new System.Drawing.Point(0, 0);
             this.positionChart.Name = "positionChart";
             this.positionChart.Size = new System.Drawing.Size(740, 250);
@@ -131,13 +131,13 @@
             // 
             // velocityChart
             // 
-            chartArea4.Name = "ChartArea1";
-            this.velocityChart.ChartAreas.Add(chartArea4);
+            chartArea2.Name = "ChartArea1";
+            this.velocityChart.ChartAreas.Add(chartArea2);
             this.velocityChart.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend4.Alignment = System.Drawing.StringAlignment.Center;
-            legend4.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-            legend4.Name = "Legend1";
-            this.velocityChart.Legends.Add(legend4);
+            legend2.Alignment = System.Drawing.StringAlignment.Center;
+            legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+            legend2.Name = "Legend1";
+            this.velocityChart.Legends.Add(legend2);
             this.velocityChart.Location = new System.Drawing.Point(0, 0);
             this.velocityChart.Name = "velocityChart";
             this.velocityChart.Size = new System.Drawing.Size(740, 246);

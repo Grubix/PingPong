@@ -3,7 +3,7 @@
 namespace PingPong.Maths {
     class Vector3 {
 
-        private double[] components;
+        private readonly double[] components;
 
         public double X {
             get {

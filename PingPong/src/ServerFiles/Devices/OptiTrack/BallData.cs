@@ -8,16 +8,20 @@ namespace PingPong.OptiTrack {
 
         //TODO: beda potrzebne locki ??
 
-        public Dictionary<KUKARobot, Transformation> Transformations { get; }
+        private Dictionary<KUKARobot, Transformation> transformations;
 
         private Vector<double> position;
 
         private Vector<double> velocity;
 
         public BallData() {
-            Transformations = new Dictionary<KUKARobot, Transformation>();
+            transformations = new Dictionary<KUKARobot, Transformation>();
             position = Vector<double>.Build.Dense(3);
             velocity = Vector<double>.Build.Dense(3);
+        }
+
+        public void SetTransformation(KUKARobot robot, Transformation transformation) {
+            transformations[robot] = transformation;
         }
 
         public void Update(InputFrame receivedFrame) {
@@ -28,11 +32,11 @@ namespace PingPong.OptiTrack {
         }
 
         public Vector<double> GetPosition(KUKARobot robot) {
-            return Transformations[robot].Convert(position);
+            return transformations[robot].Convert(position);
         }
 
         public Vector<double> GetVelocity(KUKARobot robot) {
-            return Transformations[robot].Convert(velocity);
+            return transformations[robot].Convert(velocity);
         }
 
     }

@@ -46,7 +46,7 @@ namespace PingPong.Maths {
             double m32 = matrix[2, 1];
             double m33 = matrix[2, 2];
 
-            return 
+            return
                 m11 * (m22 * m33 - m23 * m32)
                 - m12 * (m21 * m33 - m23 * m31)
                 - m13 * (m22 * m31 - m21 * m32);

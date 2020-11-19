@@ -6,11 +6,11 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PingPong.Forms {
-    public partial class KUKADataPanel : UserControl {
+    public partial class RobotDataPanel : UserControl {
 
         private const double Ts = 100;
 
-        private const int maxSamples = 7000;
+        private const int maxSamples = 5000;
 
         private readonly Stopwatch stopWatch;
 
@@ -24,7 +24,7 @@ namespace PingPong.Forms {
 
         private Series vx, vy, vz, va, vb, vc;
 
-        public KUKADataPanel() {
+        public RobotDataPanel() {
             InitializeComponent();
             InitializePositionChart();
             InitializeVelocityChart();
@@ -163,6 +163,13 @@ namespace PingPong.Forms {
                 ChartType = SeriesChartType.FastLine
             };
 
+            sx.Points.AddXY(0, 0);
+            sy.Points.AddXY(0, 0);
+            sz.Points.AddXY(0, 0);
+            sa.Points.AddXY(0, 0);
+            sb.Points.AddXY(0, 0);
+            sc.Points.AddXY(0, 0);
+
             InitializeCheckBox(positionChart, sx, posXCheck);
             InitializeCheckBox(positionChart, sy, posYCheck);
             InitializeCheckBox(positionChart, sz, posZCheck);
@@ -207,6 +214,13 @@ namespace PingPong.Forms {
                 Name = "velocity C",
                 ChartType = SeriesChartType.FastLine
             };
+
+            vx.Points.AddXY(0, 0);
+            vy.Points.AddXY(0, 0);
+            vz.Points.AddXY(0, 0);
+            va.Points.AddXY(0, 0);
+            vb.Points.AddXY(0, 0);
+            vc.Points.AddXY(0, 0);
 
             InitializeCheckBox(velocityChart, vx, velXCheck);
             InitializeCheckBox(velocityChart, vy, velYCheck);

@@ -47,10 +47,10 @@ namespace PingPong.Forms {
             ann.AnchorY = lineHeight;
             ann.IsInfinitive = true;
             ann.ClipToChartArea = chart.ChartAreas[0].Name;
-            ann.LineColor = Color.Red; 
+            ann.LineColor = Color.Red;
             ann.LineWidth = 2;
             ann.LineDashStyle = ChartDashStyle.DashDot;
-    
+
             chart.Annotations.Add(ann);
 
             chart.ChartAreas[0].AxisX.Minimum = 0;

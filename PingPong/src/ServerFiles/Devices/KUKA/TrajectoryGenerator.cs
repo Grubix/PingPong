@@ -39,10 +39,10 @@ namespace PingPong.KUKA {
             public double GetNextValue() {
                 return nextValue;
             }
-			
-			public void ResetVelocity() {
-				velocity = 0.0;
-			}
+
+            public void ResetVelocity() {
+                velocity = 0.0;
+            }
         }
 
         private readonly Parameter X = new Parameter();
@@ -63,7 +63,7 @@ namespace PingPong.KUKA {
 
         public E6POS GetNextCorrection(E6POS currentPosition, E6POS targetPosition, double time) {
             if (currentPosition == targetPosition) {
-				ResetVelocity();
+                ResetVelocity();
                 return targetPosition;
             }
             if (totalTime2Dest != time || this.targetPosition != targetPosition) {
@@ -87,7 +87,7 @@ namespace PingPong.KUKA {
                 );
             } else {
                 totalTime2Dest = 0.0;
-				ResetVelocity();
+                ResetVelocity();
                 return targetPosition;
             }
         }
@@ -102,20 +102,20 @@ namespace PingPong.KUKA {
             Vector<double> targetABC = targetPosition.ABC;
 
             // handling passing through +-180
-			if (targetABC[0] - currentABC[0] > 180.0 || targetABC[0] - currentABC[0] < -180.0) {
-				currentABC[0] = (currentABC[0] + 360.0) % 360 - currentABC[0];
-				targetABC[0] = (targetABC[0] + 360.0) % 360 - targetABC[0];
-			}
+            if (targetABC[0] - currentABC[0] > 180.0 || targetABC[0] - currentABC[0] < -180.0) {
+                currentABC[0] = (currentABC[0] + 360.0) % 360 - currentABC[0];
+                targetABC[0] = (targetABC[0] + 360.0) % 360 - targetABC[0];
+            }
 
             if (targetABC[1] - currentABC[1] > 180.0 || targetABC[1] - currentABC[1] < -180.0) {
-				currentABC[1] = (currentABC[1] + 360.0) % 360 - currentABC[1];
-				targetABC[1] = (targetABC[1] + 360.0) % 360 - targetABC[1];
-			}
+                currentABC[1] = (currentABC[1] + 360.0) % 360 - currentABC[1];
+                targetABC[1] = (targetABC[1] + 360.0) % 360 - targetABC[1];
+            }
 
             if (targetABC[2] - currentABC[2] > 180.0 || targetABC[2] - currentABC[2] < -180.0) {
-				currentABC[2] = (currentABC[2] + 360.0) % 360 - currentABC[2];
-				targetABC[2] = (targetABC[2] + 360.0) % 360 - targetABC[2];
-			}
+                currentABC[2] = (currentABC[2] + 360.0) % 360 - currentABC[2];
+                targetABC[2] = (targetABC[2] + 360.0) % 360 - targetABC[2];
+            }
 
             currentPosition += new E6POS(0.0, 0.0, 0.0, currentABC[0], currentABC[1], currentABC[2]);
             targetPosition += new E6POS(0.0, 0.0, 0.0, targetABC[0], targetABC[1], targetABC[2]);
@@ -142,15 +142,15 @@ namespace PingPong.KUKA {
             B.UpdateVelocity(period);
             C.UpdateVelocity(period);
         }
-		
-		private void ResetVelocity() {
-			X.ResetVelocity();
-			Y.ResetVelocity();
-			Z.ResetVelocity();
-			A.ResetVelocity();
-			B.ResetVelocity();
-			C.ResetVelocity();
-		}
+
+        private void ResetVelocity() {
+            X.ResetVelocity();
+            Y.ResetVelocity();
+            Z.ResetVelocity();
+            A.ResetVelocity();
+            B.ResetVelocity();
+            C.ResetVelocity();
+        }
 
     }
 }

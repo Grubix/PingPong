@@ -146,7 +146,7 @@ namespace PingPong.OptiTrack {
             (double x, double y, double z) p6 = (x0, y1, z1);
             (double x, double y, double z) p7 = (x1, y1, z1);
 
-            var points = new[] { p0, p5, p3, p6, p0, p4, p1, p7, p2, p0 };
+            var points = new[] { p0, p5, p3, p6, p0, p4, p1, p7, p2, p4 };
 
             for (int i = 0; i < points.Length - 1; i++) {
                 var startPoint = points[i];

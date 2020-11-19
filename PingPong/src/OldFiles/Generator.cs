@@ -1,5 +1,4 @@
-﻿using PingPong.Maths;
-using System;
+﻿using System;
 
 namespace PingPong {
     class Generator {

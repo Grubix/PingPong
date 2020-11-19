@@ -38,7 +38,7 @@ namespace PingPong.Maths {
             var realRoots = new List<double>();
 
             foreach (var root in roots) {
-                if(root.Imaginary == 0.0) {
+                if (root.Imaginary == 0.0) {
                     realRoots.Add(root.Real);
                 }
             }

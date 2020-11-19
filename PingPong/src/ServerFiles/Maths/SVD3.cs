@@ -8,7 +8,7 @@ namespace PingPong.Maths {
     /// </summary>
     class SVD3 {
 
-        private const int maxIterations = 100000; 
+        private const int maxIterations = 100000;
 
         public Matrix3 U { get; private set; }
 
@@ -25,7 +25,7 @@ namespace PingPong.Maths {
             V = Matrix3.Identity();
 
             int currentIteration = 0;
-            while(!CheckError(S, tolerance)) {
+            while (!CheckError(S, tolerance)) {
                 Compute(S);
 
                 if (currentIteration == maxIterations) {

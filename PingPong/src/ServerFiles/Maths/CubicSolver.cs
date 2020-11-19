@@ -41,7 +41,7 @@ namespace PingPong.Maths {
             } else {
                 Q = -Q;
                 double r13 = 2.0 * Math.Sqrt(Q);
-                double dum1 = Math.Acos(R / Math.Sqrt(Q *Q * Q));
+                double dum1 = Math.Acos(R / Math.Sqrt(Q * Q * Q));
 
                 x1 = new Complex(-term1 + r13 * Math.Cos(dum1 / 3.0), 0.0);
                 x2 = new Complex(-term1 + r13 * Math.Cos((dum1 + 2.0 * Math.PI) / 3.0), 0.0);

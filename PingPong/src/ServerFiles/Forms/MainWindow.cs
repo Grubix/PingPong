@@ -1,11 +1,8 @@
 ﻿using PingPong.Applications;
 using PingPong.KUKA;
 using PingPong.OptiTrack;
-using PingPongs;
 using System;
 using System.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PingPong.Forms {

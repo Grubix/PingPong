@@ -94,7 +94,7 @@ namespace PingPong.KUKA {
         }
 
         public override string ToString() {
-            return 
+            return
                 $"X={Math.Round(X * 1000) / 1000}, " +
                 $"Y={Math.Round(Y * 1000) / 1000}, " +
                 $"Z={Math.Round(Z * 1000) / 1000}, " +

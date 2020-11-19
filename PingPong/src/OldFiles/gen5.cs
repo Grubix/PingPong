@@ -15,7 +15,7 @@ namespace PingPong {
 
             public void UpdateCoefficients(double currentValue, double targetValue, double velocity) {
                 t = 0.0;
-                
+
                 x0 = currentValue;
                 x1 = targetValue;
                 v0 = v;

@@ -1,5 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -114,7 +113,7 @@ namespace PingPong.KUKA {
         public (double X, double Y, double Z) CurrentXYZVelocity {
             get {
                 lock (targetPositionSyncLock) {
-                    return (126.0, 2.2, -126.0);
+                    return generator.CurrentXYZVelocity;
                 }
             }
         }
@@ -125,7 +124,7 @@ namespace PingPong.KUKA {
         public (double A, double B, double C) CurrentABCVelocity {
             get {
                 lock (targetPositionSyncLock) {
-                    return (0, 0, 0);
+                    return generator.CurrentABCVelocity;
                 }
             }
         }
@@ -136,7 +135,7 @@ namespace PingPong.KUKA {
         public (double X, double Y, double Z) CurrentXYZAcceleration {
             get {
                 lock (targetPositionSyncLock) {
-                    return (0, 0, 0);
+                    return generator.CurrentXYZAcceleration;
                 }
             }
         }
@@ -147,7 +146,7 @@ namespace PingPong.KUKA {
         public (double A, double B, double C) CurrentABCAcceleration {
             get {
                 lock (targetPositionSyncLock) {
-                    return (0, 0, 0);
+                    return generator.CurrentABCAcceleration;
                 }
             }
         }
@@ -256,7 +255,7 @@ namespace PingPong.KUKA {
                         targetPosition.position,
                         targetPosition.duration
                     );
-                    
+
                     nextCorrection = new E6POS(
                         nextCorrection.X,
                         nextCorrection.Y,
@@ -312,13 +311,13 @@ namespace PingPong.KUKA {
         /// If force move mode is enabled, method has no effect.
         /// </summary>
         /// <param name="position">target position</param>
-        /// <param name="movementDuration">desired movement duration in seconds</param>
-        public void MoveTo(E6POS position, double movementDuration) {
+        /// <param name="duration">desired movement duration in seconds</param>
+        public void MoveTo(E6POS position, double duration) {
             if (!isInitialized) {
                 throw new InvalidOperationException("Robot is not initialized");
             }
 
-            if (movementDuration <= 0) {
+            if (duration <= 0) {
                 throw new ArgumentException("Duration value must be greater than 0");
             }
 
@@ -327,7 +326,7 @@ namespace PingPong.KUKA {
                     return;
                 }
 
-                targetPosition = (position, movementDuration);
+                targetPosition = (position, duration);
             }
         }
 
@@ -336,9 +335,9 @@ namespace PingPong.KUKA {
         /// If force move mode is enabled, method has no effect.
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
-        /// <param name="movementDuration">desired movement duration in seconds</param>
-        public void Shift(E6POS deltaPosition, double movementDuration) {
-            MoveTo(TargetPosition + deltaPosition, movementDuration);
+        /// <param name="duration">desired movement duration in seconds</param>
+        public void Shift(E6POS deltaPosition, double duration) {
+            MoveTo(TargetPosition + deltaPosition, duration);
         }
 
         /// <summary>
@@ -346,15 +345,15 @@ namespace PingPong.KUKA {
         /// Enables force move mode during the movement.
         /// </summary>
         /// <param name="position">target position</param>
-        /// <param name="movementDuration">desired movement duration in seconds</param>
+        /// <param name="duration">desired movement duration in seconds</param>
         /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
         /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
-        public void ForceMoveTo(E6POS position, double movementDuration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
+        public void ForceMoveTo(E6POS position, double duration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
             if (!isInitialized) {
                 throw new InvalidOperationException("Robot is not initialized");
             }
 
-            if (movementDuration <= 0) {
+            if (duration <= 0) {
                 throw new ArgumentException("Duration value must be greater than 0");
             }
 
@@ -363,7 +362,7 @@ namespace PingPong.KUKA {
                     return;
                 }
 
-                targetPosition = (position, movementDuration);
+                targetPosition = (position, duration);
                 forceMoveMode = true;
             }
 
@@ -389,11 +388,11 @@ namespace PingPong.KUKA {
         /// Enables force move mode during the movement.
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
-        /// <param name="movementDuration">desired movement duration in seconds</param>
+        /// <param name="duration">desired movement duration in seconds</param>
         /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
         /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
-        public void ForceShift(E6POS deltaPosition, double movementDuration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
-            ForceMoveTo(TargetPosition + deltaPosition, movementDuration, xyzTolerance, abcTolerance);
+        public void ForceShift(E6POS deltaPosition, double duration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
+            ForceMoveTo(TargetPosition + deltaPosition, duration, xyzTolerance, abcTolerance);
         }
 
         public void Initialize() {

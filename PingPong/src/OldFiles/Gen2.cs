@@ -42,12 +42,12 @@ namespace PingPong {
                 double T1 = (amax - a0) / jmax;
                 double T2 = -amax / jmin;
                 double Ta = 1.0 / amax * (vmax - v0 + 1.0 / 2.0 * (amax * (T1 + T2) - a0 * T1));
-                
+
                 double T3 = amin / jmin;
                 double T4 = -amin / jmax;
                 double Td = 1.0 / amin * (-vmax + 1.0 / 2.0 * amin * (T3 + T4));
 
-                double Tv = (x1 - x0) / vmax - Ta / 2.0 * (1 + v0 / vmax) - Td / 2.0; 
+                double Tv = (x1 - x0) / vmax - Ta / 2.0 * (1 + v0 / vmax) - Td / 2.0;
                 double T = Ta + Tv + Td;
 
                 if (Tv < 0) {
@@ -72,7 +72,7 @@ namespace PingPong {
                     a = -jmin * (Ta - t);
                     v = vmax + jmin * Math.Pow(Ta - t, 2.0) / 2.0;
                     x = x0 + (vmax + v0) * Ta / 2 - vmax * (Ta - t) - jmin / 6.0 * Math.Pow(Ta - t, 3.0);
-                } else if (t < Ta +  Tv) {
+                } else if (t < Ta + Tv) {
                     // Segment 4
                     j = 0.0;
                     a = 0.0;
@@ -101,7 +101,7 @@ namespace PingPong {
                 Console.WriteLine(x - start);
 
                 t += Ts;
-                
+
                 return x;
             }
 

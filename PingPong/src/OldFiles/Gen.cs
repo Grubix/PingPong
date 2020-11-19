@@ -70,11 +70,11 @@ namespace PingPong {
                     }
 
                     double h =
-                        Td * vPrev + 
+                        Td * vPrev +
                         1.0 / 2.0 * a * Td * Td +
                         (jmin * T1 * (3.0 * Td * Td - 3.0 * Td * T1 + T1 * T1) + jmax * T2 * T2 * T2) / 6.0;
 
-                   // Console.WriteLine($"{T1}, {T2}, {Td}, {h}, {x1 - x}");
+                    // Console.WriteLine($"{T1}, {T2}, {Td}, {h}, {x1 - x}");
 
                     if (h < x1 - x) {
                         if (vPrev - aPrev * aPrev / (2 * jmin) < vmax) {
