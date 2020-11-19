@@ -1,13 +1,9 @@
-﻿using MathNet.Numerics;
-using PingPong.Applications;
+﻿using PingPong.Applications;
 using PingPong.KUKA;
-using PingPong.Maths;
 using PingPong.OptiTrack;
 using PingPongs;
 using System;
-using System.Diagnostics;
 using System.Drawing;
-using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -34,33 +30,11 @@ namespace PingPong.Forms {
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
             ballData = new BallData();
-
-            double current = 0.0;
-            double target = 0.0;
-            double vel = 125.0;
-
-            TrajectoryGenerator7 generator = new TrajectoryGenerator7();
-            Generator generator1 = new Generator();
-            Gen gen = new Gen();
-
-            Task.Run(() => {
-                while(true) {
-                    Thread.Sleep(4);
-
-                    current = gen.GetNextValue(current, target, vel);
-
-                    realTimeChart.AddPoint(current, gen.X.v);
-
-                }
-            });
-
-            incXBtn.Click += (s, e) => { target += 150.0; };
-            decXBtn.Click += (s, e) => target -= 150.0;
         }
 
         private void InitializeControls() {
-            //incXBtn.Click += (s, e) => robot1.Shift(new E6POS(50, 0, 0), 10.0);
-            //decXBtn.Click += (s, e) => robot1.Shift(new E6POS(-50, 0, 0), 10.0);
+            incXBtn.Click += (s, e) => robot1.Shift(new E6POS(50, 0, 0), 10.0);
+            decXBtn.Click += (s, e) => robot1.Shift(new E6POS(-50, 0, 0), 10.0);
 
             incYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 50, 0), 10.0);
             decYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, -50, 0), 10.0);
@@ -104,22 +78,9 @@ namespace PingPong.Forms {
             };
 
             KUKARobot robot1 = new KUKARobot(8081, limits);
-
-            robot1.FrameReceived += frame => {
-                UpdateUI(() => {
-                    posXText.Text = frame.Position.X.ToString();
-                    posYText.Text = frame.Position.Y.ToString();
-                    posZText.Text = frame.Position.Z.ToString();
-                    posAText.Text = frame.Position.A.ToString();
-                    posBText.Text = frame.Position.B.ToString();
-                    posCText.Text = frame.Position.C.ToString();
-                });
-            };
-            robot1.FrameSent += frameSent => {
-                realTimeChart.AddPoint(robot1.CurrentPosition.X, robot1.TargetPosition.X);
-            };
-
+            kuka1Panel.SetKUKARobot(robot1);
             robot1.Initialize();
+
 
             return robot1;
         }
@@ -130,7 +91,6 @@ namespace PingPong.Forms {
             };
 
             KUKARobot robot2 = new KUKARobot(8082, limits);
-
             robot2.Initialize();
 
             return robot2;

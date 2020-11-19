@@ -22,7 +22,7 @@ namespace PingPong.KUKA {
 
         private bool forceMoveMode = false; //TODO: volatile ??
 
-        private TrajectoryGenerator generator;
+        private TrajectoryGenerator2 generator;
 
         private long currentIPOC;
 
@@ -44,14 +44,10 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Robot lower workspace point
         /// </summary>
-        public Vector<double> LowerWorkspacePoint {
+        public (double x, double y, double z) LowerWorkspacePoint {
             get {
                 lock (robotDataSyncLock) {
-                    return Vector<double>.Build.DenseOfArray(new double[] {
-                        limits.LimitX.min,
-                        limits.LimitY.min,
-                        limits.LimitZ.min
-                    });
+                    return (limits.LimitX.min, limits.LimitY.min, limits.LimitZ.min);
                 }
             }
         }
@@ -59,20 +55,16 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Robot upper workspace point
         /// </summary>
-        public Vector<double> UpperWorkspacePoint {
+        public (double x, double y, double z) UpperWorkspacePoint {
             get {
                 lock (robotDataSyncLock) {
-                    return Vector<double>.Build.DenseOfArray(new double[] {
-                        limits.LimitX.max,
-                        limits.LimitY.max,
-                        limits.LimitZ.max
-                    });
+                    return (limits.LimitX.max, limits.LimitY.max, limits.LimitZ.max);
                 }
             }
         }
 
         /// <summary>
-        /// Robot max XYZ movement velocity [m/s]
+        /// Robot max XYZ movement velocity [mm/s]
         /// </summary>
         public double MaxXYZVelocity {
             get {
@@ -117,23 +109,45 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Theoretical XYZ movement velocity
+        /// Robot current XYZ movement velocity
         /// </summary>
-        public Vector<double> CurrentXYZVelocity {
+        public (double X, double Y, double Z) CurrentXYZVelocity {
             get {
                 lock (targetPositionSyncLock) {
-                    return null; //TODO: wyciagniecie danych z generatora
+                    return (126.0, 2.2, -126.0);
                 }
             }
         }
 
         /// <summary>
-        /// Theoretical ABC rotation velocity
+        /// Robot current ABC movement velocity
         /// </summary>
-        public Vector<double> CurrentXYZAcceleration {
+        public (double A, double B, double C) CurrentABCVelocity {
             get {
                 lock (targetPositionSyncLock) {
-                    return null; //TODO: wyciagniecie danych z generatora
+                    return (0, 0, 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Robot current XYZ movement acceleration
+        /// </summary>
+        public (double X, double Y, double Z) CurrentXYZAcceleration {
+            get {
+                lock (targetPositionSyncLock) {
+                    return (0, 0, 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Robot current ABC rotation acceleration
+        /// </summary>
+        public (double A, double B, double C) CurrentABCAcceleration {
+            get {
+                lock (targetPositionSyncLock) {
+                    return (0, 0, 0);
                 }
             }
         }
@@ -179,7 +193,7 @@ namespace PingPong.KUKA {
                 InputFrame receivedFrame = await rsiAdapter.Connect();
 
                 HomePosition = receivedFrame.Position;
-                generator = new TrajectoryGenerator(receivedFrame.Position);
+                generator = new TrajectoryGenerator2(receivedFrame.Position);
 
                 lock (robotDataSyncLock) {
                     currentIPOC = receivedFrame.IPOC;
@@ -246,13 +260,10 @@ namespace PingPong.KUKA {
                     nextCorrection = new E6POS(
                         nextCorrection.X,
                         nextCorrection.Y,
-                        nextCorrection.Z,
-                        nextCorrection.A,
-                        -nextCorrection.B,
-                        -nextCorrection.C
+                        nextCorrection.Z
                     );
 
-                    //TODO: ogarnac dlaczego dodanie magicznych dwoch minusow sprawia ze wszystko dziala (° ͜ʖ °)
+                    //TODO: ogarnac katy abc
 
                     if (limits.CheckCorrection(nextCorrection)) {
                         correction = nextCorrection;

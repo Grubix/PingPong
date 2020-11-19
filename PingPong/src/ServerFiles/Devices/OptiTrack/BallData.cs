@@ -15,6 +15,7 @@ namespace PingPong.OptiTrack {
         private Vector<double> velocity;
 
         public BallData() {
+            Transformations = new Dictionary<KUKARobot, Transformation>();
             position = Vector<double>.Build.Dense(3);
             velocity = Vector<double>.Build.Dense(3);
         }

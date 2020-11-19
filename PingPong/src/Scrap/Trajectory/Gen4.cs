@@ -65,23 +65,23 @@ namespace PingPong {
                     T6 = -1.0 / amin * (vmax + amin * amin * (jmax - jmin) / (2 * jmin * jmax));
                     T7 = -amin / jmax;
 
-                    if (T2 < 0) {
-                        // Gwarancja T2 = 0 i osiągnięcia vmax po czasie T1 + T3
-                        amax = Math.Sqrt((2 * jmin * jmax * (vmax - v0) + jmin * a0 * a0) / (jmin - jmax));
+                    //if (T2 < 0) {
+                    //    // Gwarancja T2 = 0 i osiągnięcia vmax po czasie T1 + T3
+                    //    amax = Math.Sqrt((2 * jmin * jmax * (vmax - v0) + jmin * a0 * a0) / (jmin - jmax));
 
-                        T1 = (amax - a0) / jmax;
-                        T2 = 0.0;
-                        T3 = -amax / jmin;
-                    }
+                    //    T1 = (amax - a0) / jmax;
+                    //    T2 = 0.0;
+                    //    T3 = -amax / jmin;
+                    //}
 
-                    if (T6 < 0) {
-                        // Gwarancja T6 = 0 i osiągnięcia v = 0 po czasie T5 + T7 przy początkowej prędkości v = vmax
-                        amin = Math.Sqrt(2.0 * jmin * jmax * vmax / (jmax - jmin));
+                    //if (T6 < 0) {
+                    //    // Gwarancja T6 = 0 i osiągnięcia v = 0 po czasie T5 + T7 przy początkowej prędkości v = vmax
+                    //    amin = Math.Sqrt(2.0 * jmin * jmax * vmax / (jmax - jmin));
 
-                        T5 = amin / jmin;
-                        T6 = 0.0;
-                        T7 = -amin / jmax;
-                    }
+                    //    T5 = amin / jmin;
+                    //    T6 = 0.0;
+                    //    T7 = -amin / jmax;
+                    //}
 
                     V1 = v0 + a0 * T1 + jmax / 2.0 * T1 * T1;
                     V2 = amax * T2 + V1;
@@ -162,7 +162,6 @@ namespace PingPong {
                         X2 = amax / 2.0 * T2 * T2 + V1 * T2 + X1;
                         X3 = jmin / 6.0 * T3 * T3 * T3 + amax / 2.0 * T3 * T3 + V2 * T3 + X2;
 
-                        //x0 jest juz w X3 (X1) !
                         T4 = 0;
 
                         X4 = vmax * T4 + X3;

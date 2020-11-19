@@ -75,11 +75,9 @@ namespace PingPong.Forms {
                 });
             };
             calibrationTool.ProgressChanged += (progress, transformation) => {
-                ballData.Transformations[selectedRobot] = transformation;
-                Text = $"{title} ({progress}%)";
-                progressBar.Value = progress;
-
                 UpdateUI(() => {
+                    Text = $"{title} ({progress}%)";
+                    progressBar.Value = progress;
                     m11.Text = transformation[0, 0].ToString();
                     m12.Text = transformation[0, 1].ToString();
                     m13.Text = transformation[0, 2].ToString();
@@ -102,6 +100,7 @@ namespace PingPong.Forms {
                 });
             };
             calibrationTool.Completed += (transformation) => {
+                ballData.Transformations[selectedRobot] = transformation;
                 UpdateUI(() => {
                     robotSelect.Enabled = true;
                     startBtn.Enabled = true;
