@@ -11,10 +11,10 @@ namespace PingPong.Maths {
         private Vector<double> Zcoeff;
 
         // ball positions lists
-        private List<double> X;
-        private List<double> Y;
-        private List<double> Z;
-        private List<double> time;
+        private List<double> X = new List<double>();
+        private List<double> Y = new List<double>();
+        private List<double> Z = new List<double>();
+        private List<double> time = new List<double>();
 
         // prediction
         private double Xpred;
@@ -22,7 +22,7 @@ namespace PingPong.Maths {
         private double Tpred;
         private Vector<double> prediction;
 
-        private double Zlevel = 5.0;
+        private double Zlevel = 0.0;
 
         public Polyfit() {
             prediction = Vector<double>.Build.Dense(3);
@@ -39,17 +39,17 @@ namespace PingPong.Maths {
                 //TODO: ile ma byc tam tych punktow?
             }
 
-            if (this.X.Count > 10) {
+            if (this.X.Count > 2) {
                 Xcoeff = GetCoeff(this.X, 1);
                 Ycoeff = GetCoeff(this.Y, 1);
-                Zcoeff = GetCoeff(this.Z, 1);
+                Zcoeff = GetCoeff(this.Z, 2);
             }
 
 
         }
 
         public Vector<double> GetPrediction() {
-            if (X.Count > 10) {
+            if (X.Count > 2) {
                 CountPrediction();
                 prediction[0] = Xpred;
                 prediction[1] = Ypred;
@@ -71,7 +71,7 @@ namespace PingPong.Maths {
             for (int row = 0; row < time.Count; row++) {
                 double val = 1.0;
                 for (int col = 0; col < order + 1; col++) {
-                    T[row, col] = val * time[row];
+                    T[row, col] = val;
                     val *= time[row];
                 }
             }
@@ -96,8 +96,17 @@ namespace PingPong.Maths {
             double delta = Zcoeff[1] * Zcoeff[1] - 4 * Zcoeff[2] * (Zcoeff[0] - Zlevel);
             if (delta < 0.0)
                 return -1;
-            return (-Zcoeff[1] + Math.Sqrt(delta)) / 2 / Zcoeff[2];
+            return (-Zcoeff[1] - Math.Sqrt(delta)) / 2 / Zcoeff[2];
         }
 
+        public Vector<double> GetX() {
+            return Xcoeff;
+        }
+        public Vector<double> GetY() {
+            return Ycoeff;
+        }
+        public Vector<double> GetZ() {
+            return Zcoeff;
+        }
     }
 }

@@ -77,13 +77,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\ServerFiles\Commands\Command.cs" />
+    <Compile Include="src\ServerFiles\Commands\ClearCommand.cs" />
+    <Compile Include="src\ServerFiles\Commands\ICommand.cs" />
     <Compile Include="src\ServerFiles\Commands\CommandArgs.cs" />
-    <Compile Include="src\ServerFiles\Forms\CommandLine.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="src\ServerFiles\Commands\ExitCommand.cs" />
+    <Compile Include="src\ServerFiles\Commands\HelpCommand.cs" />
+    <Compile Include="src\ServerFiles\Commands\MoveCommand.cs" />
+    <Compile Include="src\ServerFiles\Forms\CmdWindow.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ServerFiles\Forms\CommandLine.Designer.cs">
-      <DependentUpon>CommandLine.cs</DependentUpon>
+    <Compile Include="src\ServerFiles\Forms\CmdWindow.Designer.cs">
+      <DependentUpon>CmdWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="src\ServerFiles\Maths\CubicSolver.cs" />
     <Compile Include="src\ServerFiles\Maths\LUD3.cs" />
@@ -155,8 +159,8 @@
     <EmbeddedResource Include="src\ServerFiles\Forms\CalibrationWindow.resx">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ServerFiles\Forms\CommandLine.resx">
-      <DependentUpon>CommandLine.cs</DependentUpon>
+    <EmbeddedResource Include="src\ServerFiles\Forms\CmdWindow.resx">
+      <DependentUpon>CmdWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\ServerFiles\Forms\ThreadSafeChart.resx">
       <DependentUpon>ThreadSafeChart.cs</DependentUpon>
@@ -187,6 +191,7 @@
     <None Include="src\DocsFiles\Trajectory generator.pdf" />
     <None Include="src\KUKAFiles\RSI_Ethernet.rsix" />
     <None Include="src\KUKAFiles\RSI_Ethernet.src" />
+    <None Include="src\ServerFiles\TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

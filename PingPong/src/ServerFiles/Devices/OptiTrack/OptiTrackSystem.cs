@@ -60,7 +60,7 @@ namespace PingPong.OptiTrack {
                 throw new InvalidOperationException("OptiTrack system is not initialized");
             }
 
-            AutoResetEvent getSamplesEvent = new AutoResetEvent(false);
+            ManualResetEvent getSamplesEvent = new ManualResetEvent(false);
             Vector<double> position = Vector<double>.Build.Dense(3);
 
             int currentSample = 0;

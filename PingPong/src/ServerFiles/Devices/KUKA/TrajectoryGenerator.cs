@@ -64,7 +64,7 @@ namespace PingPong.KUKA {
         public E6POS GetNextCorrection(E6POS currentPosition, E6POS targetPosition, double time) {
             if (currentPosition == targetPosition) {
                 ResetVelocity();
-                return targetPosition;
+                return new E6POS();
             }
             if (totalTime2Dest != time || this.targetPosition != targetPosition) {
                 totalTime2Dest = time;
@@ -88,7 +88,7 @@ namespace PingPong.KUKA {
             } else {
                 totalTime2Dest = 0.0;
                 ResetVelocity();
-                return targetPosition;
+                return new E6POS();
             }
         }
 

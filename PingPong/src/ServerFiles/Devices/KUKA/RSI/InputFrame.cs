@@ -57,19 +57,28 @@ namespace PingPong.KUKA {
 
         }
 
+        /// <summary>
+        /// Time stamp
+        /// </summary>
         public long IPOC { get; }
 
+        /// <summary>
+        /// Current cartesian position
+        /// </summary>
         public E6POS Position { get; }
 
+        /// <summary>
+        /// Current axis position
+        /// </summary>
         public E6AXIS AxisPosition { get; }
 
         public InputFrame(string data) {
             IPOC = long.Parse(new Tag(data, "IPOC").Value);
-            Position = GetPosition(new Tag(data, "RIst"));
-            AxisPosition = GetAxisPosition(new Tag(data, "AIPos"));
+            Position = ExtractPosition(new Tag(data, "RIst"));
+            AxisPosition = ExtractAxisPosition(new Tag(data, "AIPos"));
         }
 
-        private E6POS GetPosition(Tag tag) {
+        private E6POS ExtractPosition(Tag tag) {
             double X = double.Parse(tag["X"]);
             double Y = double.Parse(tag["Y"]);
             double Z = double.Parse(tag["Z"]);
@@ -84,7 +93,7 @@ namespace PingPong.KUKA {
             return new E6POS(X, Y, Z, A, B, C);
         }
 
-        private E6AXIS GetAxisPosition(Tag tag) {
+        private E6AXIS ExtractAxisPosition(Tag tag) {
             double A1 = double.Parse(tag["A1"]);
             double A2 = double.Parse(tag["A2"]);
             double A3 = double.Parse(tag["A3"]);

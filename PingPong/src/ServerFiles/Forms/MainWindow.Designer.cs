@@ -43,7 +43,7 @@
             this.decCBtn = new System.Windows.Forms.Button();
             this.calibrationBtn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.kuka1Panel = new PingPong.Forms.RobotDataPanel();
+            this.robot1Panel = new PingPong.Forms.RobotDataPanel();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -185,13 +185,13 @@
             this.panel1.Size = new System.Drawing.Size(140, 511);
             this.panel1.TabIndex = 28;
             // 
-            // kuka1Panel
+            // robot1Panel
             // 
-            this.kuka1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kuka1Panel.Location = new System.Drawing.Point(0, 0);
-            this.kuka1Panel.Name = "kuka1Panel";
-            this.kuka1Panel.Size = new System.Drawing.Size(994, 511);
-            this.kuka1Panel.TabIndex = 0;
+            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.robot1Panel.Location = new System.Drawing.Point(0, 0);
+            this.robot1Panel.Name = "robot1Panel";
+            this.robot1Panel.Size = new System.Drawing.Size(994, 511);
+            this.robot1Panel.TabIndex = 0;
             // 
             // MainWindow
             // 
@@ -199,7 +199,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1134, 511);
-            this.Controls.Add(this.kuka1Panel);
+            this.Controls.Add(this.robot1Panel);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -229,6 +229,6 @@
         private System.Windows.Forms.Button decCBtn;
         private System.Windows.Forms.Button calibrationBtn;
         private System.Windows.Forms.Panel panel1;
-        private RobotDataPanel kuka1Panel;
+        private RobotDataPanel robot1Panel;
     }
 }

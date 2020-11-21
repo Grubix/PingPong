@@ -8,13 +8,13 @@ using System.Windows.Forms;
 namespace PingPong.Forms {
     public partial class MainWindow : Form {
 
-        private readonly KUKARobot robot1;
+        private KUKARobot robot1;
 
-        private readonly KUKARobot robot2;
+        private KUKARobot robot2;
 
-        private readonly OptiTrackSystem optiTrack;
+        private OptiTrackSystem optiTrack;
 
-        private readonly BallData ballData;
+        private BallData ballData;
 
         private IApplication application;
 
@@ -27,6 +27,19 @@ namespace PingPong.Forms {
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
             ballData = new BallData();
+
+            new CmdWindow().Show();
+        }
+
+        public void ShowCalibrationWindow() {
+            if (calibrationWindow == null || calibrationWindow.IsDisposed) {
+                calibrationWindow = new CalibrationWindow(optiTrack, ballData, robot1, robot2);
+            }
+
+            calibrationWindow.Show();
+            calibrationWindow.Activate();
+            calibrationWindow.WindowState = FormWindowState.Normal;
+            calibrationWindow.Location = new Point(Location.X, Location.Y);
         }
 
         private void InitializeControls() {
@@ -48,16 +61,7 @@ namespace PingPong.Forms {
             incCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, 1), 10.0);
             decCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, -1), 10.0);
 
-            calibrationBtn.Click += (s, e) => {
-                if (calibrationWindow == null || calibrationWindow.IsDisposed) {
-                    calibrationWindow = new CalibrationWindow(optiTrack, ballData, robot1, robot2);
-                }
-
-                calibrationWindow.Show();
-                calibrationWindow.Activate();
-                calibrationWindow.WindowState = FormWindowState.Normal;
-                calibrationWindow.Location = new Point(Location.X, Location.Y);
-            };
+            calibrationBtn.Click += (s, e) => ShowCalibrationWindow();
         }
 
         private KUKARobot InitializeRobot1() {
@@ -75,7 +79,7 @@ namespace PingPong.Forms {
             };
 
             KUKARobot robot1 = new KUKARobot(8081, limits);
-            kuka1Panel.SetKUKARobot(robot1);
+            robot1Panel.SetKUKARobot(robot1);
             robot1.Initialize();
 
 
@@ -88,6 +92,7 @@ namespace PingPong.Forms {
             };
 
             KUKARobot robot2 = new KUKARobot(8082, limits);
+            //robot2Panel.SetKUKARobot(robot2);
             robot2.Initialize();
 
             return robot2;
