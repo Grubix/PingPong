@@ -22,9 +22,10 @@ namespace PingPong.Maths {
         private double Tpred;
         private Vector<double> prediction;
 
-        private double Zlevel = 0.0;
+        private double Zlevel;
 
-        public Polyfit() {
+        public Polyfit(double Zlevel) {
+            this.Zlevel = Zlevel;
             prediction = Vector<double>.Build.Dense(3);
         }
 

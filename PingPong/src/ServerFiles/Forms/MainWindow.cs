@@ -16,9 +16,9 @@ namespace PingPong.Forms {
 
         private BallData ballData;
 
-        private IApplication application;
-
         private CalibrationWindow calibrationWindow;
+
+        private IApplication application;
 
         public MainWindow() {
             InitializeComponent();

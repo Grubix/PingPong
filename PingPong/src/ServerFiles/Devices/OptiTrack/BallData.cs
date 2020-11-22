@@ -6,8 +6,6 @@ using System.Collections.Generic;
 namespace PingPong.OptiTrack {
     public class BallData {
 
-        //TODO: beda potrzebne locki ??
-
         private Dictionary<KUKARobot, Transformation> transformations;
 
         private Vector<double> position;
@@ -20,15 +18,12 @@ namespace PingPong.OptiTrack {
             velocity = Vector<double>.Build.Dense(3);
         }
 
-        public void SetTransformation(KUKARobot robot, Transformation transformation) {
-            transformations[robot] = transformation;
+        public void Update(InputFrame receivedFrame) {
+            position = receivedFrame.Position;
         }
 
-        public void Update(InputFrame receivedFrame) {
-            //TODO: odpalane w MainWindow.cs po otrzymaniu ramki z optitracka
-            //TODO: apdejt predkosci, przyspieszenie, predykcja nastepnej pozycji etc.
-            //TODO: tutaj moze sie przydac timer zeby liczyc predkosc!
-
+        public void SetTransformation(KUKARobot robot, Transformation transformation) {
+            transformations[robot] = transformation;
         }
 
         public Vector<double> GetPosition(KUKARobot robot) {

@@ -61,6 +61,15 @@ namespace PingPong.KUKA {
             C = ABC[2];
         }
 
+        public E6POS(Vector<double> XYZ, double A, double B, double C) {
+            X = XYZ[0];
+            Y = XYZ[1];
+            Z = XYZ[2];
+            this.A = A;
+            this.B = B;
+            this.C = C;
+        }
+
         /// <summary>
         /// 
         /// </summary>

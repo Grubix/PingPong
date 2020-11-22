@@ -8,7 +8,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 namespace PingPong.Forms {
     public partial class RobotDataPanel : UserControl {
 
-        private const double Ts = 100;
+        private const double Ts = 80;
 
         private const int maxSamples = 5000;
 
