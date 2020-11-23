@@ -152,5 +152,29 @@ namespace PingPong.KUKA {
             C.ResetVelocity();
         }
 
+        public (double X, double Y, double Z) CurrentXYZVelocity {
+            get {
+                return (0, 0, 0);
+            }
+        }
+
+        public (double A, double B, double C) CurrentABCVelocity {
+            get {
+                return (0, 0, 0);
+            }
+        }
+
+        public (double X, double Y, double Z) CurrentXYZAcceleration {
+            get {
+                return (0, 0, 0);
+            }
+        }
+
+        public (double A, double B, double C) CurrentABCAcceleration {
+            get {
+                return (0, 0, 0);
+            }
+        }
+
     }
 }

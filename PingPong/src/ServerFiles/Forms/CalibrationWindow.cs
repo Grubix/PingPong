@@ -50,7 +50,8 @@ namespace PingPong.Forms {
                     Start?.Invoke();
 
                     // Move robot to first calibration point and wait
-                    MoveRobotToPoint(robot, calibrationPoints[0], robot.MaxXYZVelocity / 3.0);
+                    // MoveRobotToPoint(robot, calibrationPoints[0], robot.MaxXYZVelocity / 3.0);
+                    robot.ForceMoveTo(new E6POS(calibrationPoints[0], robot.CurrentPosition.ABC), 7, 1, 1);
 
                     for (int i = 0; i < calibrationPoints.Count; i++) {
                         // Move robot to next calibration point and wait
@@ -71,7 +72,7 @@ namespace PingPong.Forms {
                         ProgressChanged?.Invoke(progress, transformation);
                     }
 
-                    MoveRobotToPoint(robot, robot.HomePosition, robot.MaxXYZVelocity / 3.0);
+                    //MoveRobotToPoint(robot, robot.HomePosition, robot.MaxXYZVelocity / 3.0);
                 };
 
                 worker.RunWorkerCompleted += (s, e) => {
@@ -92,7 +93,7 @@ namespace PingPong.Forms {
 
                 // Robot Vx=Vy=Vz=Ax=Ay=Az=0 => v(T/2)=Vmax => T=15*(x1-x0)/(8*Vmax)
                 double duration = 15.0 * deltaMax / (8.0 * Math.Abs(velocity));
-                robot.ForceMoveTo(new E6POS(point, robot.CurrentPosition.ABC), duration);
+                robot.ForceMoveTo(new E6POS(point, robot.CurrentPosition.ABC), 3, 1, 1);
             }
 
             private void MoveRobotToPoint(KUKARobot robot, E6POS position, double velocity) {
@@ -103,7 +104,7 @@ namespace PingPong.Forms {
                 MoveRobotToPoint(robot, point, velocity);
             }
 
-            public void Calibrate(KUKARobot robot, int pointsPerLine = 10, int samplesPerPoint = 200) {
+            public void Calibrate(KUKARobot robot, int pointsPerLine = 5, int samplesPerPoint = 200) {
                 if (worker.IsBusy) {
                     throw new InvalidOperationException("Calibration in progress");
                 }

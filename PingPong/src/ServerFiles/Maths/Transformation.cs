@@ -106,6 +106,11 @@ namespace PingPong.Maths {
             });
         }
 
+        public Transformation(Matrix<double> rotation, Vector<double> translation) {
+            rotationMatrix = rotation.Clone();
+            translationVector = translation.Clone();
+        }
+
         /// <summary>
         /// Converts point in A coordinate system to point B coordinate system
         /// </summary>

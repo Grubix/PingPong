@@ -21,7 +21,8 @@ namespace PingPong.KUKA {
 
         private bool forceMoveMode = false; //TODO: volatile ??
 
-        private TrajectoryGenerator2 generator;
+        //private TrajectoryGenerator2 generator;
+        private TrajectoryGenerator generator;
 
         private long currentIPOC;
 
@@ -192,7 +193,8 @@ namespace PingPong.KUKA {
                 InputFrame receivedFrame = await rsiAdapter.Connect();
 
                 HomePosition = receivedFrame.Position;
-                generator = new TrajectoryGenerator2(receivedFrame.Position);
+                //generator = new TrajectoryGenerator2(receivedFrame.Position);
+                generator = new TrajectoryGenerator(receivedFrame.Position);
 
                 lock (robotDataSyncLock) {
                     currentIPOC = receivedFrame.IPOC;
@@ -266,6 +268,7 @@ namespace PingPong.KUKA {
 
                     if (limits.CheckCorrection(nextCorrection)) {
                         correction = nextCorrection;
+                        Console.WriteLine(correction);
                     } else {
                         errorOccured = true;
                         errorMessage = "Correction limit has been exceeded";

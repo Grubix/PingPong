@@ -1,4 +1,6 @@
-﻿namespace PingPong.KUKA {
+﻿using System;
+
+namespace PingPong.KUKA {
     class TrajectoryGenerator2 {
 
         private class Polynominal {
@@ -29,6 +31,10 @@
             }
 
             public double GetNextValue(double currentPosition, double targetPosition, double duration, double velocity) {
+                if (Math.Abs(targetPosition - currentPosition) <= 0.1) {
+                    return currentPosition;
+                }
+                
                 if (duration != T || targetPosition != x1 || velocity != v1) {
                     Restart(duration, currentPosition, targetPosition, velocity);
                     elapsedTime = 0.0;

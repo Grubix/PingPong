@@ -39,7 +39,7 @@ namespace PingPong.Forms {
             };
 
             double lineHeight = 125;
-            HorizontalLineAnnotation ann = new HorizontalLineAnnotation();
+            /*HorizontalLineAnnotation ann = new HorizontalLineAnnotation();
 
             ann.AxisX = chart.ChartAreas[0].AxisX;
             ann.AxisY = chart.ChartAreas[0].AxisY;
@@ -51,13 +51,13 @@ namespace PingPong.Forms {
             ann.LineWidth = 2;
             ann.LineDashStyle = ChartDashStyle.DashDot;
 
-            chart.Annotations.Add(ann);
+            chart.Annotations.Add(ann);*/
 
             chart.ChartAreas[0].AxisX.Minimum = 0;
             chart.ChartAreas[0].AxisX.Maximum = MaxSamples;
 
-            //chart.ChartAreas[0].AxisY.Minimum = 100;
-            //chart.ChartAreas[0].AxisY.Maximum = 200;
+            chart.ChartAreas[0].AxisY.Minimum = -1000;
+            chart.ChartAreas[0].AxisY.Maximum = 1000;
 
             chart.Series.Add(series1);
             chart.Series.Add(series2);

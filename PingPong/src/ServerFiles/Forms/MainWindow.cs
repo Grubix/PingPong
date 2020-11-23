@@ -1,5 +1,7 @@
-﻿using PingPong.Applications;
+﻿using MathNet.Numerics.LinearAlgebra;
+using PingPong.Applications;
 using PingPong.KUKA;
+using PingPong.Maths;
 using PingPong.OptiTrack;
 using System;
 using System.Drawing;
@@ -25,10 +27,27 @@ namespace PingPong.Forms {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            //optiTrack = InitializeOptiTrackSystem();
+            optiTrack = InitializeOptiTrackSystem();
             ballData = new BallData();
+            application = new Ping(robot1, threadSafeChart1);
+            
+            var rotationMatrix = Matrix<double>.Build.DenseOfArray(new double[,] {
+                { -0.011099,  0.0010454, -0.9999370 },
+                { -0.999938, -0.0008780,  0.0110987 },
+                { -0.000866,  0.9999900,  0.0010551 }
+            });
 
-            new CmdWindow().Show();
+            var translationVector = Vector<double>.Build.DenseOfArray(new double[] {
+                817.21905, 613.07449, 143.92211
+            });
+
+            robot1.Initialized += () => {
+                ballData.SetTransformation(robot1, new Transformation(rotationMatrix, translationVector));
+
+                optiTrack.FrameReceived += frame => {
+                    application.ProcessData(ballData);
+                };
+            };
         }
 
         public void ShowCalibrationWindow() {
@@ -103,7 +122,6 @@ namespace PingPong.Forms {
 
             optiTrack.FrameReceived += frame => {
                 ballData.Update(frame);
-                //application.ProcessData(ballData);
             };
 
             optiTrack.Initialize();
