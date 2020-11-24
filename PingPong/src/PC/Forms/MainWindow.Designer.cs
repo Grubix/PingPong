@@ -44,6 +44,7 @@
             this.calibrationBtn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.robot1Panel = new PingPong.Forms.RobotDataPanel();
+            this.threadSafeChart1 = new PingPong.Forms.ThreadSafeChart();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -193,12 +194,22 @@
             this.robot1Panel.Size = new System.Drawing.Size(994, 511);
             this.robot1Panel.TabIndex = 0;
             // 
+            // threadSafeChart1
+            // 
+            this.threadSafeChart1.Location = new System.Drawing.Point(206, 291);
+            this.threadSafeChart1.MaxSamples = 110;
+            this.threadSafeChart1.Name = "threadSafeChart1";
+            this.threadSafeChart1.RefreshTime = 4;
+            this.threadSafeChart1.Size = new System.Drawing.Size(754, 186);
+            this.threadSafeChart1.TabIndex = 29;
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1134, 511);
+            this.Controls.Add(this.threadSafeChart1);
             this.Controls.Add(this.robot1Panel);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -230,5 +241,6 @@
         private System.Windows.Forms.Button calibrationBtn;
         private System.Windows.Forms.Panel panel1;
         private RobotDataPanel robot1Panel;
+        private ThreadSafeChart threadSafeChart1;
     }
 }
