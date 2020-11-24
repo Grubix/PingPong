@@ -71,7 +71,7 @@ namespace PingPong.Forms {
                         ProgressChanged?.Invoke(progress, transformation);
                     }
 
-                    MoveRobotToPoint(robot, robot.HomePosition, robot.MaxXYZVelocity / 3.0);
+                    MoveRobotToPoint(robot, robot.HomePosition.XYZ, robot.MaxXYZVelocity / 3.0);
                 };
 
                 worker.RunWorkerCompleted += (s, e) => {
@@ -92,15 +92,10 @@ namespace PingPong.Forms {
 
                 // Robot Vx=Vy=Vz=Ax=Ay=Az=0 => v(T/2)=Vmax => T=15*(x1-x0)/(8*Vmax)
                 double duration = 15.0 * deltaMax / (8.0 * Math.Abs(velocity));
-                robot.ForceMoveTo(new E6POS(point, robot.CurrentPosition.ABC), duration);
-            }
 
-            private void MoveRobotToPoint(KUKARobot robot, E6POS position, double velocity) {
-                var point = Vector<double>.Build.DenseOfArray(new double[] {
-                    position.X, position.Y, position.Z
-                });
-
-                MoveRobotToPoint(robot, point, velocity);
+                if (duration > 10E-6) {
+                    robot.ForceMoveTo(new E6POS(point, robot.CurrentPosition.ABC), duration);
+                }
             }
 
             public void Calibrate(KUKARobot robot, int pointsPerLine, int samplesPerPoint) {
@@ -224,7 +219,9 @@ namespace PingPong.Forms {
             robotSelect.Text = "- Select robot -";
 
             FormClosing += (s, e) => calibrationTool.Cancel();
-            startBtn.Click += (s, e) => calibrationTool.Calibrate(selectedRobot, 10, 200);
+            startBtn.Click += (s, e) => {
+                calibrationTool.Calibrate(selectedRobot, (int)intermediatePoints.Value, (int)samplesPerPoint.Value);
+            };
             stopBtn.Click += (s, e) => {
                 Text = title;
                 robotSelect.Enabled = true;
@@ -240,28 +237,29 @@ namespace PingPong.Forms {
                 });
             };
             calibrationTool.ProgressChanged += (progress, transformation) => {
+                ballData.SetTransformation(selectedRobot, transformation);
                 UpdateUI(() => {
                     Text = $"{title} ({progress}%)";
                     progressBar.Value = progress;
-                    m11.Text = transformation[0, 0].ToString();
-                    m12.Text = transformation[0, 1].ToString();
-                    m13.Text = transformation[0, 2].ToString();
-                    m14.Text = transformation[0, 3].ToString();
+                    m11.Text = transformation[0, 0].ToString("F3");
+                    m12.Text = transformation[0, 1].ToString("F3");
+                    m13.Text = transformation[0, 2].ToString("F3");
+                    m14.Text = transformation[0, 3].ToString("F3");
 
-                    m21.Text = transformation[1, 0].ToString();
-                    m22.Text = transformation[1, 1].ToString();
-                    m23.Text = transformation[1, 2].ToString();
-                    m24.Text = transformation[1, 3].ToString();
+                    m21.Text = transformation[1, 0].ToString("F3");
+                    m22.Text = transformation[1, 1].ToString("F3");
+                    m23.Text = transformation[1, 2].ToString("F3");
+                    m24.Text = transformation[1, 3].ToString("F3");
 
-                    m31.Text = transformation[2, 0].ToString();
-                    m32.Text = transformation[2, 1].ToString();
-                    m33.Text = transformation[2, 2].ToString();
-                    m34.Text = transformation[2, 3].ToString();
+                    m31.Text = transformation[2, 0].ToString("F3");
+                    m32.Text = transformation[2, 1].ToString("F3");
+                    m33.Text = transformation[2, 2].ToString("F3");
+                    m34.Text = transformation[2, 3].ToString("F3");
 
-                    m41.Text = transformation[3, 0].ToString();
-                    m42.Text = transformation[3, 1].ToString();
-                    m43.Text = transformation[3, 2].ToString();
-                    m44.Text = transformation[3, 3].ToString();
+                    m41.Text = transformation[3, 0].ToString("F3");
+                    m42.Text = transformation[3, 1].ToString("F3");
+                    m43.Text = transformation[3, 2].ToString("F3");
+                    m44.Text = transformation[3, 3].ToString("F3");
                 });
             };
             calibrationTool.Completed += (transformation) => {
@@ -285,6 +283,5 @@ namespace PingPong.Forms {
 
             updateAction.Invoke();
         }
-
     }
 }

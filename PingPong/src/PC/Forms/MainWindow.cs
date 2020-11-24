@@ -27,7 +27,7 @@ namespace PingPong.Forms {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            optiTrack = InitializeOptiTrackSystem();
+            //optiTrack = InitializeOptiTrackSystem();
             ballData = new BallData();
             application = new Ping(robot1, threadSafeChart1);
             
@@ -48,6 +48,8 @@ namespace PingPong.Forms {
                     application.ProcessData(ballData);
                 };
             };
+
+            new CmdWindow().Show();
         }
 
         public void ShowCalibrationWindow() {

@@ -16,11 +16,6 @@ namespace PingPong.KUKA {
 
         public (double maxXYZ, double maxABC) LimitCorrection { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="position">position to check</param>
-        /// <returns></returns>
         public bool CheckPosition(E6POS position) {
             return
                 position.X >= LimitX.min && position.X <= LimitX.max &&
@@ -38,11 +33,6 @@ namespace PingPong.KUKA {
                 axisPosition.A6 >= LimitA6.min && axisPosition.A6 <= LimitA6.max;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="correction">correction to check</param>
-        /// <returns></returns>
         public bool CheckCorrection(E6POS correction) {
             return
                 Math.Abs(correction.X) <= LimitCorrection.maxXYZ &&

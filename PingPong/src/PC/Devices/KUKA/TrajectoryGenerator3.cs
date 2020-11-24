@@ -5,17 +5,17 @@
 
             private double k0, k1, k2, k3, k4, k5; // Polynominal coefficients
 
-            private double vn, an; // Next velocity and next acceleration
+            private double xn, vn, an; // Next value, velocity and next acceleration
 
             /// <summary>
-            /// 
+            /// Calculates polynominal value at time t
             /// </summary>
-            /// <param name="x0"></param>
-            /// <param name="x1"></param>
-            /// <param name="v1"></param>
-            /// <param name="T"></param>
-            /// <param name="t"></param>
-            /// <returns></returns>
+            /// <param name="x0">Current value</param>
+            /// <param name="x1">Target value</param>
+            /// <param name="v1">Target velocity</param>
+            /// <param name="T">Movement duration</param>
+            /// <param name="t">Time</param>
+            /// <returns>polynominal value at time t</returns>
             public double GetNextValue(double x0, double x1, double v1, double T, double t) {
                 double T1 = T;
                 double T2 = T1 * T1;
@@ -36,11 +36,11 @@
                 double t4 = t1 * t3;
                 double t5 = t1 * t4;
 
-                double nextValue = k5 * t5 + k4 * t4 + k3 * t3 + k2 * t2 + k1 * t1 + k0;
+                xn = k5 * t5 + k4 * t4 + k3 * t3 + k2 * t2 + k1 * t1 + k0;
                 vn = 5.0 * k5 * t4 + 4.0 * k4 * t3 + 3.0 * k3 * t2 + 2.0 * k2 * t1 + k1;
                 an = 20.0 * k5 * t3 + 12.0 * k4 * t2 + 6.0 * k3 * t1 + 2.0 * k2;
 
-                return nextValue;
+                return xn;
             }
 
             //public double GetMaxVelocity() {

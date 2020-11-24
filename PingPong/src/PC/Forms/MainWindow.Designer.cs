@@ -43,8 +43,8 @@
             this.decCBtn = new System.Windows.Forms.Button();
             this.calibrationBtn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.robot1Panel = new PingPong.Forms.RobotDataPanel();
             this.threadSafeChart1 = new PingPong.Forms.ThreadSafeChart();
+            this.robot1Panel = new PingPong.Forms.RobotDataPanel();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -186,14 +186,6 @@
             this.panel1.Size = new System.Drawing.Size(140, 511);
             this.panel1.TabIndex = 28;
             // 
-            // robot1Panel
-            // 
-            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.robot1Panel.Location = new System.Drawing.Point(0, 0);
-            this.robot1Panel.Name = "robot1Panel";
-            this.robot1Panel.Size = new System.Drawing.Size(994, 511);
-            this.robot1Panel.TabIndex = 0;
-            // 
             // threadSafeChart1
             // 
             this.threadSafeChart1.Location = new System.Drawing.Point(206, 291);
@@ -202,6 +194,14 @@
             this.threadSafeChart1.RefreshTime = 4;
             this.threadSafeChart1.Size = new System.Drawing.Size(754, 186);
             this.threadSafeChart1.TabIndex = 29;
+            // 
+            // robot1Panel
+            // 
+            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.robot1Panel.Location = new System.Drawing.Point(0, 0);
+            this.robot1Panel.Name = "robot1Panel";
+            this.robot1Panel.Size = new System.Drawing.Size(994, 511);
+            this.robot1Panel.TabIndex = 0;
             // 
             // MainWindow
             // 
