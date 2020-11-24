@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace PingPong.Maths {
+namespace PingPong.Maths.Solver {
     static class CubicSolver {
 
         public static Complex[] Solve(double a, double b, double c, double d) {

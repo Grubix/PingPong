@@ -5,35 +5,39 @@ namespace PingPong.KUKA {
     public class TrajectoryGenerator {
 
         private class Parameter {
-            private double a0;
-            private double a1;
-            private double a2;
-            private double a3;
+
+            private double k0;
+            private double k1;
+            private double k2;
+            private double k3;
+            private double k4;
+            private double k;
+
             private double velocity;
             private double nextValue;
 
             public Parameter() {
-                a0 = 0.0;
-                a1 = 0.0;
-                a2 = 0.0;
-                a3 = 0.0;
+                k0 = 0.0;
+                k1 = 0.0;
+                k2 = 0.0;
+                k3 = 0.0;
                 velocity = 0.0;
                 nextValue = 0.0;
             }
 
             public void UpdateCoefficients(double currentPosition, double targetPosition, double targetVelocity, double time) {
-                a0 = currentPosition;
-                a1 = velocity;
-                a2 = (3 * (targetPosition - currentPosition) - 2 * velocity * time - targetVelocity * time) / Math.Pow(time, 2);
-                a3 = (targetVelocity * time + velocity * time - 2 * (targetPosition - currentPosition)) / Math.Pow(time, 3);
+                k0 = currentPosition;
+                k1 = velocity;
+                k2 = (3 * (targetPosition - currentPosition) - 2 * velocity * time - targetVelocity * time) / Math.Pow(time, 2);
+                k3 = (targetVelocity * time + velocity * time - 2 * (targetPosition - currentPosition)) / Math.Pow(time, 3);
             }
 
             public void ComputeNextValue(double period) {
-                nextValue = a3 * Math.Pow(period, 3) + a2 * Math.Pow(period, 2) + a1 * period;
+                nextValue = k3 * Math.Pow(period, 3) + k2 * Math.Pow(period, 2) + k1 * period;
             }
 
             public void UpdateVelocity(double period) {
-                velocity = 3 * a3 * Math.Pow(period, 2) + 2 * a2 * period + a1;
+                velocity = 3 * k3 * Math.Pow(period, 2) + 2 * k2 * period + k1;
             }
 
             public double GetNextValue() {

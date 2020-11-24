@@ -8,9 +8,9 @@ namespace PingPong.Applications {
 
         private const double Zlevel = 25.0;
 
-        private KUKARobot robot;
+        private readonly KUKARobot robot;
 
-        private Polyfit polyfit;
+        private readonly Polyfit polyfit;
 
         private double timeElapsed;
 

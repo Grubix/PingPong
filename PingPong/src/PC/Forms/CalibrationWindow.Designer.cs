@@ -119,163 +119,179 @@
             // 
             // m12
             // 
-            this.m12.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m12.AutoSize = true;
-            this.m12.Location = new System.Drawing.Point(91, 6);
+            this.m12.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m12.Location = new System.Drawing.Point(69, 1);
             this.m12.Name = "m12";
-            this.m12.Size = new System.Drawing.Size(13, 13);
+            this.m12.Size = new System.Drawing.Size(58, 24);
             this.m12.TabIndex = 1;
             this.m12.Text = "0";
+            this.m12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m13
             // 
-            this.m13.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m13.AutoSize = true;
-            this.m13.Location = new System.Drawing.Point(156, 6);
+            this.m13.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m13.Location = new System.Drawing.Point(134, 1);
             this.m13.Name = "m13";
-            this.m13.Size = new System.Drawing.Size(13, 13);
+            this.m13.Size = new System.Drawing.Size(58, 24);
             this.m13.TabIndex = 2;
             this.m13.Text = "0";
+            this.m13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m14
             // 
-            this.m14.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m14.AutoSize = true;
-            this.m14.Location = new System.Drawing.Point(223, 6);
+            this.m14.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m14.Location = new System.Drawing.Point(199, 1);
             this.m14.Name = "m14";
-            this.m14.Size = new System.Drawing.Size(13, 13);
+            this.m14.Size = new System.Drawing.Size(61, 24);
             this.m14.TabIndex = 3;
             this.m14.Text = "0";
+            this.m14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m24
             // 
-            this.m24.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m24.AutoSize = true;
-            this.m24.Location = new System.Drawing.Point(223, 31);
+            this.m24.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m24.Location = new System.Drawing.Point(199, 26);
             this.m24.Name = "m24";
-            this.m24.Size = new System.Drawing.Size(13, 13);
+            this.m24.Size = new System.Drawing.Size(61, 24);
             this.m24.TabIndex = 4;
             this.m24.Text = "0";
+            this.m24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m23
             // 
-            this.m23.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m23.AutoSize = true;
-            this.m23.Location = new System.Drawing.Point(156, 31);
+            this.m23.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m23.Location = new System.Drawing.Point(134, 26);
             this.m23.Name = "m23";
-            this.m23.Size = new System.Drawing.Size(13, 13);
+            this.m23.Size = new System.Drawing.Size(58, 24);
             this.m23.TabIndex = 5;
             this.m23.Text = "0";
+            this.m23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m22
             // 
-            this.m22.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m22.AutoSize = true;
-            this.m22.Location = new System.Drawing.Point(91, 31);
+            this.m22.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m22.Location = new System.Drawing.Point(69, 26);
             this.m22.Name = "m22";
-            this.m22.Size = new System.Drawing.Size(13, 13);
+            this.m22.Size = new System.Drawing.Size(58, 24);
             this.m22.TabIndex = 6;
             this.m22.Text = "1";
+            this.m22.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m21
             // 
-            this.m21.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m21.AutoSize = true;
-            this.m21.Location = new System.Drawing.Point(26, 31);
+            this.m21.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m21.Location = new System.Drawing.Point(4, 26);
             this.m21.Name = "m21";
-            this.m21.Size = new System.Drawing.Size(13, 13);
+            this.m21.Size = new System.Drawing.Size(58, 24);
             this.m21.TabIndex = 7;
             this.m21.Text = "0";
+            this.m21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m31
             // 
-            this.m31.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m31.AutoSize = true;
-            this.m31.Location = new System.Drawing.Point(26, 56);
+            this.m31.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m31.Location = new System.Drawing.Point(4, 51);
             this.m31.Name = "m31";
-            this.m31.Size = new System.Drawing.Size(13, 13);
+            this.m31.Size = new System.Drawing.Size(58, 24);
             this.m31.TabIndex = 8;
             this.m31.Text = "0";
+            this.m31.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m32
             // 
-            this.m32.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m32.AutoSize = true;
-            this.m32.Location = new System.Drawing.Point(91, 56);
+            this.m32.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m32.Location = new System.Drawing.Point(69, 51);
             this.m32.Name = "m32";
-            this.m32.Size = new System.Drawing.Size(13, 13);
+            this.m32.Size = new System.Drawing.Size(58, 24);
             this.m32.TabIndex = 9;
             this.m32.Text = "0";
+            this.m32.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m34
             // 
-            this.m34.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m34.AutoSize = true;
-            this.m34.Location = new System.Drawing.Point(223, 56);
+            this.m34.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m34.Location = new System.Drawing.Point(199, 51);
             this.m34.Name = "m34";
-            this.m34.Size = new System.Drawing.Size(13, 13);
+            this.m34.Size = new System.Drawing.Size(61, 24);
             this.m34.TabIndex = 11;
             this.m34.Text = "0";
+            this.m34.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m44
             // 
-            this.m44.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m44.AutoSize = true;
-            this.m44.Location = new System.Drawing.Point(223, 83);
+            this.m44.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m44.Location = new System.Drawing.Point(199, 76);
             this.m44.Name = "m44";
-            this.m44.Size = new System.Drawing.Size(13, 13);
+            this.m44.Size = new System.Drawing.Size(61, 27);
             this.m44.TabIndex = 12;
             this.m44.Text = "1";
+            this.m44.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m43
             // 
-            this.m43.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m43.AutoSize = true;
-            this.m43.Location = new System.Drawing.Point(156, 83);
+            this.m43.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m43.Location = new System.Drawing.Point(134, 76);
             this.m43.Name = "m43";
-            this.m43.Size = new System.Drawing.Size(13, 13);
+            this.m43.Size = new System.Drawing.Size(58, 27);
             this.m43.TabIndex = 13;
             this.m43.Text = "0";
+            this.m43.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m42
             // 
-            this.m42.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m42.AutoSize = true;
-            this.m42.Location = new System.Drawing.Point(91, 83);
+            this.m42.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m42.Location = new System.Drawing.Point(69, 76);
             this.m42.Name = "m42";
-            this.m42.Size = new System.Drawing.Size(13, 13);
+            this.m42.Size = new System.Drawing.Size(58, 27);
             this.m42.TabIndex = 14;
             this.m42.Text = "0";
+            this.m42.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m41
             // 
-            this.m41.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m41.AutoSize = true;
-            this.m41.Location = new System.Drawing.Point(26, 83);
+            this.m41.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m41.Location = new System.Drawing.Point(4, 76);
             this.m41.Name = "m41";
-            this.m41.Size = new System.Drawing.Size(13, 13);
+            this.m41.Size = new System.Drawing.Size(58, 27);
             this.m41.TabIndex = 15;
             this.m41.Text = "0";
+            this.m41.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m11
             // 
-            this.m11.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m11.AutoSize = true;
-            this.m11.Location = new System.Drawing.Point(26, 6);
+            this.m11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m11.Location = new System.Drawing.Point(4, 1);
             this.m11.Name = "m11";
-            this.m11.Size = new System.Drawing.Size(13, 13);
+            this.m11.Size = new System.Drawing.Size(58, 24);
             this.m11.TabIndex = 0;
             this.m11.Text = "1";
+            this.m11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // m33
             // 
-            this.m33.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.m33.AutoSize = true;
-            this.m33.Location = new System.Drawing.Point(156, 56);
+            this.m33.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m33.Location = new System.Drawing.Point(134, 51);
             this.m33.Name = "m33";
-            this.m33.Size = new System.Drawing.Size(13, 13);
+            this.m33.Size = new System.Drawing.Size(58, 24);
             this.m33.TabIndex = 10;
             this.m33.Text = "1";
+            this.m33.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // stopBtn
             // 

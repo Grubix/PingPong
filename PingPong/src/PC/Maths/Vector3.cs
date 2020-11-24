@@ -61,6 +61,10 @@ namespace PingPong.Maths {
             Z = z;
         }
 
+        public Vector3(Vector3 vector) {
+
+        }
+
         public double Dot(Vector3 vec) {
             return X * vec.X + Y * vec.Y + Z * vec.Z;
         }

@@ -85,9 +85,9 @@ namespace PingPong.Maths {
                 }
             }
 
-            var svdDecomposition = matrixH.Svd();
-            var UT = svdDecomposition.U.Transpose();
-            var V = svdDecomposition.VT.Transpose();
+            var SVD = matrixH.Svd();
+            var V = SVD.VT.Transpose();
+            var UT = SVD.U.Transpose();
 
             if ((V * UT).Determinant() <= 0) { //TODO: niedokonca jasne czy ma byc < 0 czy <= 0,
                 V[0, 2] *= -1;
@@ -98,6 +98,17 @@ namespace PingPong.Maths {
             rotationMatrix = V * UT;
             translationVector = -1 * rotationMatrix * centroidA + centroidB;
 
+            matrix = Matrix<double>.Build.DenseOfArray(new double[,] {
+                { rotationMatrix[0, 0], rotationMatrix[0, 1], rotationMatrix[0, 2], translationVector[0] },
+                { rotationMatrix[1, 0], rotationMatrix[1, 1], rotationMatrix[1, 2], translationVector[1] },
+                { rotationMatrix[2, 0], rotationMatrix[2, 1], rotationMatrix[2, 2], translationVector[2] },
+                { 0.0, 0.0, 0.0, 1.0 }
+            });
+        }
+
+        public Transformation(Matrix<double> rotation, Vector<double> translation) {
+            rotationMatrix = rotation.Clone();
+            translationVector = translation.Clone();
             matrix = Matrix<double>.Build.DenseOfArray(new double[,] {
                 { rotationMatrix[0, 0], rotationMatrix[0, 1], rotationMatrix[0, 2], translationVector[0] },
                 { rotationMatrix[1, 0], rotationMatrix[1, 1], rotationMatrix[1, 2], translationVector[1] },

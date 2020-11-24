@@ -25,8 +25,8 @@ namespace PingPong.Forms {
         public ThreadSafeChart() {
             InitializeComponent();
 
-            MaxSamples = 110;
-            RefreshTime = 4;
+            MaxSamples = 7000;
+            RefreshTime = 70;
 
             series1 = new Series {
                 ChartType = SeriesChartType.FastLine,
@@ -37,21 +37,6 @@ namespace PingPong.Forms {
                 ChartType = SeriesChartType.FastLine,
                 BorderWidth = 3
             };
-
-            double lineHeight = 125;
-            HorizontalLineAnnotation ann = new HorizontalLineAnnotation();
-
-            ann.AxisX = chart.ChartAreas[0].AxisX;
-            ann.AxisY = chart.ChartAreas[0].AxisY;
-            ann.IsSizeAlwaysRelative = false;
-            ann.AnchorY = lineHeight;
-            ann.IsInfinitive = true;
-            ann.ClipToChartArea = chart.ChartAreas[0].Name;
-            ann.LineColor = Color.Red;
-            ann.LineWidth = 2;
-            ann.LineDashStyle = ChartDashStyle.DashDot;
-
-            chart.Annotations.Add(ann);
 
             chart.ChartAreas[0].AxisX.Minimum = 0;
             chart.ChartAreas[0].AxisX.Maximum = MaxSamples;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace PingPong {
+namespace PingPong.Maths.Solver {
     static class QuadraticSolver {
 
         public static Complex[] Solve(double a, double b, double c) {

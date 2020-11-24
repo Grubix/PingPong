@@ -77,76 +77,68 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\ServerFiles\Applications\Ping.cs" />
-    <Compile Include="src\ServerFiles\Commands\ClearCommand.cs" />
-    <Compile Include="src\ServerFiles\Commands\ICommand.cs" />
-    <Compile Include="src\ServerFiles\Commands\CommandArgs.cs" />
-    <Compile Include="src\ServerFiles\Commands\ExitCommand.cs" />
-    <Compile Include="src\ServerFiles\Commands\HelpCommand.cs" />
-    <Compile Include="src\ServerFiles\Commands\MoveCommand.cs" />
-    <Compile Include="src\ServerFiles\Forms\CmdWindow.cs">
+    <Compile Include="src\PC\Applications\Ping.cs" />
+    <Compile Include="src\PC\Commands\ClearCommand.cs" />
+    <Compile Include="src\PC\Commands\ICommand.cs" />
+    <Compile Include="src\PC\Commands\CommandArgs.cs" />
+    <Compile Include="src\PC\Commands\ExitCommand.cs" />
+    <Compile Include="src\PC\Commands\HelpCommand.cs" />
+    <Compile Include="src\PC\Commands\MoveCommand.cs" />
+    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator3.cs" />
+    <Compile Include="src\PC\Forms\CmdWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ServerFiles\Forms\CmdWindow.Designer.cs">
+    <Compile Include="src\PC\Forms\CmdWindow.Designer.cs">
       <DependentUpon>CmdWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ServerFiles\Maths\CubicSolver.cs" />
-    <Compile Include="src\ServerFiles\Maths\LUD3.cs" />
-    <Compile Include="src\ServerFiles\Maths\Matrix3.cs" />
-    <Compile Include="src\ServerFiles\Maths\PolyFit.cs" />
-    <Compile Include="src\ServerFiles\Maths\QuadraticSolver.cs" />
-    <Compile Include="src\ServerFiles\Maths\QuarticSolver.cs" />
-    <Compile Include="src\ServerFiles\Maths\SVD3.cs" />
-    <Compile Include="src\ServerFiles\Maths\Vector3.cs" />
-    <Compile Include="src\OldFiles\Gen.cs" />
-    <Compile Include="src\OldFiles\Gen2.cs" />
-    <Compile Include="src\OldFiles\Gen3.cs" />
-    <Compile Include="src\OldFiles\Gen4.cs" />
-    <Compile Include="src\OldFiles\gen5.cs" />
-    <Compile Include="src\OldFiles\Generator.cs" />
-    <Compile Include="src\OldFiles\OptiTrackCalibration.cs" />
-    <Compile Include="src\OldFiles\PolynominalTest.cs" />
-    <Compile Include="src\OldFiles\TrajectoryGenerator7.cs" />
-    <Compile Include="src\ServerFiles\Devices\KUKA\E6AXIS.cs" />
-    <Compile Include="src\ServerFiles\Devices\KUKA\TrajectoryGenerator2.cs" />
-    <Compile Include="src\ServerFiles\Devices\OptiTrack\BallData.cs" />
-    <Compile Include="src\ServerFiles\Forms\CalibrationWindow.cs">
+    <Compile Include="src\PC\Maths\LUD3.cs" />
+    <Compile Include="src\PC\Maths\Matrix3.cs" />
+    <Compile Include="src\PC\Maths\PolyFit.cs" />
+    <Compile Include="src\PC\Maths\Solver\CubicSolver.cs" />
+    <Compile Include="src\PC\Maths\Solver\QuadraticSolver.cs" />
+    <Compile Include="src\PC\Maths\Solver\QuarticSolver.cs" />
+    <Compile Include="src\PC\Maths\SVD3.cs" />
+    <Compile Include="src\PC\Maths\Vector3.cs" />
+    <Compile Include="src\PC\Devices\KUKA\E6AXIS.cs" />
+    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator2.cs" />
+    <Compile Include="src\PC\Devices\OptiTrack\BallData.cs" />
+    <Compile Include="src\PC\Forms\CalibrationWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ServerFiles\Forms\CalibrationWindow.Designer.cs">
+    <Compile Include="src\PC\Forms\CalibrationWindow.Designer.cs">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ServerFiles\Forms\RobotDataPanel.cs">
+    <Compile Include="src\PC\Forms\RobotDataPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="src\ServerFiles\Forms\RobotDataPanel.Designer.cs">
+    <Compile Include="src\PC\Forms\RobotDataPanel.Designer.cs">
       <DependentUpon>RobotDataPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ServerFiles\Maths\Transformation.cs" />
-    <Compile Include="src\ServerFiles\Devices\KUKA\TrajectoryGenerator.cs" />
-    <Compile Include="src\ServerFiles\Devices\KUKA\RobotLimits.cs" />
-    <Compile Include="src\ServerFiles\Devices\OptiTrack\InputFrame.cs" />
-    <Compile Include="src\ServerFiles\Forms\ThreadSafeChart.cs">
+    <Compile Include="src\PC\Maths\Transformation.cs" />
+    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator.cs" />
+    <Compile Include="src\PC\Devices\KUKA\RobotLimits.cs" />
+    <Compile Include="src\PC\Devices\OptiTrack\InputFrame.cs" />
+    <Compile Include="src\PC\Forms\ThreadSafeChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="src\ServerFiles\Forms\ThreadSafeChart.Designer.cs">
+    <Compile Include="src\PC\Forms\ThreadSafeChart.Designer.cs">
       <DependentUpon>ThreadSafeChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ServerFiles\Applications\IApplication.cs" />
-    <Compile Include="src\ServerFiles\Devices\IDevice.cs" />
-    <Compile Include="src\ServerFiles\Forms\MainWindow.cs">
+    <Compile Include="src\PC\Applications\IApplication.cs" />
+    <Compile Include="src\PC\Devices\IDevice.cs" />
+    <Compile Include="src\PC\Forms\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ServerFiles\Forms\MainWindow.Designer.cs">
+    <Compile Include="src\PC\Forms\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ServerFiles\Devices\KUKA\E6POS.cs" />
-    <Compile Include="src\ServerFiles\Devices\KUKA\KUKARobot.cs" />
-    <Compile Include="src\ServerFiles\Devices\OptiTrack\OptiTrackSystem.cs" />
-    <Compile Include="src\ServerFiles\Program.cs" />
-    <Compile Include="src\ServerFiles\Devices\KUKA\RSI\InputFrame.cs" />
-    <Compile Include="src\ServerFiles\Devices\KUKA\RSI\OutputFrame.cs" />
-    <Compile Include="src\ServerFiles\Devices\KUKA\RSI\RSIAdapter.cs" />
+    <Compile Include="src\PC\Devices\KUKA\E6POS.cs" />
+    <Compile Include="src\PC\Devices\KUKA\KUKARobot.cs" />
+    <Compile Include="src\PC\Devices\OptiTrack\OptiTrackSystem.cs" />
+    <Compile Include="src\PC\Program.cs" />
+    <Compile Include="src\PC\Devices\KUKA\RSI\InputFrame.cs" />
+    <Compile Include="src\PC\Devices\KUKA\RSI\OutputFrame.cs" />
+    <Compile Include="src\PC\Devices\KUKA\RSI\RSIAdapter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -156,25 +148,25 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="src\ServerFiles\Forms\CalibrationWindow.resx">
+    <EmbeddedResource Include="src\PC\Forms\CalibrationWindow.resx">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ServerFiles\Forms\CmdWindow.resx">
+    <EmbeddedResource Include="src\PC\Forms\CmdWindow.resx">
       <DependentUpon>CmdWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ServerFiles\Forms\ThreadSafeChart.resx">
+    <EmbeddedResource Include="src\PC\Forms\ThreadSafeChart.resx">
       <DependentUpon>ThreadSafeChart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ServerFiles\Forms\MainWindow.resx">
+    <EmbeddedResource Include="src\PC\Forms\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ServerFiles\Forms\RobotDataPanel.resx">
+    <EmbeddedResource Include="src\PC\Forms\RobotDataPanel.resx">
       <DependentUpon>RobotDataPanel.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
-    <None Include="src\DocsFiles\eggert_comparison_mva97.pdf" />
-    <None Include="src\DocsFiles\LN9_TrajectoryGeneration.pdf" />
-    <None Include="src\DocsFiles\Meissner feat. Pazda.pdf" />
+    <None Include="src\Docs\eggert_comparison_mva97.pdf" />
+    <None Include="src\Docs\LN9_TrajectoryGeneration.pdf" />
+    <None Include="src\Docs\Meissner feat. Pazda.pdf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -184,14 +176,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="src\DocsFiles\Metody15 %281%29.pdf" />
-    <None Include="src\DocsFiles\Metody15.pdf" />
-    <None Include="src\DocsFiles\NatNetUsersGuide.pdf" />
-    <None Include="src\DocsFiles\RSI_40.pdf" />
-    <None Include="src\DocsFiles\Trajectory generator.pdf" />
-    <None Include="src\KUKAFiles\RSI_Ethernet.rsix" />
-    <None Include="src\KUKAFiles\RSI_Ethernet.src" />
-    <None Include="src\ServerFiles\TODO.md" />
+    <None Include="src\Docs\Metody15 %281%29.pdf" />
+    <None Include="src\Docs\Metody15.pdf" />
+    <None Include="src\Docs\NatNetUsersGuide.pdf" />
+    <None Include="src\Docs\RSI_40.pdf" />
+    <None Include="src\Docs\Trajectory generator.pdf" />
+    <None Include="src\Kuka\RSI_Ethernet.rsix" />
+    <None Include="src\Kuka\RSI_Ethernet.src" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -199,7 +190,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="ping-pong.ico" />
-    <Content Include="src\KUKAFiles\RSI_EthernetConfig.xml" />
+    <Content Include="src\Kuka\RSI_EthernetConfig.xml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

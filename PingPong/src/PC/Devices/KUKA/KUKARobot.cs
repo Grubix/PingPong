@@ -17,9 +17,9 @@ namespace PingPong.KUKA {
 
         private readonly object targetPositionSyncLock = new object();
 
-        private bool isInitialized = false; //TODO: volatile ??
+        private bool isInitialized = false;
 
-        private bool forceMoveMode = false; //TODO: volatile ??
+        private bool forceMoveMode = false;
 
         private TrajectoryGenerator2 generator;
 

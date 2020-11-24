@@ -60,7 +60,7 @@ namespace PingPong.Forms {
                         var kukaPoint = robot.CurrentPosition.XYZ;
                         kukaRobotPoints.Add(kukaPoint);
 
-                        // Gen n samples from optitrack system and add average position of the ball to list
+                        // Gen n samples from optitrack system and add average ball position to the list
                         var optiTrackPoint = optiTrack.GetAveragePosition(samplesPerPoint);
                         optiTrackPoints.Add(optiTrackPoint);
 
@@ -97,13 +97,13 @@ namespace PingPong.Forms {
 
             private void MoveRobotToPoint(KUKARobot robot, E6POS position, double velocity) {
                 var point = Vector<double>.Build.DenseOfArray(new double[] {
-                position.X, position.Y, position.Z
-            });
+                    position.X, position.Y, position.Z
+                });
 
                 MoveRobotToPoint(robot, point, velocity);
             }
 
-            public void Calibrate(KUKARobot robot, int pointsPerLine = 10, int samplesPerPoint = 200) {
+            public void Calibrate(KUKARobot robot, int pointsPerLine, int samplesPerPoint) {
                 if (worker.IsBusy) {
                     throw new InvalidOperationException("Calibration in progress");
                 }
@@ -163,10 +163,10 @@ namespace PingPong.Forms {
 
                     for (int j = 0; j < pointsPerLine + 1; j++) {
                         calibrationPoints.Add(Vector<double>.Build.DenseOfArray(new double[] {
-                        startPoint.x + deltaX * j,
-                        startPoint.y + deltaY * j,
-                        startPoint.z + deltaZ * j
-                    }));
+                            startPoint.x + deltaX * j,
+                            startPoint.y + deltaY * j,
+                            startPoint.z + deltaZ * j
+                        }));
                     }
                 }
             }
@@ -224,7 +224,7 @@ namespace PingPong.Forms {
             robotSelect.Text = "- Select robot -";
 
             FormClosing += (s, e) => calibrationTool.Cancel();
-            startBtn.Click += (s, e) => calibrationTool.Calibrate(selectedRobot);
+            startBtn.Click += (s, e) => calibrationTool.Calibrate(selectedRobot, 10, 200);
             stopBtn.Click += (s, e) => {
                 Text = title;
                 robotSelect.Enabled = true;

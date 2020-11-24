@@ -1,4 +1,6 @@
-﻿namespace PingPong.KUKA {
+﻿using System;
+
+namespace PingPong.KUKA {
     class TrajectoryGenerator2 {
 
         private class Polynominal {
@@ -28,10 +30,10 @@
                 x1 = currentPosition;
             }
 
-            public double GetNextValue(double currentPosition, double targetPosition, double duration, double velocity) {
+            public double GetNextValue(double currentPosition, double targetPosition, double duration, double velocity) {                
                 if (duration != T || targetPosition != x1 || velocity != v1) {
                     Restart(duration, currentPosition, targetPosition, velocity);
-                    elapsedTime = 0.0;
+                    elapsedTime = Ts;
                 }
 
                 if (elapsedTime >= T) {
@@ -45,13 +47,13 @@
                 double t4 = t1 * t3;
                 double t5 = t1 * t4;
 
-                X = k5 * t5 + k4 * t4 + k3 * t3 + k2 * t2 + k1 * t1 + k0;
+                double nextValue = k5 * t5 + k4 * t4 + k3 * t3 + k2 * t2 + k1 * t1 + k0;
                 V = 5.0 * k5 * t4 + 4.0 * k4 * t3 + 3.0 * k3 * t2 + 2.0 * k2 * t1 + k1;
                 A = 20.0 * k5 * t3 + 12.0 * k4 * t2 + 6.0 * k3 * t1 + 2.0 * k2;
 
                 elapsedTime += Ts;
 
-                return X;
+                return nextValue;
             }
 
             private void Restart(double T, double x0, double x1, double v1) {
@@ -92,12 +94,14 @@
             }
 
             private double CalculateMaxVelocity() {
-                double tx1 = -k4 / (5.0 * k5);
-                double tx2 = tx1 * tx1;
-                double tx3 = tx1 * tx2;
-                double tx4 = tx1 * tx3;
+                // v(Tx) = Vmax <=> v''(Tx) = 0 => Tx = -1/5 * k4/k5
 
-                return 5.0 * k5 * tx4 + 4.0 * k4 * tx3 + 3.0 * k3 * tx2 + 2.0 * k2 * tx1 + k1;
+                double Tx1 = -k4 / (5.0 * k5);
+                double Tx2 = Tx1 * Tx1;
+                double Tx3 = Tx1 * Tx2;
+                double Tx4 = Tx1 * Tx3;
+
+                return 5.0 * k5 * Tx4 + 4.0 * k4 * Tx3 + 3.0 * k3 * Tx2 + 2.0 * k2 * Tx1 + k1;
             }
 
         }
@@ -156,7 +160,7 @@
         /// <param name="duration"></param>
         /// <param name="velocity"></param>
         /// <returns></returns>
-        public E6POS GetNextValue(E6POS currentPosition, E6POS targetPosition, double duration, double velocity = 0.0) {
+        public E6POS GetNextPosition(E6POS currentPosition, E6POS targetPosition, double duration, double velocity = 0.0) {
             return new E6POS(
                 PolyX.GetNextValue(currentPosition.X, targetPosition.X, duration, velocity),
                 PolyY.GetNextValue(currentPosition.Y, targetPosition.Y, duration, velocity),
@@ -168,7 +172,7 @@
         }
 
         public E6POS GetNextCorrection(E6POS currentPosition, E6POS targetPosition, double duration, double velocity = 0.0) {
-            return GetNextValue(currentPosition, targetPosition, duration, velocity) - currentPosition;
+            return GetNextPosition(currentPosition, targetPosition, duration, velocity) - currentPosition;
         }
 
     }

@@ -6,14 +6,14 @@ using System.Collections.Generic;
 namespace PingPong.OptiTrack {
     public class BallData {
 
-        private Dictionary<KUKARobot, Transformation> transformations;
+        private Dictionary<string, Transformation> transformations;
 
         private Vector<double> position;
 
         private Vector<double> velocity;
 
         public BallData() {
-            transformations = new Dictionary<KUKARobot, Transformation>();
+            transformations = new Dictionary<string, Transformation>();
             position = Vector<double>.Build.Dense(3);
             velocity = Vector<double>.Build.Dense(3);
         }
@@ -23,15 +23,15 @@ namespace PingPong.OptiTrack {
         }
 
         public void SetTransformation(KUKARobot robot, Transformation transformation) {
-            transformations[robot] = transformation;
+            transformations[robot.Ip] = transformation;
         }
 
         public Vector<double> GetPosition(KUKARobot robot) {
-            return transformations[robot].Convert(position);
+            return transformations[robot.Ip].Convert(position);
         }
 
         public Vector<double> GetVelocity(KUKARobot robot) {
-            return transformations[robot].Convert(velocity);
+            return transformations[robot.Ip].Convert(velocity);
         }
 
     }

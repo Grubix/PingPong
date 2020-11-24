@@ -27,8 +27,6 @@ namespace PingPong.Forms {
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
             ballData = new BallData();
-
-            new CmdWindow().Show();
         }
 
         public void ShowCalibrationWindow() {

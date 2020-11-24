@@ -70,37 +70,6 @@ namespace PingPong.KUKA {
             this.C = C;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public E6POS Clear() {
-            return new E6POS();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public E6POS ClearXYZ() {
-            return new E6POS(0.0, 0.0, 0.0, A, B, C);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public E6POS ClearABC() {
-            return new E6POS(X, Y, Z, 0, 0, 0);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="xyzTolerance"></param>
-        /// <param name="abcTolerance"></param>
-        /// <returns></returns>
         public bool Compare(E6POS position, double xyzTolerance, double abcTolerance) {
             return
                 Math.Abs(X - position.X) <= xyzTolerance &&
