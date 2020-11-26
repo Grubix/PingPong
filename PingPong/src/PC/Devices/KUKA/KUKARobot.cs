@@ -310,8 +310,7 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Moves the robot to specified position (Sets target position). 
-        /// If force move mode is enabled, method has no effect.
+        /// Moves the robot to specified position (Sets target position).
         /// </summary>
         /// <param name="position">target position</param>
         /// <param name="duration">desired movement duration in seconds</param>
@@ -334,8 +333,7 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Shifts robot by the specified delta position. 
-        /// If force move mode is enabled, method has no effect.
+        /// Shifts robot by the specified delta position.
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
         /// <param name="duration">desired movement duration in seconds</param>

@@ -5,7 +5,7 @@ namespace PingPong.Commands {
 
         public string Name => "move";
 
-        public string Usage => "move <robot> (<x>,<y>,<z>[,<a>,<b>,<c>]) <duration>";
+        public string Usage => "move <robot> (<x>,<y>,<z>[,<a>,<b>,<c>]) <movementDuration>";
 
         public string Description => "Moves robot to specified position";
 

@@ -10,12 +10,9 @@ namespace PingPong.OptiTrack {
 
         private Vector<double> position;
 
-        private Vector<double> velocity;
-
         public BallData() {
             transformations = new Dictionary<string, Transformation>();
             position = Vector<double>.Build.Dense(3);
-            velocity = Vector<double>.Build.Dense(3);
         }
 
         public void Update(InputFrame receivedFrame) {
@@ -28,10 +25,6 @@ namespace PingPong.OptiTrack {
 
         public Vector<double> GetPosition(KUKARobot robot) {
             return transformations[robot.Ip].Convert(position);
-        }
-
-        public Vector<double> GetVelocity(KUKARobot robot) {
-            return transformations[robot.Ip].Convert(velocity);
         }
 
     }
