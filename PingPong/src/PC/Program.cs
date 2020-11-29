@@ -1,4 +1,4 @@
-using PingPong.Forms;
+using PingPong.Views;
 using System;
 using System.Windows.Forms;
 

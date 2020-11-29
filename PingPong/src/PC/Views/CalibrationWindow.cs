@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace PingPong.Forms {
+namespace PingPong.Views {
     public partial class CalibrationWindow : Form {
 
         private class CalibrationTool {

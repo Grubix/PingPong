@@ -1,4 +1,4 @@
-﻿namespace PingPong.Forms {
+﻿namespace PingPong.Views {
     partial class CalibrationWindow {
         /// <summary>
         /// Required designer variable.

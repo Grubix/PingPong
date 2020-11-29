@@ -1,5 +1,4 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using PingPong.Forms;
 using PingPong.KUKA;
 using PingPong.Maths;
 using PingPong.OptiTrack;
@@ -15,12 +14,9 @@ namespace PingPong.Applications {
 
         private double timeElapsed;
 
-        private readonly ThreadSafeChart threadSafeChart1;
-
-        public Ping(KUKARobot robot, ThreadSafeChart threadSafeChart1) {
+        public Ping(KUKARobot robot) {
             this.robot = robot;
             polyfit = new Polyfit(Zlevel);
-            this.threadSafeChart1 = threadSafeChart1;
         }
 
         public void ProcessData(BallData ballData) {
@@ -32,8 +28,6 @@ namespace PingPong.Applications {
             var collisionPoint = Vector<double>.Build.DenseOfArray(new double[] {
                 prediction[0], prediction[1], Zlevel
             });
-
-            threadSafeChart1.AddPoint(prediction[0], prediction[1]);
 
             System.Console.WriteLine(prediction);
             if (polyfit.go)

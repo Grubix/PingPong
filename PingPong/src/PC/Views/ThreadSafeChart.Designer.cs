@@ -1,4 +1,4 @@
-﻿namespace PingPong.Forms {
+﻿namespace PingPong.Views {
     partial class ThreadSafeChart {
         /// <summary> 
         /// Required designer variable.

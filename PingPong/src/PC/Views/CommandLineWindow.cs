@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace PingPong.Forms {
+namespace PingPong.Views {
     public partial class CommandLineWindow : Form {
 
         private readonly Dictionary<string, ICommand> registeredCommands = new Dictionary<string, ICommand>();

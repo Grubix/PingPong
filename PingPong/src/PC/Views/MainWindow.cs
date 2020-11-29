@@ -7,7 +7,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace PingPong.Forms {
+namespace PingPong.Views {
     public partial class MainWindow : Form {
 
         private KUKARobot robot1;
@@ -29,7 +29,7 @@ namespace PingPong.Forms {
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
             ballData = new BallData();
-            application = new Ping(robot1, threadSafeChart1);
+            application = new Ping(robot1);
             
             var rotationMatrix = Matrix<double>.Build.DenseOfArray(new double[,] {
                 { -0.011099,  0.0010454, -0.9999370 },
@@ -41,55 +41,7 @@ namespace PingPong.Forms {
                 817.21905, 613.07449, 143.92211
             });
 
-            robot1.Initialized += () => {
-                ballData.SetTransformation(robot1, new Transformation(rotationMatrix, translationVector));
-
-                optiTrack.FrameReceived += frame => {
-                    application.ProcessData(ballData);
-                };
-            };
-
-            Polyfit2 polyfit = new Polyfit2(2);
-            Random random = new Random();
-
-            reset.Click += (s, e) => {
-                polyfit.Clear();
-
-                chart1.Series[0].Points.Clear();
-                chart1.Series[1].Points.Clear();
-                chart1.Update();
-
-                double g = 9.81;
-
-                double x0 = 0.0;
-                double vx0 = 0.2;
-
-                double z0 = 0.6;
-                double vz0 = (double) vInput.Value;
-
-                double k = (double) kInput.Value;
-                double m = 0.0027;
-                double beta = k / m;
-
-                double zf = 1;
-                double zp = 1;
-                double t = 0.0;
-
-                while (zp > 0.5 || zf > 0.5) {
-                    double xf = vx0 / beta * (1 - Math.Exp(-beta * t)) + x0;
-                    zf = 1.0 / beta * (vz0 + g / beta) * (1 - Math.Exp(-beta * t)) - g / beta * t + z0;
-
-                    double xp = vx0 * t + x0;
-                    zp = -g / 2.0 * t * t + vz0 * t + z0;
-
-                    chart1.Series[0].Points.AddXY(xf, zf * 1000); //zamiana na mm
-                    chart1.Series[1].Points.AddXY(xp, zp * 1000); //zamiana na mm
-
-                    t += 0.01;
-                }
-
-                Console.WriteLine(t);
-            };
+            Transformation transformation = new Transformation(rotationMatrix, translationVector);
         }
 
         public void ShowCalibrationWindow() {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 
 namespace PingPong.KUKA {
     class TrajectoryGenerator5 {

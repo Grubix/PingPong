@@ -85,10 +85,10 @@
     <Compile Include="src\PC\Commands\HelpCommand.cs" />
     <Compile Include="src\PC\Commands\MoveCommand.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5.cs" />
-    <Compile Include="src\PC\Forms\CommandLineWindow.cs">
+    <Compile Include="src\PC\Views\CommandLineWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\PC\Forms\CommandLineWindow.Designer.cs">
+    <Compile Include="src\PC\Views\CommandLineWindow.Designer.cs">
       <DependentUpon>CommandLineWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="src\PC\Maths\Algebra\LUD3.cs" />
@@ -102,34 +102,34 @@
     <Compile Include="src\PC\Maths\Algebra\Vector3.cs" />
     <Compile Include="src\PC\Devices\KUKA\E6AXIS.cs" />
     <Compile Include="src\PC\Devices\OptiTrack\BallData.cs" />
-    <Compile Include="src\PC\Forms\CalibrationWindow.cs">
+    <Compile Include="src\PC\Views\CalibrationWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\PC\Forms\CalibrationWindow.Designer.cs">
+    <Compile Include="src\PC\Views\CalibrationWindow.Designer.cs">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\PC\Forms\RobotDataPanel.cs">
+    <Compile Include="src\PC\Views\RobotDataPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="src\PC\Forms\RobotDataPanel.Designer.cs">
+    <Compile Include="src\PC\Views\RobotDataPanel.Designer.cs">
       <DependentUpon>RobotDataPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="src\PC\Maths\Algebra\Transformation.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator.cs" />
     <Compile Include="src\PC\Devices\KUKA\RobotLimits.cs" />
     <Compile Include="src\PC\Devices\OptiTrack\InputFrame.cs" />
-    <Compile Include="src\PC\Forms\ThreadSafeChart.cs">
+    <Compile Include="src\PC\Views\ThreadSafeChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="src\PC\Forms\ThreadSafeChart.Designer.cs">
+    <Compile Include="src\PC\Views\ThreadSafeChart.Designer.cs">
       <DependentUpon>ThreadSafeChart.cs</DependentUpon>
     </Compile>
     <Compile Include="src\PC\Applications\IApplication.cs" />
     <Compile Include="src\PC\Devices\IDevice.cs" />
-    <Compile Include="src\PC\Forms\MainWindow.cs">
+    <Compile Include="src\PC\Views\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\PC\Forms\MainWindow.Designer.cs">
+    <Compile Include="src\PC\Views\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="src\PC\Devices\KUKA\E6POS.cs" />
@@ -148,19 +148,19 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="src\PC\Forms\CalibrationWindow.resx">
+    <EmbeddedResource Include="src\PC\Views\CalibrationWindow.resx">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\PC\Forms\CommandLineWindow.resx">
+    <EmbeddedResource Include="src\PC\Views\CommandLineWindow.resx">
       <DependentUpon>CommandLineWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\PC\Forms\ThreadSafeChart.resx">
+    <EmbeddedResource Include="src\PC\Views\ThreadSafeChart.resx">
       <DependentUpon>ThreadSafeChart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\PC\Forms\MainWindow.resx">
+    <EmbeddedResource Include="src\PC\Views\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\PC\Forms\RobotDataPanel.resx">
+    <EmbeddedResource Include="src\PC\Views\RobotDataPanel.resx">
       <DependentUpon>RobotDataPanel.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />

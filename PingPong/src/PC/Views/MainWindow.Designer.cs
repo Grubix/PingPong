@@ -1,4 +1,4 @@
-﻿namespace PingPong.Forms
+﻿namespace PingPong.Views
 {
     partial class MainWindow
     {
@@ -48,18 +48,10 @@
             this.decCBtn = new System.Windows.Forms.Button();
             this.calibrationBtn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.robot1Panel = new PingPong.Views.RobotDataPanel();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.reset = new System.Windows.Forms.Button();
-            this.threadSafeChart1 = new PingPong.Forms.ThreadSafeChart();
-            this.robot1Panel = new PingPong.Forms.RobotDataPanel();
-            this.kInput = new System.Windows.Forms.NumericUpDown();
-            this.vInput = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.kInput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.vInput)).BeginInit();
             this.SuspendLayout();
             // 
             // incXBtn
@@ -200,8 +192,19 @@
             this.panel1.Size = new System.Drawing.Size(140, 511);
             this.panel1.TabIndex = 28;
             // 
+            // robot1Panel
+            // 
+            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.robot1Panel.Location = new System.Drawing.Point(0, 0);
+            this.robot1Panel.Name = "robot1Panel";
+            this.robot1Panel.Size = new System.Drawing.Size(994, 511);
+            this.robot1Panel.TabIndex = 0;
+            // 
             // chart1
             // 
+            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.chart1.BorderlineWidth = 3;
             customLabel1.Text = "X";
             chartArea1.AxisX.CustomLabels.Add(customLabel1);
@@ -218,102 +221,18 @@
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series1.Legend = "Legend1";
-            series1.Name = "z oporem";
+            series1.Name = "optitrack";
             series2.BorderWidth = 3;
             series2.ChartArea = "ChartArea1";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.IsXValueIndexed = true;
             series2.Legend = "Legend1";
-            series2.Name = "bez oporu";
+            series2.Name = "polyfit";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(833, 511);
             this.chart1.TabIndex = 30;
             this.chart1.Text = "chart1";
-            // 
-            // reset
-            // 
-            this.reset.Location = new System.Drawing.Point(865, 80);
-            this.reset.Name = "reset";
-            this.reset.Size = new System.Drawing.Size(75, 23);
-            this.reset.TabIndex = 31;
-            this.reset.Text = "reset";
-            this.reset.UseVisualStyleBackColor = true;
-            // 
-            // threadSafeChart1
-            // 
-            this.threadSafeChart1.Location = new System.Drawing.Point(206, 291);
-            this.threadSafeChart1.MaxSamples = 110;
-            this.threadSafeChart1.Name = "threadSafeChart1";
-            this.threadSafeChart1.RefreshTime = 4;
-            this.threadSafeChart1.Size = new System.Drawing.Size(754, 186);
-            this.threadSafeChart1.TabIndex = 29;
-            // 
-            // robot1Panel
-            // 
-            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.robot1Panel.Location = new System.Drawing.Point(0, 0);
-            this.robot1Panel.Name = "robot1Panel";
-            this.robot1Panel.Size = new System.Drawing.Size(994, 511);
-            this.robot1Panel.TabIndex = 0;
-            // 
-            // kInput
-            // 
-            this.kInput.DecimalPlaces = 7;
-            this.kInput.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            262144});
-            this.kInput.Location = new System.Drawing.Point(865, 110);
-            this.kInput.Maximum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.kInput.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            458752});
-            this.kInput.Name = "kInput";
-            this.kInput.Size = new System.Drawing.Size(75, 20);
-            this.kInput.TabIndex = 32;
-            this.kInput.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            262144});
-            // 
-            // vInput
-            // 
-            this.vInput.DecimalPlaces = 2;
-            this.vInput.Location = new System.Drawing.Point(865, 137);
-            this.vInput.Name = "vInput";
-            this.vInput.Size = new System.Drawing.Size(75, 20);
-            this.vInput.TabIndex = 33;
-            this.vInput.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(947, 110);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(13, 13);
-            this.label1.TabIndex = 34;
-            this.label1.Text = "k";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(947, 137);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(24, 13);
-            this.label2.TabIndex = 35;
-            this.label2.Text = "vz0";
             // 
             // MainWindow
             // 
@@ -321,13 +240,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1134, 511);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.vInput);
-            this.Controls.Add(this.kInput);
-            this.Controls.Add(this.reset);
             this.Controls.Add(this.chart1);
-            this.Controls.Add(this.threadSafeChart1);
             this.Controls.Add(this.robot1Panel);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -339,10 +252,7 @@
             this.Text = "Ping Pong";
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.kInput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.vInput)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -363,12 +273,6 @@
         private System.Windows.Forms.Button calibrationBtn;
         private System.Windows.Forms.Panel panel1;
         private RobotDataPanel robot1Panel;
-        private ThreadSafeChart threadSafeChart1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
-        private System.Windows.Forms.Button reset;
-        private System.Windows.Forms.NumericUpDown kInput;
-        private System.Windows.Forms.NumericUpDown vInput;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
     }
 }

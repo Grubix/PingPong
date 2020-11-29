@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace PingPong.Forms {
+namespace PingPong.Views {
     public partial class ThreadSafeChart : UserControl {
 
         private readonly Stopwatch stopWatch = new Stopwatch();
