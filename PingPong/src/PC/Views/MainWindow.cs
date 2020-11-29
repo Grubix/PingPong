@@ -2,8 +2,10 @@
 using PingPong.Applications;
 using PingPong.KUKA;
 using PingPong.Maths;
+using PingPong.Maths.Solver;
 using PingPong.OptiTrack;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -27,7 +29,7 @@ namespace PingPong.Views {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            //optiTrack = InitializeOptiTrackSystem();
+            optiTrack = InitializeOptiTrackSystem();
             ballData = new BallData();
             application = new Ping(robot1);
             
@@ -42,6 +44,64 @@ namespace PingPong.Views {
             });
 
             Transformation transformation = new Transformation(rotationMatrix, translationVector);
+            Polyfit2 polyfitX = new Polyfit2(1);
+            Polyfit2 polyfitY = new Polyfit2(1);
+            Polyfit2 polyfitZ = new Polyfit2(2);
+
+            double Z = 300.0;
+            int maxPoints = 40;
+            int sampleOffset = 10;
+
+            bool parabolaDrawn = false;
+
+            void DrawParabola() {
+                if (parabolaDrawn) {
+                    return;
+                }
+
+                parabolaDrawn = true;
+
+                var xCoeffs = polyfitX.CalculateCoefficients();
+                var yCoeffs = polyfitY.CalculateCoefficients();
+                var zCoeffs = polyfitZ.CalculateCoefficients();
+                double T = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - Z)[1];
+                Console.WriteLine($"T={T}, xpred={xCoeffs[1] * T + xCoeffs[0]}, ypred={yCoeffs[1] * T + yCoeffs[0]}");
+
+                UpdateUI(() => {
+                    for (int i = 0; i < polyfitZ.PointCount; i++) {
+                        chart1.Series[0].Points.AddXY(polyfitZ.xValues[i], polyfitZ.yValues[i]);
+                    }
+
+                    for (double t = 0; t < T; t += 0.1) {
+                        double z = zCoeffs[2] * t * t + zCoeffs[1] * t + zCoeffs[0];
+                        chart1.Series[1].Points.AddXY(t, z);
+                    }
+                });
+            }
+
+            int samples = 0;
+
+            optiTrack.FrameReceived += frame => {
+                var position = transformation.Convert(frame.Position);
+                double ballX = position[0];
+                double ballY = position[1];
+                double ballZ = position[2];
+
+                //TODO: sprawdzic te limity jeszcze raz, czy sie zgadzaja z obecnymi
+                if (!parabolaDrawn && ballX > -390 && ballX < 500 && ballY > -100 && ballY < 700 && Z > 100) {
+                    if (polyfitZ.PointCount == maxPoints) {
+                        DrawParabola();
+                    } else if (samples % sampleOffset == 0) {
+                        //TODO: ogarnąc czas, ewentualnie uzyc stopwatcha
+
+                        polyfitX.AddPoint(0, ballX);
+                        polyfitY.AddPoint(0, ballY);
+                        polyfitZ.AddPoint(0, ballZ);
+
+                        samples++;
+                    }
+                }
+            };
         }
 
         public void ShowCalibrationWindow() {

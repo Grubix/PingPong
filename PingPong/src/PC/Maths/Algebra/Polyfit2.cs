@@ -7,9 +7,9 @@ namespace PingPong.Maths {
     /// </summary>
     class Polyfit2 {
 
-        private readonly List<double> xValues;
+        public readonly List<double> xValues;
 
-        private readonly List<double> yValues;
+        public readonly List<double> yValues;
 
         private readonly int order;
 

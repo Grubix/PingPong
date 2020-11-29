@@ -176,11 +176,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="src\Docs\Metody15 %281%29.pdf" />
     <None Include="src\Docs\Metody15.pdf" />
     <None Include="src\Docs\NatNetUsersGuide.pdf" />
     <None Include="src\Docs\RSI_40.pdf" />
     <None Include="src\Docs\Trajectory generator.pdf" />
+    <None Include="src\Docs\Trajectory_Planning_for_Automatic_Machines_and_Robots.pdf" />
     <None Include="src\Kuka\RSI_Ethernet.rsix" />
     <None Include="src\Kuka\RSI_Ethernet.src" />
   </ItemGroup>
