@@ -25,8 +25,8 @@ namespace PingPong.Forms {
         public ThreadSafeChart() {
             InitializeComponent();
 
-            MaxSamples = 7000;
-            RefreshTime = 70;
+            MaxSamples = 250;
+            RefreshTime = 20;
 
             series1 = new Series {
                 ChartType = SeriesChartType.FastLine,

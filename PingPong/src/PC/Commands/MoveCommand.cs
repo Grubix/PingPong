@@ -41,7 +41,7 @@ namespace PingPong.Commands {
                 if (double.TryParse(positionSplit[0], out double x) &&
                     double.TryParse(positionSplit[1], out double y) &&
                     double.TryParse(positionSplit[2], out double z)) {
-                    targetPosition = new E6POS(x, y, z, robot.CurrentPosition.ABC);
+                    targetPosition = new E6POS(x, y, z, robot.Position.ABC);
                 } else {
                     args.CommandLine.Error($"Invalid XYZ position");
                     return;

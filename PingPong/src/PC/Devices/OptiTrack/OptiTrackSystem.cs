@@ -61,7 +61,7 @@ namespace PingPong.OptiTrack {
             }
 
             ManualResetEvent getSamplesEvent = new ManualResetEvent(false);
-            Vector<double> position = Vector<double>.Build.Dense(3);
+            var position = Vector<double>.Build.Dense(3);
 
             int currentSample = 0;
 

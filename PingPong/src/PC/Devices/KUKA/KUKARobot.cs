@@ -7,30 +7,25 @@ namespace PingPong.KUKA {
 
     public class KUKARobot : IDevice {
 
-        private readonly RSIAdapter rsiAdapter;
+        private readonly object robotDataSyncLock = new object();
 
-        private readonly RobotLimits limits;
+        private readonly object generatorSyncLock = new object();
 
         private readonly BackgroundWorker worker;
 
-        private readonly object robotDataSyncLock = new object();
+        private readonly RSIAdapter rsiAdapter;
 
-        private readonly object targetPositionSyncLock = new object();
+        private TrajectoryGenerator5 generator;
 
         private bool isInitialized = false;
 
         private bool forceMoveMode = false;
 
-        //private TrajectoryGenerator2 generator;
-        private TrajectoryGenerator generator;
+        private long IPOC;
 
-        private long currentIPOC;
+        private E6POS position;
 
-        private E6POS currentPosition;
-
-        private E6AXIS currentAxisPosition;
-
-        private (E6POS position, double duration) targetPosition;
+        private E6AXIS axisPosition;
 
         /// <summary>
         /// Robot Ip adress (RSI interface)
@@ -42,44 +37,9 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Robot lower workspace point
+        /// Robot limits
         /// </summary>
-        public (double x, double y, double z) LowerWorkspacePoint {
-            get {
-                lock (robotDataSyncLock) {
-                    return (limits.LimitX.min, limits.LimitY.min, limits.LimitZ.min);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Robot upper workspace point
-        /// </summary>
-        public (double x, double y, double z) UpperWorkspacePoint {
-            get {
-                lock (robotDataSyncLock) {
-                    return (limits.LimitX.max, limits.LimitY.max, limits.LimitZ.max);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Robot max XYZ movement velocity [mm/s]
-        /// </summary>
-        public double MaxXYZVelocity {
-            get {
-                return limits.LimitCorrection.maxXYZ * 250.0;
-            }
-        }
-
-        /// <summary>
-        /// Robot max ABC rotation velocity [deg/s]
-        /// </summary>
-        public double MaxABCVelocity {
-            get {
-                return limits.LimitCorrection.maxABC * 250.0;
-            }
-        }
+        public RobotLimits Limits { get; private set; }
 
         /// <summary>
         /// Robot home position
@@ -89,10 +49,10 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Robot current position
         /// </summary>
-        public E6POS CurrentPosition {
+        public E6POS Position {
             get {
                 lock (robotDataSyncLock) {
-                    return currentPosition;
+                    return position;
                 }
             }
         }
@@ -100,65 +60,10 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Robot current axis position
         /// </summary>
-        public E6AXIS CurrentAxisPosition {
+        public E6AXIS AxisPosition {
             get {
                 lock (robotDataSyncLock) {
-                    return currentAxisPosition;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Robot current XYZ movement velocity
-        /// </summary>
-        public (double X, double Y, double Z) CurrentXYZVelocity {
-            get {
-                lock (targetPositionSyncLock) {
-                    return generator.CurrentXYZVelocity;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Robot current ABC movement velocity
-        /// </summary>
-        public (double A, double B, double C) CurrentABCVelocity {
-            get {
-                lock (targetPositionSyncLock) {
-                    return generator.CurrentABCVelocity;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Robot current XYZ movement acceleration
-        /// </summary>
-        public (double X, double Y, double Z) CurrentXYZAcceleration {
-            get {
-                lock (targetPositionSyncLock) {
-                    return generator.CurrentXYZAcceleration;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Robot current ABC rotation acceleration
-        /// </summary>
-        public (double A, double B, double C) CurrentABCAcceleration {
-            get {
-                lock (targetPositionSyncLock) {
-                    return generator.CurrentABCAcceleration;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Robot target position
-        /// </summary>
-        public E6POS TargetPosition {
-            get {
-                lock (targetPositionSyncLock) {
-                    return targetPosition.position;
+                    return axisPosition;
                 }
             }
         }
@@ -179,10 +84,10 @@ namespace PingPong.KUKA {
         public event Action<OutputFrame> FrameSent;
 
         /// <param name="port">Port defined in RSI_EthernetConfig.xml</param>
-        /// <param name="robotLimits">robot limits</param>
-        public KUKARobot(int port, RobotLimits robotLimits) {
+        /// <param name="limits">robot limits</param>
+        public KUKARobot(int port, RobotLimits limits) {
             rsiAdapter = new RSIAdapter(port);
-            limits = robotLimits;
+            Limits = limits;
 
             worker = new BackgroundWorker() {
                 WorkerSupportsCancellation = true
@@ -191,22 +96,18 @@ namespace PingPong.KUKA {
             worker.DoWork += async (sender, args) => {
                 // Connect with the robot
                 InputFrame receivedFrame = await rsiAdapter.Connect();
-
-                HomePosition = receivedFrame.Position;
-                //generator = new TrajectoryGenerator2(receivedFrame.Position);
-                generator = new TrajectoryGenerator(receivedFrame.Position);
+                generator = new TrajectoryGenerator5(receivedFrame.Position);
 
                 lock (robotDataSyncLock) {
-                    currentIPOC = receivedFrame.IPOC;
-                    currentPosition = receivedFrame.Position;
-                    targetPosition = (currentPosition, 9999);
+                    IPOC = receivedFrame.IPOC;
+                    position = receivedFrame.Position;
+                    HomePosition = receivedFrame.Position;
                 }
 
-                // Send response (prevent connection timeout)
+                // Send first response (prevent connection timeout)
                 rsiAdapter.SendData(new OutputFrame() {
-                    Message = "PingPong",
                     Correction = new E6POS(),
-                    IPOC = currentIPOC
+                    IPOC = IPOC
                 });
 
                 isInitialized = true;
@@ -214,8 +115,8 @@ namespace PingPong.KUKA {
 
                 // Start loop for receiving and sending data
                 while (!worker.CancellationPending) {
-                    await ReceiveRobotDataAsync();
-                    MoveToTargetPosition();
+                    await ReceiveDataAsync();
+                    SendData();
                 }
 
                 isInitialized = false;
@@ -224,111 +125,79 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Receives data from the robot asynchronously, raises <see cref="KUKARobot.FrameRecived">FrameReceived</see> event
+        /// Receives data (IPOC, cartesian and axis position) from the robot asynchronously, 
+        /// raises <see cref="KUKARobot.FrameRecived">FrameReceived</see> event
         /// </summary>
-        private async Task ReceiveRobotDataAsync() {
+        private async Task ReceiveDataAsync() {
             InputFrame receivedFrame = await rsiAdapter.ReceiveDataAsync();
 
             lock (robotDataSyncLock) {
-                currentIPOC = receivedFrame.IPOC;
-                currentPosition = receivedFrame.Position;
-                currentAxisPosition = receivedFrame.AxisPosition;
+                IPOC = receivedFrame.IPOC;
+                position = receivedFrame.Position;
+                axisPosition = receivedFrame.AxisPosition;
             }
 
-            if (limits.CheckAxisPosition(currentAxisPosition)) {
-                FrameReceived?.Invoke(receivedFrame);
-            } else {
-                SendError("Axis position limit has been exceeded");
+            if (!Limits.CheckAxisPosition(axisPosition)) {
+                Uninitialize();
+                throw new InvalidOperationException($"Axis position limit has been exceeded:{Environment.NewLine}{axisPosition}");
             }
+
+            if (!Limits.CheckPosition(position)) {
+                Uninitialize();
+                throw new InvalidOperationException($"Available workspace limit has been exceeded:{Environment.NewLine}{position}");
+            }
+
+            FrameReceived?.Invoke(receivedFrame);
         }
 
         /// <summary>
-        /// Moves robot to the target position, raises <see cref="KUKARobot.FrameSent">FrameSent</see> event
+        /// Sends data (IPOC, correction) to the robot, raises <see cref="KUKARobot.FrameSent">FrameSent</see> event
         /// </summary>
-        private void MoveToTargetPosition() {
-            bool errorOccured = false;
-            string errorMessage = "";
-            E6POS correction = new E6POS();
+        private void SendData() {
+            E6POS correction;
 
-            lock (targetPositionSyncLock) {
-                if (limits.CheckPosition(targetPosition.position)) {
-                    E6POS nextCorrection = generator.GetNextCorrection(
-                        currentPosition,
-                        targetPosition.position,
-                        targetPosition.duration
-                    );
-
-                    nextCorrection = new E6POS(
-                        nextCorrection.X,
-                        nextCorrection.Y,
-                        nextCorrection.Z
-                    );
-
-                    //TODO: ogarnac katy abc
-
-                    if (limits.CheckCorrection(nextCorrection)) {
-                        correction = nextCorrection;
-                        Console.WriteLine(correction);
-                    } else {
-                        errorOccured = true;
-                        errorMessage = "Correction limit has been exceeded";
-                    }
-                } else {
-                    errorOccured = true;
-                    errorMessage = "Available workspace limit has been exceeded";
-                }
+            lock (generatorSyncLock) {
+                correction = generator.GetNextCorrection(position);
             }
 
-            if (errorOccured) {
-                SendError(errorMessage);
-            } else {
-                OutputFrame outputFrame = new OutputFrame() {
-                    Correction = correction,
-                    IPOC = currentIPOC
-                };
-
-                rsiAdapter.SendData(outputFrame);
-                FrameSent?.Invoke(outputFrame);
+            if (!Limits.CheckCorrection(correction)) {
+                Uninitialize();
+                throw new InvalidOperationException($"Correction limit has been exceeded:{Environment.NewLine}{correction}");
             }
-        }
 
-        /// <summary>
-        /// Sends error message to the robot, throws exception
-        /// </summary>
-        /// <param name="errorMessage">error message</param>
-        private void SendError(string errorMessage) {
-            OutputFrame errorFrame = new OutputFrame() {
-                Message = $"Error: {errorMessage}",
-                Correction = new E6POS(),
-                IPOC = currentIPOC
+            OutputFrame outputFrame = new OutputFrame() {
+                Correction = correction,
+                IPOC = IPOC
             };
 
-            rsiAdapter.SendData(errorFrame);
-
-            Uninitialize();
-            throw new InvalidOperationException(errorMessage);
+            rsiAdapter.SendData(outputFrame);
+            FrameSent?.Invoke(outputFrame);
         }
 
         /// <summary>
         /// Moves the robot to specified position (Sets target position).
         /// </summary>
-        /// <param name="position">target position</param>
-        /// <param name="duration">desired movement duration in seconds</param>
-        public void MoveTo(E6POS position, double duration) {
+        /// <param name="targetPosition">target position</param>
+        /// <param name="targetDuration">desired movement duration in seconds</param>
+        public void MoveTo(E6POS targetPosition, double targetDuration) {
             if (!isInitialized) {
                 throw new InvalidOperationException("Robot is not initialized");
             }
 
-            if (duration <= 0) {
-                throw new ArgumentException("Duration value must be greater than 0");
+            if (targetDuration <= 0) {
+                throw new ArgumentException($"Duration value must be greater than 0, get {targetDuration}");
             }
 
-            lock (targetPositionSyncLock) {
+            if (!Limits.CheckPosition(targetPosition)) {
+                throw new ArgumentException($"Target position is outside the available workspace:{Environment.NewLine}{targetPosition}");
+            }
+
+            lock (generatorSyncLock) {
                 if (forceMoveMode) {
                     return;
                 }
 
-                targetPosition = (position, duration);
+                generator.SetTargetPosition(targetPosition, targetDuration);
             }
         }
 
@@ -336,41 +205,30 @@ namespace PingPong.KUKA {
         /// Shifts robot by the specified delta position.
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
-        /// <param name="duration">desired movement duration in seconds</param>
-        public void Shift(E6POS deltaPosition, double duration) {
-            MoveTo(TargetPosition + deltaPosition, duration);
+        /// <param name="targetDuration">desired movement duration in seconds</param>
+        public void Shift(E6POS deltaPosition, double targetDuration) {
+            MoveTo(Position + deltaPosition, targetDuration);
         }
 
         /// <summary>
         /// Moves robot to the specified position and blocks current thread until position is reached.
         /// Enables force move mode during the movement.
         /// </summary>
-        /// <param name="position">target position</param>
-        /// <param name="duration">desired movement duration in seconds</param>
+        /// <param name="targetPosition">target position</param>
+        /// <param name="targetDuration">desired movement duration in seconds</param>
         /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
         /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
-        public void ForceMoveTo(E6POS position, double duration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
-            if (!isInitialized) {
-                throw new InvalidOperationException("Robot is not initialized");
-            }
+        public void ForceMoveTo(E6POS targetPosition, double targetDuration, double xyzTolerance, double abcTolerance) {
+            MoveTo(targetPosition, targetDuration);
 
-            if (duration <= 0) {
-                throw new ArgumentException("Duration value must be greater than 0");
-            }
-
-            lock (targetPositionSyncLock) {
-                if (forceMoveMode) {
-                    return;
-                }
-
-                targetPosition = (position, duration);
+            lock (generatorSyncLock) {
                 forceMoveMode = true;
             }
 
-            AutoResetEvent targetPositionReached = new AutoResetEvent(false);
+            ManualResetEvent targetPositionReached = new ManualResetEvent(false);
 
             void checkPosition(InputFrame frameReceived) {
-                if (currentPosition.Compare(targetPosition.position, xyzTolerance, abcTolerance)) {
+                if (position.Compare(targetPosition, xyzTolerance, abcTolerance)) {
                     targetPositionReached.Set();
                 }
             };
@@ -379,7 +237,7 @@ namespace PingPong.KUKA {
             targetPositionReached.WaitOne();
             FrameReceived -= checkPosition;
 
-            lock (targetPositionSyncLock) {
+            lock (generatorSyncLock) {
                 forceMoveMode = false;
             }
         }
@@ -389,11 +247,11 @@ namespace PingPong.KUKA {
         /// Enables force move mode during the movement.
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
-        /// <param name="duration">desired movement duration in seconds</param>
+        /// <param name="targetDuration">desired movement duration in seconds</param>
         /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
         /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
-        public void ForceShift(E6POS deltaPosition, double duration, double xyzTolerance = 0.1, double abcTolerance = 0.1) {
-            ForceMoveTo(TargetPosition + deltaPosition, duration, xyzTolerance, abcTolerance);
+        public void ForceShift(E6POS deltaPosition, double targetDuration, double xyzTolerance, double abcTolerance) {
+            ForceMoveTo(Position + deltaPosition, targetDuration, xyzTolerance, abcTolerance);
         }
 
         public void Initialize() {
@@ -415,7 +273,11 @@ namespace PingPong.KUKA {
         }
 
         public override string ToString() {
-            return $"KUKA::{Ip}";
+            if (Ip != null) {
+                return $"KUKA::{Ip}";
+            } else {
+                return "KUKA::[not initialized]";
+            }
         }
 
     }

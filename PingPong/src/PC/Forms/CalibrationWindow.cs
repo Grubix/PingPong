@@ -50,14 +50,14 @@ namespace PingPong.Forms {
                     Start?.Invoke();
 
                     // Move robot to first calibration point and wait
-                    MoveRobotToPoint(robot, calibrationPoints[0], robot.MaxXYZVelocity / 3.0);
+                    MoveRobotToPoint(robot, calibrationPoints[0], robot.Limits.MaxVelocity.XYZ / 3.0);
 
                     for (int i = 0; i < calibrationPoints.Count; i++) {
                         // Move robot to next calibration point and wait
-                        MoveRobotToPoint(robot, calibrationPoints[i], robot.MaxXYZVelocity / 3.0);
+                        MoveRobotToPoint(robot, calibrationPoints[i], robot.Limits.MaxVelocity.XYZ / 3.0);
 
                         // Add robot XYZ position to list
-                        var kukaPoint = robot.CurrentPosition.XYZ;
+                        var kukaPoint = robot.Position.XYZ;
                         kukaRobotPoints.Add(kukaPoint);
 
                         // Gen n samples from optitrack system and add average ball position to the list
@@ -71,7 +71,7 @@ namespace PingPong.Forms {
                         ProgressChanged?.Invoke(progress, transformation);
                     }
 
-                    MoveRobotToPoint(robot, robot.HomePosition.XYZ, robot.MaxXYZVelocity / 3.0);
+                    MoveRobotToPoint(robot, robot.HomePosition.XYZ, robot.Limits.MaxVelocity.XYZ / 3.0);
                 };
 
                 worker.RunWorkerCompleted += (s, e) => {
@@ -85,16 +85,16 @@ namespace PingPong.Forms {
 
             private void MoveRobotToPoint(KUKARobot robot, Vector<double> point, double velocity) {
                 // Find greatest XYZ displacement
-                double deltaX = Math.Abs(point[0] - robot.CurrentPosition.X);
-                double deltaY = Math.Abs(point[1] - robot.CurrentPosition.Y);
-                double deltaZ = Math.Abs(point[2] - robot.CurrentPosition.Z);
+                double deltaX = Math.Abs(point[0] - robot.Position.X);
+                double deltaY = Math.Abs(point[1] - robot.Position.Y);
+                double deltaZ = Math.Abs(point[2] - robot.Position.Z);
                 double deltaMax = Math.Max(Math.Max(deltaX, deltaY), deltaZ);
 
                 // Robot Vx=Vy=Vz=Ax=Ay=Az=0 => v(T/2)=Vmax => T=15*(x1-x0)/(8*Vmax)
                 double duration = 15.0 * deltaMax / (8.0 * Math.Abs(velocity));
 
                 if (duration > 10E-6) {
-                    robot.ForceMoveTo(new E6POS(point, robot.CurrentPosition.ABC), duration);
+                    robot.ForceMoveTo(new E6POS(point, robot.Position.ABC), duration, 0.1, 0.1);
                 }
             }
 
@@ -125,8 +125,8 @@ namespace PingPong.Forms {
             private void CalculateCalibrationPoints(KUKARobot robot, int pointsPerLine) {
                 calibrationPoints.Clear();
 
-                (double x0, double y0, double z0) = robot.LowerWorkspacePoint;
-                (double x1, double y1, double z1) = robot.UpperWorkspacePoint;
+                (double x0, double y0, double z0) = robot.Limits.LowerWorkspaceLimit;
+                (double x1, double y1, double z1) = robot.Limits.UpperWorkspaceLimit;
 
                 // Shrink workspace by 5mm
                 x0 += x1 > x0 ? 5.0 : -5.0;

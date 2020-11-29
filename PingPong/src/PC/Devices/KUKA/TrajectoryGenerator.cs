@@ -10,8 +10,6 @@ namespace PingPong.KUKA {
             private double k1;
             private double k2;
             private double k3;
-            private double k4;
-            private double k;
 
             private double velocity;
             private double nextValue;

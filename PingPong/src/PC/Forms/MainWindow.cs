@@ -49,7 +49,47 @@ namespace PingPong.Forms {
                 };
             };
 
-            new CmdWindow().Show();
+            Polyfit2 polyfit = new Polyfit2(2);
+            Random random = new Random();
+
+            reset.Click += (s, e) => {
+                polyfit.Clear();
+
+                chart1.Series[0].Points.Clear();
+                chart1.Series[1].Points.Clear();
+                chart1.Update();
+
+                double g = 9.81;
+
+                double x0 = 0.0;
+                double vx0 = 0.2;
+
+                double z0 = 0.6;
+                double vz0 = (double) vInput.Value;
+
+                double k = (double) kInput.Value;
+                double m = 0.0027;
+                double beta = k / m;
+
+                double zf = 1;
+                double zp = 1;
+                double t = 0.0;
+
+                while (zp > 0.5 || zf > 0.5) {
+                    double xf = vx0 / beta * (1 - Math.Exp(-beta * t)) + x0;
+                    zf = 1.0 / beta * (vz0 + g / beta) * (1 - Math.Exp(-beta * t)) - g / beta * t + z0;
+
+                    double xp = vx0 * t + x0;
+                    zp = -g / 2.0 * t * t + vz0 * t + z0;
+
+                    chart1.Series[0].Points.AddXY(xf, zf * 1000); //zamiana na mm
+                    chart1.Series[1].Points.AddXY(xp, zp * 1000); //zamiana na mm
+
+                    t += 0.01;
+                }
+
+                Console.WriteLine(t);
+            };
         }
 
         public void ShowCalibrationWindow() {
@@ -86,31 +126,29 @@ namespace PingPong.Forms {
         }
 
         private KUKARobot InitializeRobot1() {
-            RobotLimits limits = new RobotLimits {
-                LimitX = (-390, 390),
-                LimitY = (180, 400),
-                LimitZ = (390, 650),
-                LimitA1 = (-360, 360),
-                LimitA2 = (-360, 360),
-                LimitA3 = (-360, 360),
-                LimitA4 = (-360, 360),
-                LimitA5 = (-360, 360),
-                LimitA6 = (-360, 360),
-                LimitCorrection = (0.5, 0.05)
-            };
+            RobotLimits limits = new RobotLimits(
+                (-390, 390),
+                (180, 400),
+                (390, 650),
+                (-360, 360),
+                (-360, 360),
+                (-360, 360),
+                (-360, 360),
+                (-360, 360),
+                (-360, 360),
+                (0.5, 0.05)
+            );
 
             KUKARobot robot1 = new KUKARobot(8081, limits);
-            robot1Panel.SetKUKARobot(robot1);
+            robot1Panel.AssignKUKARobot(robot1);
             robot1.Initialize();
-
 
             return robot1;
         }
 
         private KUKARobot InitializeRobot2() {
-            RobotLimits limits = new RobotLimits {
-                //TODO: limity dla drugiego robota!
-            };
+            //TODO: limity dla drugiego robota!
+            RobotLimits limits = null;
 
             KUKARobot robot2 = new KUKARobot(8082, limits);
             //robot2Panel.SetKUKARobot(robot2);

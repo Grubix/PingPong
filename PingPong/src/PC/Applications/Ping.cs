@@ -13,11 +13,9 @@ namespace PingPong.Applications {
 
         private readonly Polyfit polyfit;
 
-        private Vector<double> prevPrediction;
-
         private double timeElapsed;
 
-        private ThreadSafeChart threadSafeChart1;
+        private readonly ThreadSafeChart threadSafeChart1;
 
         public Ping(KUKARobot robot, ThreadSafeChart threadSafeChart1) {
             this.robot = robot;
@@ -39,7 +37,7 @@ namespace PingPong.Applications {
 
             System.Console.WriteLine(prediction);
             if (polyfit.go)
-                robot.MoveTo(new E6POS(collisionPoint, robot.CurrentPosition.ABC), 5);
+                robot.MoveTo(new E6POS(collisionPoint, robot.Position.ABC), 5);
             timeElapsed += 0.004;
         }
 

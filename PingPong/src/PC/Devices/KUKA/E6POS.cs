@@ -40,34 +40,16 @@ namespace PingPong.KUKA {
         public E6POS(double X, double Y, double Z) : this(X, Y, Z, 0.0, 0.0, 0.0) {
         }
 
+        public E6POS(Vector<double> XYZ, Vector<double> ABC) : this(XYZ[0], XYZ[1], XYZ[2], ABC[0], ABC[1], ABC[2]) {
+        }
+
+        public E6POS(double X, double Y, double Z, Vector<double> ABC) : this(X, Y, Z, ABC[0], ABC[1], ABC[2]) {
+        }
+
+        public E6POS(Vector<double> XYZ, double A, double B, double C) : this(XYZ[0], XYZ[1], XYZ[2], A, B, C) {
+        }
+
         public E6POS() : this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0) {
-        }
-
-        public E6POS(Vector<double> XYZ, Vector<double> ABC) {
-            X = XYZ[0];
-            Y = XYZ[1];
-            Z = XYZ[2];
-            A = ABC[0];
-            B = ABC[1];
-            C = ABC[2];
-        }
-
-        public E6POS(double X, double Y, double Z, Vector<double> ABC) {
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
-            A = ABC[0];
-            B = ABC[1];
-            C = ABC[2];
-        }
-
-        public E6POS(Vector<double> XYZ, double A, double B, double C) {
-            X = XYZ[0];
-            Y = XYZ[1];
-            Z = XYZ[2];
-            this.A = A;
-            this.B = B;
-            this.C = C;
         }
 
         public bool Compare(E6POS position, double xyzTolerance, double abcTolerance) {
@@ -81,13 +63,7 @@ namespace PingPong.KUKA {
         }
 
         public override string ToString() {
-            return
-                $"X={Math.Round(X * 1000) / 1000}, " +
-                $"Y={Math.Round(Y * 1000) / 1000}, " +
-                $"Z={Math.Round(Z * 1000) / 1000}, " +
-                $"A={Math.Round(A * 1000) / 1000}, " +
-                $"B={Math.Round(B * 1000) / 1000}, " +
-                $"C={Math.Round(C * 1000) / 1000}";
+            return $"[X={X:F3}, Y={Y:F3}, Z={Z:F3}, A={A:F3}, B={B:F3}, C={C:F3}]";
         }
 
         public static E6POS operator +(E6POS pos1, E6POS pos2) {

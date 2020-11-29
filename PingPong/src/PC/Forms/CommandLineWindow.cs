@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace PingPong.Forms {
-    public partial class CmdWindow : Form {
+    public partial class CommandLineWindow : Form {
 
         private readonly Dictionary<string, ICommand> registeredCommands = new Dictionary<string, ICommand>();
 
@@ -22,7 +22,7 @@ namespace PingPong.Forms {
 
         private readonly OptiTrackSystem optiTrack = null;
 
-        public CmdWindow() {
+        public CommandLineWindow() {
             InitializeComponent();
 
             RegisterCommand(new HelpCommand());

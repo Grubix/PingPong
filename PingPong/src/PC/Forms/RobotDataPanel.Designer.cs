@@ -23,34 +23,11 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.positionChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.velocityChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.velC = new System.Windows.Forms.TextBox();
-            this.velB = new System.Windows.Forms.TextBox();
-            this.velA = new System.Windows.Forms.TextBox();
-            this.velZ = new System.Windows.Forms.TextBox();
-            this.velY = new System.Windows.Forms.TextBox();
-            this.velX = new System.Windows.Forms.TextBox();
-            this.velCCheck = new System.Windows.Forms.CheckBox();
-            this.velBCheck = new System.Windows.Forms.CheckBox();
-            this.velACheck = new System.Windows.Forms.CheckBox();
-            this.velZCheck = new System.Windows.Forms.CheckBox();
-            this.velYCheck = new System.Windows.Forms.CheckBox();
-            this.velXCheck = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -71,20 +48,14 @@
             this.posYCheck = new System.Windows.Forms.CheckBox();
             this.posXCheck = new System.Windows.Forms.CheckBox();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionChart)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.velocityChart)).BeginInit();
             this.panel1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.splitContainer1);
+            this.panel2.Controls.Add(this.positionChart);
             this.panel2.Controls.Add(this.panel1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
@@ -92,61 +63,23 @@
             this.panel2.Size = new System.Drawing.Size(900, 500);
             this.panel2.TabIndex = 1;
             // 
-            // splitContainer1
-            // 
-            this.splitContainer1.BackColor = System.Drawing.SystemColors.Control;
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.splitContainer1.Location = new System.Drawing.Point(160, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.positionChart);
-            this.splitContainer1.Panel1MinSize = 200;
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.velocityChart);
-            this.splitContainer1.Panel2MinSize = 200;
-            this.splitContainer1.Size = new System.Drawing.Size(740, 500);
-            this.splitContainer1.SplitterDistance = 250;
-            this.splitContainer1.TabIndex = 1;
-            // 
             // positionChart
             // 
-            chartArea1.Name = "ChartArea1";
-            this.positionChart.ChartAreas.Add(chartArea1);
-            this.positionChart.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Alignment = System.Drawing.StringAlignment.Center;
-            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-            legend1.Name = "Legend1";
-            this.positionChart.Legends.Add(legend1);
-            this.positionChart.Location = new System.Drawing.Point(0, 0);
-            this.positionChart.Name = "positionChart";
-            this.positionChart.Size = new System.Drawing.Size(740, 250);
-            this.positionChart.TabIndex = 0;
-            this.positionChart.Text = "chart1";
-            // 
-            // velocityChart
-            // 
             chartArea2.Name = "ChartArea1";
-            this.velocityChart.ChartAreas.Add(chartArea2);
-            this.velocityChart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.positionChart.ChartAreas.Add(chartArea2);
+            this.positionChart.Dock = System.Windows.Forms.DockStyle.Fill;
             legend2.Alignment = System.Drawing.StringAlignment.Center;
             legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
             legend2.Name = "Legend1";
-            this.velocityChart.Legends.Add(legend2);
-            this.velocityChart.Location = new System.Drawing.Point(0, 0);
-            this.velocityChart.Name = "velocityChart";
-            this.velocityChart.Size = new System.Drawing.Size(740, 246);
-            this.velocityChart.TabIndex = 0;
-            this.velocityChart.Text = "chart2";
+            this.positionChart.Legends.Add(legend2);
+            this.positionChart.Location = new System.Drawing.Point(160, 0);
+            this.positionChart.Name = "positionChart";
+            this.positionChart.Size = new System.Drawing.Size(740, 500);
+            this.positionChart.TabIndex = 0;
+            this.positionChart.Text = "chart1";
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.groupBox2);
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -154,228 +87,6 @@
             this.panel1.Padding = new System.Windows.Forms.Padding(3);
             this.panel1.Size = new System.Drawing.Size(160, 500);
             this.panel1.TabIndex = 0;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.label9);
-            this.groupBox2.Controls.Add(this.label10);
-            this.groupBox2.Controls.Add(this.label11);
-            this.groupBox2.Controls.Add(this.label12);
-            this.groupBox2.Controls.Add(this.velC);
-            this.groupBox2.Controls.Add(this.velB);
-            this.groupBox2.Controls.Add(this.velA);
-            this.groupBox2.Controls.Add(this.velZ);
-            this.groupBox2.Controls.Add(this.velY);
-            this.groupBox2.Controls.Add(this.velX);
-            this.groupBox2.Controls.Add(this.velCCheck);
-            this.groupBox2.Controls.Add(this.velBCheck);
-            this.groupBox2.Controls.Add(this.velACheck);
-            this.groupBox2.Controls.Add(this.velZCheck);
-            this.groupBox2.Controls.Add(this.velYCheck);
-            this.groupBox2.Controls.Add(this.velXCheck);
-            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(6, 192);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(148, 180);
-            this.groupBox2.TabIndex = 18;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Velocity";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(7, 155);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(14, 13);
-            this.label7.TabIndex = 17;
-            this.label7.Text = "C";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(7, 129);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(14, 13);
-            this.label8.TabIndex = 16;
-            this.label8.Text = "B";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(7, 103);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(14, 13);
-            this.label9.TabIndex = 15;
-            this.label9.Text = "A";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(7, 77);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(14, 13);
-            this.label10.TabIndex = 14;
-            this.label10.Text = "Z";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(7, 51);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(14, 13);
-            this.label11.TabIndex = 13;
-            this.label11.Text = "Y";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(7, 24);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(14, 13);
-            this.label12.TabIndex = 12;
-            this.label12.Text = "X";
-            // 
-            // velC
-            // 
-            this.velC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velC.Location = new System.Drawing.Point(26, 152);
-            this.velC.Name = "velC";
-            this.velC.ReadOnly = true;
-            this.velC.Size = new System.Drawing.Size(55, 20);
-            this.velC.TabIndex = 11;
-            // 
-            // velB
-            // 
-            this.velB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velB.Location = new System.Drawing.Point(26, 126);
-            this.velB.Name = "velB";
-            this.velB.ReadOnly = true;
-            this.velB.Size = new System.Drawing.Size(55, 20);
-            this.velB.TabIndex = 10;
-            // 
-            // velA
-            // 
-            this.velA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velA.Location = new System.Drawing.Point(26, 100);
-            this.velA.Name = "velA";
-            this.velA.ReadOnly = true;
-            this.velA.Size = new System.Drawing.Size(55, 20);
-            this.velA.TabIndex = 9;
-            // 
-            // velZ
-            // 
-            this.velZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velZ.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velZ.Location = new System.Drawing.Point(26, 74);
-            this.velZ.Name = "velZ";
-            this.velZ.ReadOnly = true;
-            this.velZ.Size = new System.Drawing.Size(55, 20);
-            this.velZ.TabIndex = 8;
-            // 
-            // velY
-            // 
-            this.velY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velY.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velY.Location = new System.Drawing.Point(26, 48);
-            this.velY.Name = "velY";
-            this.velY.ReadOnly = true;
-            this.velY.Size = new System.Drawing.Size(55, 20);
-            this.velY.TabIndex = 7;
-            // 
-            // velX
-            // 
-            this.velX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velX.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velX.Location = new System.Drawing.Point(26, 22);
-            this.velX.Name = "velX";
-            this.velX.ReadOnly = true;
-            this.velX.Size = new System.Drawing.Size(55, 20);
-            this.velX.TabIndex = 6;
-            // 
-            // velCCheck
-            // 
-            this.velCCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velCCheck.AutoSize = true;
-            this.velCCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velCCheck.Location = new System.Drawing.Point(87, 154);
-            this.velCCheck.Name = "velCCheck";
-            this.velCCheck.Size = new System.Drawing.Size(55, 17);
-            this.velCCheck.TabIndex = 5;
-            this.velCCheck.Text = "visible";
-            this.velCCheck.UseVisualStyleBackColor = true;
-            // 
-            // velBCheck
-            // 
-            this.velBCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velBCheck.AutoSize = true;
-            this.velBCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velBCheck.Location = new System.Drawing.Point(87, 128);
-            this.velBCheck.Name = "velBCheck";
-            this.velBCheck.Size = new System.Drawing.Size(55, 17);
-            this.velBCheck.TabIndex = 4;
-            this.velBCheck.Text = "visible";
-            this.velBCheck.UseVisualStyleBackColor = true;
-            // 
-            // velACheck
-            // 
-            this.velACheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velACheck.AutoSize = true;
-            this.velACheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velACheck.Location = new System.Drawing.Point(87, 102);
-            this.velACheck.Name = "velACheck";
-            this.velACheck.Size = new System.Drawing.Size(55, 17);
-            this.velACheck.TabIndex = 3;
-            this.velACheck.Text = "visible";
-            this.velACheck.UseVisualStyleBackColor = true;
-            // 
-            // velZCheck
-            // 
-            this.velZCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velZCheck.AutoSize = true;
-            this.velZCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velZCheck.Location = new System.Drawing.Point(87, 76);
-            this.velZCheck.Name = "velZCheck";
-            this.velZCheck.Size = new System.Drawing.Size(55, 17);
-            this.velZCheck.TabIndex = 2;
-            this.velZCheck.Text = "visible";
-            this.velZCheck.UseVisualStyleBackColor = true;
-            // 
-            // velYCheck
-            // 
-            this.velYCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velYCheck.AutoSize = true;
-            this.velYCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velYCheck.Location = new System.Drawing.Point(87, 50);
-            this.velYCheck.Name = "velYCheck";
-            this.velYCheck.Size = new System.Drawing.Size(55, 17);
-            this.velYCheck.TabIndex = 1;
-            this.velYCheck.Text = "visible";
-            this.velYCheck.UseVisualStyleBackColor = true;
-            // 
-            // velXCheck
-            // 
-            this.velXCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.velXCheck.AutoSize = true;
-            this.velXCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.velXCheck.Location = new System.Drawing.Point(87, 24);
-            this.velXCheck.Name = "velXCheck";
-            this.velXCheck.Size = new System.Drawing.Size(55, 17);
-            this.velXCheck.TabIndex = 0;
-            this.velXCheck.Text = "visible";
-            this.velXCheck.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -599,23 +310,16 @@
             this.posXCheck.Text = "visible";
             this.posXCheck.UseVisualStyleBackColor = true;
             // 
-            // KUKADataPanel
+            // RobotDataPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel2);
-            this.Name = "KUKADataPanel";
+            this.Name = "RobotDataPanel";
             this.Size = new System.Drawing.Size(900, 500);
             this.panel2.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.positionChart)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.velocityChart)).EndInit();
             this.panel1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -624,7 +328,6 @@
 
         #endregion
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox posC;
@@ -645,26 +348,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox velC;
-        private System.Windows.Forms.TextBox velB;
-        private System.Windows.Forms.TextBox velA;
-        private System.Windows.Forms.TextBox velZ;
-        private System.Windows.Forms.TextBox velY;
-        private System.Windows.Forms.TextBox velX;
-        private System.Windows.Forms.CheckBox velCCheck;
-        private System.Windows.Forms.CheckBox velBCheck;
-        private System.Windows.Forms.CheckBox velACheck;
-        private System.Windows.Forms.CheckBox velZCheck;
-        private System.Windows.Forms.CheckBox velYCheck;
-        private System.Windows.Forms.CheckBox velXCheck;
         private System.Windows.Forms.DataVisualization.Charting.Chart positionChart;
-        private System.Windows.Forms.DataVisualization.Charting.Chart velocityChart;
     }
 }

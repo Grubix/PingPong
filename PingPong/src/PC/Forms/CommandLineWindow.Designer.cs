@@ -1,5 +1,5 @@
 ﻿namespace PingPong.Forms {
-    partial class CmdWindow {
+    partial class CommandLineWindow {
         /// <summary>
         /// Required designer variable.
         /// </summary>

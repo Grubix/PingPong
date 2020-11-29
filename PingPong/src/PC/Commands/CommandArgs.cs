@@ -8,7 +8,7 @@ namespace PingPong.Commands {
 
         public Dictionary<string, ICommand> RegisteredCommands { get; }
 
-        public CmdWindow CommandLine { get; }
+        public CommandLineWindow CommandLine { get; }
 
         public KUKARobot Robot1 { get; }
 
@@ -18,7 +18,7 @@ namespace PingPong.Commands {
 
         public string[] UserArgs { get; }
 
-        public CommandArgs(Dictionary<string, ICommand> registeredCommands, CmdWindow cmdWindow,
+        public CommandArgs(Dictionary<string, ICommand> registeredCommands, CommandLineWindow cmdWindow,
             KUKARobot robot1, KUKARobot robot2, OptiTrackSystem optiTrack, string[] userArgs) {
             RegisteredCommands = registeredCommands;
             CommandLine = cmdWindow;

@@ -84,23 +84,23 @@
     <Compile Include="src\PC\Commands\ExitCommand.cs" />
     <Compile Include="src\PC\Commands\HelpCommand.cs" />
     <Compile Include="src\PC\Commands\MoveCommand.cs" />
-    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator3.cs" />
-    <Compile Include="src\PC\Forms\CmdWindow.cs">
+    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5.cs" />
+    <Compile Include="src\PC\Forms\CommandLineWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\PC\Forms\CmdWindow.Designer.cs">
-      <DependentUpon>CmdWindow.cs</DependentUpon>
+    <Compile Include="src\PC\Forms\CommandLineWindow.Designer.cs">
+      <DependentUpon>CommandLineWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\PC\Maths\LUD3.cs" />
-    <Compile Include="src\PC\Maths\Matrix3.cs" />
+    <Compile Include="src\PC\Maths\Algebra\LUD3.cs" />
+    <Compile Include="src\PC\Maths\Algebra\Matrix3.cs" />
     <Compile Include="src\PC\Maths\PolyFit.cs" />
+    <Compile Include="src\PC\Maths\Algebra\Polyfit2.cs" />
     <Compile Include="src\PC\Maths\Solver\CubicSolver.cs" />
     <Compile Include="src\PC\Maths\Solver\QuadraticSolver.cs" />
     <Compile Include="src\PC\Maths\Solver\QuarticSolver.cs" />
-    <Compile Include="src\PC\Maths\SVD3.cs" />
-    <Compile Include="src\PC\Maths\Vector3.cs" />
+    <Compile Include="src\PC\Maths\Algebra\SVD3.cs" />
+    <Compile Include="src\PC\Maths\Algebra\Vector3.cs" />
     <Compile Include="src\PC\Devices\KUKA\E6AXIS.cs" />
-    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator2.cs" />
     <Compile Include="src\PC\Devices\OptiTrack\BallData.cs" />
     <Compile Include="src\PC\Forms\CalibrationWindow.cs">
       <SubType>Form</SubType>
@@ -114,7 +114,7 @@
     <Compile Include="src\PC\Forms\RobotDataPanel.Designer.cs">
       <DependentUpon>RobotDataPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\PC\Maths\Transformation.cs" />
+    <Compile Include="src\PC\Maths\Algebra\Transformation.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator.cs" />
     <Compile Include="src\PC\Devices\KUKA\RobotLimits.cs" />
     <Compile Include="src\PC\Devices\OptiTrack\InputFrame.cs" />
@@ -151,8 +151,8 @@
     <EmbeddedResource Include="src\PC\Forms\CalibrationWindow.resx">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\PC\Forms\CmdWindow.resx">
-      <DependentUpon>CmdWindow.cs</DependentUpon>
+    <EmbeddedResource Include="src\PC\Forms\CommandLineWindow.resx">
+      <DependentUpon>CommandLineWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\PC\Forms\ThreadSafeChart.resx">
       <DependentUpon>ThreadSafeChart.cs</DependentUpon>

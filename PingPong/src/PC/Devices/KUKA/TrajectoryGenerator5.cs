@@ -1,5 +1,7 @@
-﻿namespace PingPong.KUKA {
-    class TrajectoryGenerator3 {
+﻿using System;
+
+namespace PingPong.KUKA {
+    class TrajectoryGenerator5 {
 
         private class Polynominal {
 
@@ -7,15 +9,6 @@
 
             private double xn, vn, an; // Next value, velocity and next acceleration
 
-            /// <summary>
-            /// Calculates polynominal value at time t
-            /// </summary>
-            /// <param name="x0">Current value</param>
-            /// <param name="x1">Target value</param>
-            /// <param name="v1">Target velocity</param>
-            /// <param name="T">Movement duration</param>
-            /// <param name="t">Time</param>
-            /// <returns>polynominal value at time t</returns>
             public double GetNextValue(double x0, double x1, double v1, double T, double t) {
                 double T1 = T;
                 double T2 = T1 * T1;
@@ -43,14 +36,6 @@
                 return xn;
             }
 
-            //public double GetMaxVelocity() {
-            //    double Tx1 = -k4 / (5.0 * k5);
-            //    double Tx2 = Tx1 * Tx1;
-            //    double Tx3 = Tx1 * Tx2;
-            //    double Tx4 = Tx1 * Tx3;
-            //    return 5.0 * k5 * Tx4 + 4.0 * k4 * Tx3 + 3.0 * k3 * Tx2 + 2.0 * k2 * Tx1 + k1;
-            //}
-
         }
 
         private const double Ts = 0.004;
@@ -69,48 +54,32 @@
 
         private E6POS targetPosition;
 
-        private double movementDuration;
+        private double targetDuration;
 
         private double elapsedTime;
 
-        public (double X, double Y, double Z) CurrentXYZVelocity {
-            get {
-                return (0, 0, 0);
-            }
-        }
-
-        public (double A, double B, double C) CurrentABCVelocity {
-            get {
-                return (0, 0, 0);
-            }
-        }
-
-        public (double X, double Y, double Z) CurrentXYZAcceleration {
-            get {
-                return (0, 0, 0);
-            }
-        }
-
-        public (double A, double B, double C) CurrentABCAcceleration {
-            get {
-                return (0, 0, 0);
-            }
-        }
-
-        public TrajectoryGenerator3(E6POS currentPosition) {
+        public TrajectoryGenerator5(E6POS currentPosition) {
             targetPosition = currentPosition;
+            targetDuration = 0.0;
+            elapsedTime = 0.0;
         }
 
-        //TODO: dorobic wektor do zadawania predkosci koncowej
-        public E6POS GetNextCorrection(E6POS currentPosition, E6POS targetPosition, double movementDuration) {
-            if (!targetPosition.Compare(this.targetPosition, 0.01, 0.1) || movementDuration != this.movementDuration) {
+        //TODO: wektor predkosci koncowej
+        public void SetTargetPosition(E6POS targetPosition, double targetDuration) {
+            bool targetPositionChanged = !targetPosition.Compare(this.targetPosition, 0.01, 0.1);
+            bool movementDurationChanged = Math.Abs(targetDuration - this.targetDuration) > 1e-5;
+
+            if (targetPositionChanged || movementDurationChanged) {
                 this.targetPosition = targetPosition;
-                this.movementDuration = movementDuration;
+                this.targetDuration = targetDuration;
                 elapsedTime = 0.0;
             }
+        }
 
-            if (elapsedTime + Ts < this.movementDuration) {
-                double timeToDest = this.movementDuration - elapsedTime;
+        //TODO: wektor predkosci koncowej
+        public E6POS GetNextCorrection(E6POS currentPosition) {
+            if (elapsedTime + Ts < targetDuration) {
+                double timeToDest = targetDuration - elapsedTime;
                 elapsedTime += Ts;
 
                 return new E6POS(
@@ -125,5 +94,6 @@
                 return new E6POS();
             }
         }
+
     }
 }

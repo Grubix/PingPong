@@ -19,7 +19,11 @@ namespace PingPong.KUKA {
         /// </summary>
         public string Ip {
             get {
-                return remoteEndPoint.Address.ToString();
+                if (remoteEndPoint != null) {
+                    return remoteEndPoint.Address.ToString();
+                } else {
+                    return null;
+                }
             }
         }
 

@@ -25,13 +25,7 @@ namespace PingPong.KUKA {
         }
 
         public override string ToString() {
-            return
-                $"X={Math.Round(A1 * 1000) / 1000}, " +
-                $"Y={Math.Round(A2 * 1000) / 1000}, " +
-                $"Z={Math.Round(A3 * 1000) / 1000}, " +
-                $"A={Math.Round(A4 * 1000) / 1000}, " +
-                $"B={Math.Round(A5 * 1000) / 1000}, " +
-                $"C={Math.Round(A6 * 1000) / 1000}";
+            return $"[A1={A1:F3}, A2={A2:F3}, A3={A3:F3}, A4={A4:F3}, A5={A5:F3}, A6={A6:F3}]";
         }
 
     }
