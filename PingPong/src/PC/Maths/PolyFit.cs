@@ -15,6 +15,8 @@ namespace PingPong.Maths {
         private List<double> Y = new List<double>();
         private List<double> Z = new List<double>();
         private List<double> time = new List<double>();
+        // max number of points to prediction, rather even (pol. 'parzyste')
+        readonly private int maxPointsCount = 100;
 
         // prediction
         private double Xpred;
@@ -33,14 +35,27 @@ namespace PingPong.Maths {
 
         public void AddNewPosition(double X, double Y, double Z, double time) {
             if (X > -390 && X < 700 && Y > -100 && Y < 700 && Z > 100 && Z < 1000) {
-                if (this.X.Count < 30) {
-                    this.X.Add(X);
-                    this.Y.Add(Y);
-                    this.Z.Add(Z);
-                    this.time.Add(time);
-                } else {
+                if (this.X.Count >= maxPointsCount)
+                {
                     go = true;
+
+                    for (int i = 0; i < maxPointsCount / 2; i++)
+                    {
+                        this.X[i] = this.X[2 * i];
+                        this.Y[i] = this.Y[2 * i];
+                        this.Z[i] = this.Z[2 * i];
+                        this.time[i] = this.time[2 * i];
+                    }
+
+                    this.X.RemoveRange(maxPointsCount / 2, maxPointsCount / 2);
+                    this.Y.RemoveRange(maxPointsCount / 2, maxPointsCount / 2);
+                    this.Z.RemoveRange(maxPointsCount / 2, maxPointsCount / 2);
+                    this.time.RemoveRange(maxPointsCount / 2, maxPointsCount / 2);
                 }
+                this.X.Add(X);
+                this.Y.Add(Y);
+                this.Z.Add(Z);
+                this.time.Add(time);
 
                 if (this.X.Count > 2) {
                     Xcoeff = GetCoeff(this.X, 1);
@@ -106,13 +121,14 @@ namespace PingPong.Maths {
             return (-Zcoeff[1] - Math.Sqrt(delta)) / 2 / Zcoeff[2];
         }
 
-        //public Vector<double> GetVelocity() {
-        //     new Vector<double>.Build.DenseOfArray(new double[] {
-        //        prediction[0], prediction[1], Zlevel
-        //    });
-        //}
+        public void Clear()
+        {
+            X.Clear();
+            Y.Clear();
+            Z.Clear();
+            time.Clear();
+        }
 
-        // do testow
         public Vector<double> GetX() {
             return Xcoeff;
         }
