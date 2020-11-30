@@ -95,6 +95,7 @@
     <Compile Include="src\PC\Maths\Matrix3.cs" />
     <Compile Include="src\PC\Maths\PolyFit.cs" />
     <Compile Include="src\PC\Maths\Solver\CubicSolver.cs" />
+    <Compile Include="src\PC\Maths\Solver\Polyfit2.cs" />
     <Compile Include="src\PC\Maths\Solver\QuadraticSolver.cs" />
     <Compile Include="src\PC\Maths\Solver\QuarticSolver.cs" />
     <Compile Include="src\PC\Maths\SVD3.cs" />

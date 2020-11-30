@@ -6,9 +6,13 @@ namespace PingPong.OptiTrack {
 
         public Vector<double> Position { get; }
 
+        public double Timestamp { get; }
+
         public InputFrame(FrameOfMocapData data) {
             //TODO: Doc do ramki z optitracka https://v22.wiki.optitrack.com/index.php?title=NatNet:_Data_Types
             //TODO: Sensowne dane z ramki z optitracka
+
+            Timestamp = data.fTimestamp;
 
             Position = Vector<double>.Build.DenseOfArray(new double[] {
                 data.OtherMarkers[0].x * 1000.0,

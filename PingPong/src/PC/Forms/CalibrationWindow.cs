@@ -50,11 +50,12 @@ namespace PingPong.Forms {
                     Start?.Invoke();
 
                     // Move robot to first calibration point and wait
-                    MoveRobotToPoint(robot, calibrationPoints[0], robot.MaxXYZVelocity / 3.0);
+                    //(robot, calibrationPoints[0], robot.MaxXYZVelocity / 3.0);
+                    robot.ForceMoveTo(new E6POS(calibrationPoints[0], robot.CurrentPosition.ABC), 6.0, 1, 1);
 
                     for (int i = 0; i < calibrationPoints.Count; i++) {
                         // Move robot to next calibration point and wait
-                        MoveRobotToPoint(robot, calibrationPoints[i], robot.MaxXYZVelocity / 3.0);
+                        robot.ForceMoveTo(new E6POS(calibrationPoints[i], robot.CurrentPosition.ABC), 5.0, 1, 1);
 
                         // Add robot XYZ position to list
                         var kukaPoint = robot.CurrentPosition.XYZ;
@@ -70,8 +71,6 @@ namespace PingPong.Forms {
 
                         ProgressChanged?.Invoke(progress, transformation);
                     }
-
-                    MoveRobotToPoint(robot, robot.HomePosition.XYZ, robot.MaxXYZVelocity / 3.0);
                 };
 
                 worker.RunWorkerCompleted += (s, e) => {
@@ -94,7 +93,7 @@ namespace PingPong.Forms {
                 double duration = 15.0 * deltaMax / (8.0 * Math.Abs(velocity));
 
                 if (duration > 10E-6) {
-                    robot.ForceMoveTo(new E6POS(point, robot.CurrentPosition.ABC), duration);
+                    robot.ForceMoveTo(new E6POS(point, robot.CurrentPosition.ABC), 4.0);
                 }
             }
 

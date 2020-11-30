@@ -330,6 +330,8 @@ namespace PingPong.KUKA {
 
                 targetPosition = (position, duration);
             }
+
+            Console.WriteLine(position);
         }
 
         /// <summary>
