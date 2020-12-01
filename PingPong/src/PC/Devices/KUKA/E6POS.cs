@@ -2,7 +2,7 @@
 using System;
 
 namespace PingPong.KUKA {
-    public class E6POS {
+    public class E6POS : ICloneable {
 
         public double X { get; }
 
@@ -64,6 +64,10 @@ namespace PingPong.KUKA {
 
         public override string ToString() {
             return $"[X={X:F3}, Y={Y:F3}, Z={Z:F3}, A={A:F3}, B={B:F3}, C={C:F3}]";
+        }
+
+        public object Clone() {
+            return new E6POS(X, Y, Z, A, B, C);
         }
 
         public static E6POS operator +(E6POS pos1, E6POS pos2) {

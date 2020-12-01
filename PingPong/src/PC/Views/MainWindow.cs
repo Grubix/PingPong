@@ -1,12 +1,11 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using PingPong.Applications;
 using PingPong.KUKA;
-using PingPong.Maths;
-using PingPong.Maths.Solver;
 using PingPong.OptiTrack;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PingPong.Views {
@@ -29,7 +28,7 @@ namespace PingPong.Views {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            optiTrack = InitializeOptiTrackSystem();
+            //optiTrack = InitializeOptiTrackSystem();
             ballData = new BallData();
             application = new Ping(robot1);
             
@@ -43,65 +42,43 @@ namespace PingPong.Views {
                 817.21905, 613.07449, 143.92211
             });
 
-            Transformation transformation = new Transformation(rotationMatrix, translationVector);
-            Polyfit2 polyfitX = new Polyfit2(1);
-            Polyfit2 polyfitY = new Polyfit2(1);
-            Polyfit2 polyfitZ = new Polyfit2(2);
+            //E6POS current3 = new E6POS(0, 125, 550);
+            //E6POS current5 = new E6POS(0, 125, 550);
+            //E6POS target = current3 + new E6POS(150, 0, 0);
 
-            double Z = 300.0;
-            int maxPoints = 40;
-            int sampleOffset = 10;
+            //TrajectoryGenerator gen3 = new TrajectoryGenerator(current3);
+            //TrajectoryGenerator5 gen5 = new TrajectoryGenerator5(current5);
 
-            bool parabolaDrawn = false;
+            //gen3.SetTargetPosition(target, 4);
+            //gen5.SetTargetPosition(target, 4);
 
-            void DrawParabola() {
-                if (parabolaDrawn) {
-                    return;
-                }
+            //Random random = new Random();
 
-                parabolaDrawn = true;
+            //Task.Run(() => {
+            //    while (true) {
+            //        E6POS c3 = gen3.GetNextCorrection(current3);
+            //        E6POS c5 = gen5.GetNextCorrection(current5);
 
-                var xCoeffs = polyfitX.CalculateCoefficients();
-                var yCoeffs = polyfitY.CalculateCoefficients();
-                var zCoeffs = polyfitZ.CalculateCoefficients();
-                double T = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - Z)[1];
-                Console.WriteLine($"T={T}, xpred={xCoeffs[1] * T + xCoeffs[0]}, ypred={yCoeffs[1] * T + yCoeffs[0]}");
+            //        E6POS rand = new E6POS((random.NextDouble() - 0.5) * 0.01, (random.NextDouble() - 0.5) * 0.01, (random.NextDouble() - 0.5) * 0.01);
+            //        current3 += c3 + rand;
+            //        current5 += c5 + rand;
 
-                UpdateUI(() => {
-                    for (int i = 0; i < polyfitZ.PointCount; i++) {
-                        chart1.Series[0].Points.AddXY(polyfitZ.xValues[i], polyfitZ.yValues[i]);
-                    }
+            //        threadSafeChart1.AddPoint(current5.X, gen5.Velocity[0]);
+            //        Thread.Sleep(4);
+            //    }
+            //});
 
-                    for (double t = 0; t < T; t += 0.1) {
-                        double z = zCoeffs[2] * t * t + zCoeffs[1] * t + zCoeffs[0];
-                        chart1.Series[1].Points.AddXY(t, z);
-                    }
-                });
-            }
+            //incXBtn.Click += (s, e) => {
+            //    target += new E6POS(50, 0, 0);
+            //    gen3.SetTargetPosition(target, 4);
+            //    gen5.SetTargetPosition(target, 4);
+            //};
 
-            int samples = 0;
-
-            optiTrack.FrameReceived += frame => {
-                var position = transformation.Convert(frame.Position);
-                double ballX = position[0];
-                double ballY = position[1];
-                double ballZ = position[2];
-
-                //TODO: sprawdzic te limity jeszcze raz, czy sie zgadzaja z obecnymi
-                if (!parabolaDrawn && ballX > -390 && ballX < 500 && ballY > -100 && ballY < 700 && Z > 100) {
-                    if (polyfitZ.PointCount == maxPoints) {
-                        DrawParabola();
-                    } else if (samples % sampleOffset == 0) {
-                        //TODO: ogarnąc czas, ewentualnie uzyc stopwatcha
-
-                        polyfitX.AddPoint(0, ballX);
-                        polyfitY.AddPoint(0, ballY);
-                        polyfitZ.AddPoint(0, ballZ);
-
-                        samples++;
-                    }
-                }
-            };
+            //decXBtn.Click += (s, e) => {
+            //    target -= new E6POS(50, 0, 0);
+            //    gen3.SetTargetPosition(target, 4);
+            //    gen5.SetTargetPosition(target, 4);
+            //};
         }
 
         public void ShowCalibrationWindow() {
@@ -139,20 +116,20 @@ namespace PingPong.Views {
 
         private KUKARobot InitializeRobot1() {
             RobotLimits limits = new RobotLimits(
-                (-390, 390),
-                (180, 400),
-                (390, 650),
+                (-450, 450),
+                (600, 1000),
+                (200, 750),
                 (-360, 360),
                 (-360, 360),
                 (-360, 360),
                 (-360, 360),
                 (-360, 360),
                 (-360, 360),
-                (0.5, 0.05)
+                (1, 0.05)
             );
 
             KUKARobot robot1 = new KUKARobot(8081, limits);
-            robot1Panel.AssignKUKARobot(robot1);
+            robot1Panel.AssignRobot(robot1);
             robot1.Initialize();
 
             return robot1;

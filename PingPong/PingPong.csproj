@@ -84,6 +84,9 @@
     <Compile Include="src\PC\Commands\ExitCommand.cs" />
     <Compile Include="src\PC\Commands\HelpCommand.cs" />
     <Compile Include="src\PC\Commands\MoveCommand.cs" />
+    <Compile Include="src\PC\Devices\KUKA\Limits\AxisLimits.cs" />
+    <Compile Include="src\PC\Devices\KUKA\Limits\Limits.cs" />
+    <Compile Include="src\PC\Devices\KUKA\Limits\WorkspaceLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5.cs" />
     <Compile Include="src\PC\Views\CommandLineWindow.cs">
       <SubType>Form</SubType>

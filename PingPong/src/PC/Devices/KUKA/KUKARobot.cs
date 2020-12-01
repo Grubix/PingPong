@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,9 +8,9 @@ namespace PingPong.KUKA {
 
     public class KUKARobot : IDevice {
 
-        private readonly object robotDataSyncLock = new object();
+        private readonly object receivedDataSyncLock = new object();
 
-        private readonly object generatorSyncLock = new object();
+        private readonly object forceMoveSyncLock = new object();
 
         private readonly BackgroundWorker worker;
 
@@ -39,7 +40,7 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Robot limits
         /// </summary>
-        public RobotLimits Limits { get; private set; }
+        public RobotLimits Limits { get; }
 
         /// <summary>
         /// Robot home position
@@ -51,7 +52,7 @@ namespace PingPong.KUKA {
         /// </summary>
         public E6POS Position {
             get {
-                lock (robotDataSyncLock) {
+                lock (receivedDataSyncLock) {
                     return position;
                 }
             }
@@ -62,9 +63,28 @@ namespace PingPong.KUKA {
         /// </summary>
         public E6AXIS AxisPosition {
             get {
-                lock (robotDataSyncLock) {
+                lock (receivedDataSyncLock) {
                     return axisPosition;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Robot current velocity
+        /// </summary>
+        public Vector<double> Velocity {
+            get {
+                return generator.Velocity;
+            }
+        }
+
+        /// <summary>
+        /// Robot current acceleration
+        /// </summary>
+        public Vector<double> Acceleration {
+            get {
+                //return generator.Acceleration;
+                return null;
             }
         }
 
@@ -98,7 +118,7 @@ namespace PingPong.KUKA {
                 InputFrame receivedFrame = await rsiAdapter.Connect();
                 generator = new TrajectoryGenerator5(receivedFrame.Position);
 
-                lock (robotDataSyncLock) {
+                lock (receivedDataSyncLock) {
                     IPOC = receivedFrame.IPOC;
                     position = receivedFrame.Position;
                     HomePosition = receivedFrame.Position;
@@ -131,7 +151,7 @@ namespace PingPong.KUKA {
         private async Task ReceiveDataAsync() {
             InputFrame receivedFrame = await rsiAdapter.ReceiveDataAsync();
 
-            lock (robotDataSyncLock) {
+            lock (receivedDataSyncLock) {
                 IPOC = receivedFrame.IPOC;
                 position = receivedFrame.Position;
                 axisPosition = receivedFrame.AxisPosition;
@@ -156,7 +176,7 @@ namespace PingPong.KUKA {
         private void SendData() {
             E6POS correction;
 
-            lock (generatorSyncLock) {
+            lock (forceMoveSyncLock) {
                 correction = generator.GetNextCorrection(position);
             }
 
@@ -184,21 +204,17 @@ namespace PingPong.KUKA {
                 throw new InvalidOperationException("Robot is not initialized");
             }
 
-            if (targetDuration <= 0) {
-                throw new ArgumentException($"Duration value must be greater than 0, get {targetDuration}");
-            }
-
             if (!Limits.CheckPosition(targetPosition)) {
                 throw new ArgumentException($"Target position is outside the available workspace:{Environment.NewLine}{targetPosition}");
             }
 
-            lock (generatorSyncLock) {
+            lock (forceMoveSyncLock) {
                 if (forceMoveMode) {
                     return;
                 }
-
-                generator.SetTargetPosition(targetPosition, targetDuration);
             }
+
+            generator.SetTargetPosition(targetPosition, targetDuration);
         }
 
         /// <summary>
@@ -218,17 +234,17 @@ namespace PingPong.KUKA {
         /// <param name="targetDuration">desired movement duration in seconds</param>
         /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
         /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
-        public void ForceMoveTo(E6POS targetPosition, double targetDuration, double xyzTolerance, double abcTolerance) {
+        public void ForceMoveTo(E6POS targetPosition, double targetDuration) {
             MoveTo(targetPosition, targetDuration);
 
-            lock (generatorSyncLock) {
+            lock (forceMoveSyncLock) {
                 forceMoveMode = true;
             }
 
             ManualResetEvent targetPositionReached = new ManualResetEvent(false);
 
             void checkPosition(InputFrame frameReceived) {
-                if (position.Compare(targetPosition, xyzTolerance, abcTolerance)) {
+                if (generator.TargetPositionReached) {
                     targetPositionReached.Set();
                 }
             };
@@ -237,7 +253,7 @@ namespace PingPong.KUKA {
             targetPositionReached.WaitOne();
             FrameReceived -= checkPosition;
 
-            lock (generatorSyncLock) {
+            lock (forceMoveSyncLock) {
                 forceMoveMode = false;
             }
         }
@@ -250,8 +266,8 @@ namespace PingPong.KUKA {
         /// <param name="targetDuration">desired movement duration in seconds</param>
         /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
         /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
-        public void ForceShift(E6POS deltaPosition, double targetDuration, double xyzTolerance, double abcTolerance) {
-            ForceMoveTo(Position + deltaPosition, targetDuration, xyzTolerance, abcTolerance);
+        public void ForceShift(E6POS deltaPosition, double targetDuration) {
+            ForceMoveTo(Position + deltaPosition, targetDuration);
         }
 
         public void Initialize() {

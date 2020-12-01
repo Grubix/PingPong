@@ -11,23 +11,23 @@ namespace PingPong.KUKA {
             private double k2;
             private double k3;
 
-            private double velocity;
             private double nextValue;
+            public double V { get; private set; }
 
             public Parameter() {
                 k0 = 0.0;
                 k1 = 0.0;
                 k2 = 0.0;
                 k3 = 0.0;
-                velocity = 0.0;
+                V = 0.0;
                 nextValue = 0.0;
             }
 
             public void UpdateCoefficients(double currentPosition, double targetPosition, double targetVelocity, double time) {
                 k0 = currentPosition;
-                k1 = velocity;
-                k2 = (3 * (targetPosition - currentPosition) - 2 * velocity * time - targetVelocity * time) / Math.Pow(time, 2);
-                k3 = (targetVelocity * time + velocity * time - 2 * (targetPosition - currentPosition)) / Math.Pow(time, 3);
+                k1 = V;
+                k2 = (3 * (targetPosition - currentPosition) - 2 * V * time - targetVelocity * time) / Math.Pow(time, 2);
+                k3 = (targetVelocity * time + V * time - 2 * (targetPosition - currentPosition)) / Math.Pow(time, 3);
             }
 
             public void ComputeNextValue(double period) {
@@ -35,7 +35,7 @@ namespace PingPong.KUKA {
             }
 
             public void UpdateVelocity(double period) {
-                velocity = 3 * k3 * Math.Pow(period, 2) + 2 * k2 * period + k1;
+                V = 3 * k3 * Math.Pow(period, 2) + 2 * k2 * period + k1;
             }
 
             public double GetNextValue() {
@@ -43,7 +43,7 @@ namespace PingPong.KUKA {
             }
 
             public void ResetVelocity() {
-                velocity = 0.0;
+                V = 0.0;
             }
         }
 
@@ -54,43 +54,63 @@ namespace PingPong.KUKA {
         private readonly Parameter B = new Parameter();
         private readonly Parameter C = new Parameter();
 
+        private readonly object syncLock = new object();
         private readonly double period = 0.004;
         private double time2Dest = 0.0;
         private double totalTime2Dest = 0.0;
         private E6POS targetPosition;
 
+        private bool targetPositionReached = true;
+
+        public bool TargetPositionReached {
+            get {
+                lock (syncLock) {
+                    return targetPositionReached;
+                }
+            }
+        }
+
         public TrajectoryGenerator(E6POS currentPosition) {
             targetPosition = currentPosition;
         }
 
-        public E6POS GetNextCorrection(E6POS currentPosition, E6POS targetPosition, double time) {
-            if (currentPosition == targetPosition) {
-                ResetVelocity();
-                return new E6POS();
+        public void SetTargetPosition(E6POS targetPosition, double time) {
+            if (time < 0.004) {
+                throw new ArgumentException($"Duration value must be equal or greater than 0.004s, get {time}");
             }
-            if (totalTime2Dest != time || this.targetPosition != targetPosition) {
-                totalTime2Dest = time;
-                time2Dest = time;
-                this.targetPosition = targetPosition;
-            }
-            if (time2Dest >= 0.004) {
-                UpdateCoefficients(currentPosition, targetPosition);
-                ComputeNextPoint();
-                time2Dest -= period;
-                UpdateVelocity();
 
-                return new E6POS(
-                    X.GetNextValue(),
-                    Y.GetNextValue(),
-                    Z.GetNextValue(),
-                    A.GetNextValue(),
-                    B.GetNextValue(),
-                    C.GetNextValue()
-                );
-            } else {
-                totalTime2Dest = 0.0;
-                ResetVelocity();
-                return new E6POS();
+            if (totalTime2Dest != time || !targetPosition.Compare(this.targetPosition, 0.1, 1)) {
+                lock (syncLock) {
+                    this.targetPosition = targetPosition.Clone() as E6POS;
+                    totalTime2Dest = time;
+                    time2Dest = time;
+                    targetPositionReached = false;
+                }
+            }
+        }
+
+        public E6POS GetNextCorrection(E6POS currentPosition) {
+            lock (syncLock) {
+                if (time2Dest >= 0.004) {
+                    UpdateCoefficients(currentPosition, targetPosition);
+                    ComputeNextPoint();
+                    time2Dest -= period;
+                    UpdateVelocity();
+
+                    return new E6POS(
+                        X.GetNextValue(),
+                        Y.GetNextValue(),
+                        Z.GetNextValue(),
+                        A.GetNextValue(),
+                        B.GetNextValue(),
+                        C.GetNextValue()
+                    );
+                } else {
+                    targetPositionReached = true;
+                    totalTime2Dest = 0.0;
+                    ResetVelocity();
+                    return new E6POS();
+                }
             }
         }
 
@@ -154,27 +174,23 @@ namespace PingPong.KUKA {
             C.ResetVelocity();
         }
 
-        public (double X, double Y, double Z) CurrentXYZVelocity {
+        public Vector<double> Velocity {
             get {
-                return (0, 0, 0);
+                lock (syncLock) {
+                    return Vector<double>.Build.DenseOfArray(new double[] {
+                        X.V, X.V, X.V, X.V, X.V, X.V
+                    });
+                }
             }
         }
 
-        public (double A, double B, double C) CurrentABCVelocity {
+        public Vector<double> Acceleration {
             get {
-                return (0, 0, 0);
-            }
-        }
-
-        public (double X, double Y, double Z) CurrentXYZAcceleration {
-            get {
-                return (0, 0, 0);
-            }
-        }
-
-        public (double A, double B, double C) CurrentABCAcceleration {
-            get {
-                return (0, 0, 0);
+                lock (syncLock) {
+                    return Vector<double>.Build.DenseOfArray(new double[] {
+                        0, 0, 0, 0, 0, 0
+                    });
+                }
             }
         }
 

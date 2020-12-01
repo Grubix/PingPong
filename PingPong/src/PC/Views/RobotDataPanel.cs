@@ -1,6 +1,7 @@
 ﻿using PingPong.KUKA;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -19,15 +20,18 @@ namespace PingPong.Views {
 
         private long deltaTime = 0;
 
-        private Series sx, sy, sz, sa, sb, sc;
+        private Series posX, posY, posZ, posA, posB, posC;
+
+        private Series velX, velY, velZ, velA, velB, velC;
 
         public RobotDataPanel() {
             InitializeComponent();
             InitializePositionChart();
+            InitializeVelocityChart();
             stopWatch = new Stopwatch();
         }
 
-        public void AssignKUKARobot(KUKARobot robot) {
+        public void AssignRobot(KUKARobot robot) {
             robot.FrameReceived += f => {
                 stopWatch.Stop();
                 deltaTime += stopWatch.ElapsedMilliseconds;
@@ -46,92 +50,174 @@ namespace PingPong.Views {
                     if (visibleSamples >= maxSamples) {
                         visibleSamples = 0;
 
-                        sx.Points.Clear();
-                        sy.Points.Clear();
-                        sz.Points.Clear();
-                        sa.Points.Clear();
-                        sb.Points.Clear();
-                        sc.Points.Clear();
+                        posX.Points.Clear();
+                        posY.Points.Clear();
+                        posZ.Points.Clear();
+                        posA.Points.Clear();
+                        posB.Points.Clear();
+                        posC.Points.Clear();
+
+                        velX.Points.Clear();
+                        velY.Points.Clear();
+                        velZ.Points.Clear();
+                        velA.Points.Clear();
+                        velB.Points.Clear();
+                        velC.Points.Clear();
 
                         positionChart.ChartAreas[0].AxisX.Minimum = totalSamples;
+                        velocityChart.ChartAreas[0].AxisX.Minimum = totalSamples;
                         positionChart.ChartAreas[0].AxisX.Maximum = totalSamples + maxSamples;
+                        velocityChart.ChartAreas[0].AxisX.Maximum = totalSamples + maxSamples;
                     }
 
                     var position = robot.Position;
+                    var velocity = robot.Velocity;
 
-                    sx.Points.AddXY(totalSamples, position.X);
-                    sy.Points.AddXY(totalSamples, position.Y);
-                    sz.Points.AddXY(totalSamples, position.Z);
-                    sa.Points.AddXY(totalSamples, position.A);
-                    sb.Points.AddXY(totalSamples, position.B);
-                    sc.Points.AddXY(totalSamples, position.C);
+                    posX.Points.AddXY(totalSamples, position.X);
+                    posY.Points.AddXY(totalSamples, position.Y);
+                    posZ.Points.AddXY(totalSamples, position.Z);
+                    posA.Points.AddXY(totalSamples, position.A);
+                    posB.Points.AddXY(totalSamples, position.B);
+                    posC.Points.AddXY(totalSamples, position.C);
 
-                    posX.Text = position.X.ToString("F3");
-                    posY.Text = position.Y.ToString("F3");
-                    posZ.Text = position.Z.ToString("F3");
-                    posA.Text = position.A.ToString("F3");
-                    posB.Text = position.B.ToString("F3");
-                    posC.Text = position.C.ToString("F3");
+                    velX.Points.AddXY(totalSamples, velocity[0]);
+                    velY.Points.AddXY(totalSamples, velocity[1]);
+                    velZ.Points.AddXY(totalSamples, velocity[2]);
+                    velA.Points.AddXY(totalSamples, velocity[3]);
+                    velB.Points.AddXY(totalSamples, velocity[4]);
+                    velC.Points.AddXY(totalSamples, velocity[5]);
+
+                    posXText.Text = position.X.ToString("F3");
+                    posYText.Text = position.Y.ToString("F3");
+                    posZText.Text = position.Z.ToString("F3");
+                    posAText.Text = position.A.ToString("F3");
+                    posBText.Text = position.B.ToString("F3");
+                    posCText.Text = position.C.ToString("F3");
+
+                    velXText.Text = velocity[0].ToString("F3");
+                    velYText.Text = velocity[1].ToString("F3");
+                    velZText.Text = velocity[2].ToString("F3");
+                    velAText.Text = velocity[3].ToString("F3");
+                    velBText.Text = velocity[4].ToString("F3");
+                    velCText.Text = velocity[5].ToString("F3");
                 });
             };
         }
 
         private void InitializePositionChart() {
-            sx = new Series {
+            posX = new Series {
                 Name = "position X",
-                ChartType = SeriesChartType.FastLine,
+                ChartType = SeriesChartType.Line,
                 BorderWidth = 3
             };
 
-            sy = new Series {
+            posY = new Series {
                 Name = "position Y",
-                ChartType = SeriesChartType.FastLine,
+                ChartType = SeriesChartType.Line,
                 BorderWidth = 3
             };
 
-            sz = new Series {
+            posZ = new Series {
                 Name = "position Z",
-                ChartType = SeriesChartType.FastLine,
+                ChartType = SeriesChartType.Line,
                 BorderWidth = 3
             };
 
-            sa = new Series {
+            posA = new Series {
                 Name = "position A",
-                ChartType = SeriesChartType.FastLine,
+                ChartType = SeriesChartType.Line,
                 BorderWidth = 3
             };
 
-            sb = new Series {
+            posB = new Series {
                 Name = "position B",
-                ChartType = SeriesChartType.FastLine,
+                ChartType = SeriesChartType.Line,
                 BorderWidth = 3
             };
 
-            sc = new Series {
+            posC = new Series {
                 Name = "position C",
-                ChartType = SeriesChartType.FastLine,
+                ChartType = SeriesChartType.Line,
                 BorderWidth = 3
             };
 
-            sx.Points.AddXY(0, 0);
-            sy.Points.AddXY(0, 0);
-            sz.Points.AddXY(0, 0);
-            sa.Points.AddXY(0, 0);
-            sb.Points.AddXY(0, 0);
-            sc.Points.AddXY(0, 0);
+            posX.Points.AddXY(0, 0);
+            posY.Points.AddXY(0, 0);
+            posZ.Points.AddXY(0, 0);
+            posA.Points.AddXY(0, 0);
+            posB.Points.AddXY(0, 0);
+            posC.Points.AddXY(0, 0);
 
-            InitializeCheckBox(positionChart, sx, posXCheck);
-            InitializeCheckBox(positionChart, sy, posYCheck);
-            InitializeCheckBox(positionChart, sz, posZCheck);
-            InitializeCheckBox(positionChart, sa, posACheck);
-            InitializeCheckBox(positionChart, sb, posBCheck);
-            InitializeCheckBox(positionChart, sc, posCCheck);
+            InitializeCheckBox(positionChart, posX, posXCheck);
+            InitializeCheckBox(positionChart, posY, posYCheck);
+            InitializeCheckBox(positionChart, posZ, posZCheck);
+            InitializeCheckBox(positionChart, posA, posACheck);
+            InitializeCheckBox(positionChart, posB, posBCheck);
+            InitializeCheckBox(positionChart, posC, posCCheck);
 
             posXCheck.Checked = true;
             posYCheck.Checked = true;
             posZCheck.Checked = true;
 
             positionChart.ChartAreas[0].AxisX.Maximum = maxSamples;
+        }
+
+        private void InitializeVelocityChart() {
+            velX = new Series {
+                Name = "velocity X",
+                ChartType = SeriesChartType.Line,
+                BorderWidth = 3
+            };
+
+            velY = new Series {
+                Name = "velocity Y",
+                ChartType = SeriesChartType.Line,
+                BorderWidth = 3
+            };
+
+            velZ = new Series {
+                Name = "velocity Z",
+                ChartType = SeriesChartType.Line,
+                BorderWidth = 3
+            };
+
+            velA = new Series {
+                Name = "velocity A",
+                ChartType = SeriesChartType.Line,
+                BorderWidth = 3
+            };
+
+            velB = new Series {
+                Name = "velocity B",
+                ChartType = SeriesChartType.Line,
+                BorderWidth = 3
+            };
+
+            velC = new Series {
+                Name = "velocity C",
+                ChartType = SeriesChartType.Line,
+                BorderWidth = 3
+            };
+
+            velX.Points.AddXY(0, 0);
+            velY.Points.AddXY(0, 0);
+            velZ.Points.AddXY(0, 0);
+            velA.Points.AddXY(0, 0);
+            velB.Points.AddXY(0, 0);
+            velC.Points.AddXY(0, 0);
+
+            InitializeCheckBox(velocityChart, velX, velXCheck);
+            InitializeCheckBox(velocityChart, velY, velYCheck);
+            InitializeCheckBox(velocityChart, velZ, velZCheck);
+            InitializeCheckBox(velocityChart, velA, velACheck);
+            InitializeCheckBox(velocityChart, velB, velBCheck);
+            InitializeCheckBox(velocityChart, velC, velCCheck);
+
+            velXCheck.Checked = true;
+            velYCheck.Checked = true;
+            velZCheck.Checked = true;
+
+            velocityChart.ChartAreas[0].AxisX.Maximum = maxSamples;
         }
 
         private void InitializeCheckBox(Chart chart, Series series, CheckBox checkBox) {

@@ -25,16 +25,16 @@ namespace PingPong.Views {
         public ThreadSafeChart() {
             InitializeComponent();
 
-            MaxSamples = 250;
+            MaxSamples = 5000;
             RefreshTime = 20;
 
             series1 = new Series {
-                ChartType = SeriesChartType.FastLine,
+                ChartType = SeriesChartType.Line,
                 BorderWidth = 3
             };
 
             series2 = new Series {
-                ChartType = SeriesChartType.FastLine,
+                ChartType = SeriesChartType.Line,
                 BorderWidth = 3
             };
 

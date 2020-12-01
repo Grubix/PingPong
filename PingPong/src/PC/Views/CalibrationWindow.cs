@@ -50,11 +50,13 @@ namespace PingPong.Views {
                     Start?.Invoke();
 
                     // Move robot to first calibration point and wait
-                    MoveRobotToPoint(robot, calibrationPoints[0], robot.Limits.MaxVelocity.XYZ / 3.0);
+                    //MoveRobotToPoint(robot, calibrationPoints[0], robot.Limits.MaxVelocity.XYZ / 3.0);
+                    robot.ForceMoveTo(new E6POS(calibrationPoints[0], robot.Position.ABC), 6.0);
 
                     for (int i = 0; i < calibrationPoints.Count; i++) {
                         // Move robot to next calibration point and wait
-                        MoveRobotToPoint(robot, calibrationPoints[i], robot.Limits.MaxVelocity.XYZ / 3.0);
+                        //MoveRobotToPoint(robot, calibrationPoints[i], robot.Limits.MaxVelocity.XYZ / 3.0);
+                        robot.ForceMoveTo(new E6POS(calibrationPoints[i], robot.Position.ABC), 4.0);
 
                         // Add robot XYZ position to list
                         var kukaPoint = robot.Position.XYZ;
@@ -71,7 +73,8 @@ namespace PingPong.Views {
                         ProgressChanged?.Invoke(progress, transformation);
                     }
 
-                    MoveRobotToPoint(robot, robot.HomePosition.XYZ, robot.Limits.MaxVelocity.XYZ / 3.0);
+                    //MoveRobotToPoint(robot, robot.HomePosition.XYZ, robot.Limits.MaxVelocity.XYZ / 3.0);
+                    robot.ForceMoveTo(robot.HomePosition, 6.0);
                 };
 
                 worker.RunWorkerCompleted += (s, e) => {
@@ -93,9 +96,7 @@ namespace PingPong.Views {
                 // Robot Vx=Vy=Vz=Ax=Ay=Az=0 => v(T/2)=Vmax => T=15*(x1-x0)/(8*Vmax)
                 double duration = 15.0 * deltaMax / (8.0 * Math.Abs(velocity));
 
-                if (duration > 10E-6) {
-                    robot.ForceMoveTo(new E6POS(point, robot.Position.ABC), duration, 0.1, 0.1);
-                }
+                robot.ForceMoveTo(new E6POS(point, robot.Position.ABC), duration);
             }
 
             public void Calibrate(KUKARobot robot, int pointsPerLine, int samplesPerPoint) {
