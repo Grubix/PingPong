@@ -1,5 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using PingPong.Forms;
+using PingPong.Views;
 using PingPong.KUKA;
 using PingPong.Maths;
 using PingPong.OptiTrack;
@@ -38,11 +38,11 @@ namespace PingPong.Applications {
             threadSafeChart1.AddPoint(prediction[0], prediction[1]);
             System.Console.WriteLine(prediction);
 
-            (double LowerX, double LowerY, double LowerZ) = robot.LowerWorkspacePoint;
-            (double UpperX, double UpperY, double UpperZ) = robot.UpperWorkspacePoint;
+            (double LowerX, double LowerY, double LowerZ) = robot.Limits.LowerWorkspaceLimit;
+            (double UpperX, double UpperY, double UpperZ) = robot.Limits.LowerWorkspaceLimit;
             if (LowerX < prediction[0] && UpperX > prediction[0]
              && LowerY < prediction[1] && UpperY > prediction[1])
-                robot.MoveTo(new E6POS(collisionPoint, robot.CurrentPosition.ABC), prediction[2] - timeElapsed);
+                robot.MoveTo(new E6POS(collisionPoint, robot.Position.ABC), prediction[2] - timeElapsed);
             timeElapsed += 0.004;
         }
 

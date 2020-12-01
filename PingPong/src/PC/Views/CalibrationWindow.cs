@@ -50,7 +50,6 @@ namespace PingPong.Views {
                     Start?.Invoke();
 
                     // Move robot to first calibration point and wait
-<<<<<<<< HEAD:PingPong/src/PC/Views/CalibrationWindow.cs
                     //MoveRobotToPoint(robot, calibrationPoints[0], robot.Limits.MaxVelocity.XYZ / 3.0);
                     robot.ForceMoveTo(new E6POS(calibrationPoints[0], robot.Position.ABC), 6.0);
 
@@ -58,14 +57,6 @@ namespace PingPong.Views {
                         // Move robot to next calibration point and wait
                         //MoveRobotToPoint(robot, calibrationPoints[i], robot.Limits.MaxVelocity.XYZ / 3.0);
                         robot.ForceMoveTo(new E6POS(calibrationPoints[i], robot.Position.ABC), 4.0);
-========
-                    //(robot, calibrationPoints[0], robot.MaxXYZVelocity / 3.0);
-                    robot.ForceMoveTo(new E6POS(calibrationPoints[0], robot.CurrentPosition.ABC), 6.0, 1, 1);
-
-                    for (int i = 0; i < calibrationPoints.Count; i++) {
-                        // Move robot to next calibration point and wait
-                        robot.ForceMoveTo(new E6POS(calibrationPoints[i], robot.CurrentPosition.ABC), 5.0, 1, 1);
->>>>>>>> 965747147b5a3b14d757b020c56d3885205d0eb0:PingPong/src/PC/Forms/CalibrationWindow.cs
 
                         // Add robot XYZ position to list
                         var kukaPoint = robot.Position.XYZ;
@@ -81,12 +72,9 @@ namespace PingPong.Views {
 
                         ProgressChanged?.Invoke(progress, transformation);
                     }
-<<<<<<<< HEAD:PingPong/src/PC/Views/CalibrationWindow.cs
 
                     //MoveRobotToPoint(robot, robot.HomePosition.XYZ, robot.Limits.MaxVelocity.XYZ / 3.0);
                     robot.ForceMoveTo(robot.HomePosition, 6.0);
-========
->>>>>>>> 965747147b5a3b14d757b020c56d3885205d0eb0:PingPong/src/PC/Forms/CalibrationWindow.cs
                 };
 
                 worker.RunWorkerCompleted += (s, e) => {
@@ -108,13 +96,7 @@ namespace PingPong.Views {
                 // Robot Vx=Vy=Vz=Ax=Ay=Az=0 => v(T/2)=Vmax => T=15*(x1-x0)/(8*Vmax)
                 double duration = 15.0 * deltaMax / (8.0 * Math.Abs(velocity));
 
-<<<<<<<< HEAD:PingPong/src/PC/Views/CalibrationWindow.cs
                 robot.ForceMoveTo(new E6POS(point, robot.Position.ABC), duration);
-========
-                if (duration > 10E-6) {
-                    robot.ForceMoveTo(new E6POS(point, robot.CurrentPosition.ABC), 4.0);
-                }
->>>>>>>> 965747147b5a3b14d757b020c56d3885205d0eb0:PingPong/src/PC/Forms/CalibrationWindow.cs
             }
 
             public void Calibrate(KUKARobot robot, int pointsPerLine, int samplesPerPoint) {
