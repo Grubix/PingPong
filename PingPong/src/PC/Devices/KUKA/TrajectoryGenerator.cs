@@ -65,15 +65,22 @@ namespace PingPong.KUKA {
             targetPosition = currentPosition;
         }
 
-        public E6POS GetNextCorrection(E6POS currentPosition, E6POS targetPosition, double time) {
-            if (currentPosition == targetPosition) {
-                ResetVelocity();
-                return new E6POS();
-            }
+        public bool TargetPositionReached() {
+            return time2Dest <= 0;
+        }
+
+        public void SetTargetPosition(E6POS targetPosition, double time) {
             if (totalTime2Dest != time || this.targetPosition != targetPosition) {
                 totalTime2Dest = time;
                 time2Dest = time;
                 this.targetPosition = targetPosition;
+            }
+        }
+
+        public E6POS GetNextCorrection(E6POS currentPosition) {
+            if (currentPosition == targetPosition) {
+                ResetVelocity();
+                return new E6POS();
             }
             if (time2Dest >= 0.004) {
                 UpdateCoefficients(currentPosition, targetPosition);
