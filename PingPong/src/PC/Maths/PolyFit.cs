@@ -15,8 +15,8 @@ namespace PingPong.Maths {
         private List<double> Y = new List<double>();
         private List<double> Z = new List<double>();
         private List<double> time = new List<double>();
-        // max number of points to prediction, rather even (pol. 'parzyste')
-        readonly private int maxPointsCount = 100;
+        // rather should be even (pol.: 'parzyste')
+        private int maxPointsNumber = 100;
 
         // prediction
         private double Xpred;
@@ -26,8 +26,6 @@ namespace PingPong.Maths {
 
         private double Zlevel;
 
-        public bool go = false;
-
         public Polyfit(double Zlevel) {
             this.Zlevel = Zlevel;
             prediction = Vector<double>.Build.Dense(3);
@@ -35,22 +33,18 @@ namespace PingPong.Maths {
 
         public void AddNewPosition(double X, double Y, double Z, double time) {
             if (X > -390 && X < 700 && Y > -100 && Y < 700 && Z > 100 && Z < 1000) {
-                if (this.X.Count >= maxPointsCount)
-                {
-                    go = true;
 
-                    for (int i = 0; i < maxPointsCount / 2; i++)
-                    {
+                if (this.X.Count >= maxPointsNumber) {
+                    for (int i = 0; i < maxPointsNumber / 2; i++) {
                         this.X[i] = this.X[2 * i];
                         this.Y[i] = this.Y[2 * i];
                         this.Z[i] = this.Z[2 * i];
                         this.time[i] = this.time[2 * i];
                     }
-
-                    this.X.RemoveRange(maxPointsCount / 2, maxPointsCount / 2);
-                    this.Y.RemoveRange(maxPointsCount / 2, maxPointsCount / 2);
-                    this.Z.RemoveRange(maxPointsCount / 2, maxPointsCount / 2);
-                    this.time.RemoveRange(maxPointsCount / 2, maxPointsCount / 2);
+                    this.X.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                    this.Y.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                    this.Z.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                    this.time.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
                 }
                 this.X.Add(X);
                 this.Y.Add(Y);
@@ -70,6 +64,7 @@ namespace PingPong.Maths {
             }
         }
 
+        // return Vector [ x y t]
         public Vector<double> GetPrediction() {
             if (X.Count > 2) {
                 CountPrediction();
@@ -121,14 +116,13 @@ namespace PingPong.Maths {
             return (-Zcoeff[1] - Math.Sqrt(delta)) / 2 / Zcoeff[2];
         }
 
-        public void Clear()
-        {
-            X.Clear();
-            Y.Clear();
-            Z.Clear();
-            time.Clear();
-        }
+        //public Vector<double> GetVelocity() {
+        //     new Vector<double>.Build.DenseOfArray(new double[] {
+        //        prediction[0], prediction[1], Zlevel
+        //    });
+        //}
 
+        // do testow
         public Vector<double> GetX() {
             return Xcoeff;
         }

@@ -28,6 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.incXBtn = new System.Windows.Forms.Button();
             this.decXBtn = new System.Windows.Forms.Button();
@@ -43,9 +47,17 @@
             this.decCBtn = new System.Windows.Forms.Button();
             this.calibrationBtn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+<<<<<<<< HEAD:PingPong/src/PC/Views/MainWindow.Designer.cs
             this.threadSafeChart1 = new PingPong.Views.ThreadSafeChart();
             this.robot1Panel = new PingPong.Views.RobotDataPanel();
+========
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.threadSafeChart1 = new PingPong.Forms.ThreadSafeChart();
+            this.robot1Panel = new PingPong.Forms.RobotDataPanel();
+            this.button1 = new System.Windows.Forms.Button();
+>>>>>>>> 965747147b5a3b14d757b020c56d3885205d0eb0:PingPong/src/PC/Forms/MainWindow.Designer.cs
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // incXBtn
@@ -186,6 +198,33 @@
             this.panel1.Size = new System.Drawing.Size(140, 511);
             this.panel1.TabIndex = 28;
             // 
+            // chart1
+            // 
+            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
+            this.chart1.Location = new System.Drawing.Point(152, 483);
+            this.chart1.Name = "chart1";
+            series1.BorderWidth = 3;
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            series2.BorderWidth = 3;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Legend = "Legend1";
+            series2.Name = "Series2";
+            this.chart1.Series.Add(series1);
+            this.chart1.Series.Add(series2);
+            this.chart1.Size = new System.Drawing.Size(836, 28);
+            this.chart1.TabIndex = 30;
+            this.chart1.Text = "chart1";
+            // 
             // threadSafeChart1
             // 
             this.threadSafeChart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -205,12 +244,23 @@
             this.robot1Panel.Size = new System.Drawing.Size(994, 511);
             this.robot1Panel.TabIndex = 0;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(871, 93);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(99, 23);
+            this.button1.TabIndex = 27;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1134, 511);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.chart1);
             this.Controls.Add(this.threadSafeChart1);
             this.Controls.Add(this.robot1Panel);
             this.Controls.Add(this.panel1);
@@ -223,6 +273,7 @@
             this.Text = "Ping Pong";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -245,5 +296,7 @@
         private System.Windows.Forms.Panel panel1;
         private RobotDataPanel robot1Panel;
         private ThreadSafeChart threadSafeChart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.Button button1;
     }
 }
