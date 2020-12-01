@@ -13,7 +13,7 @@ namespace PingPong.Applications {
 
         private readonly Polyfit polyfit;
 
-        private Vector<double> prevPrediction;
+        //private Vector<double> prevPrediction;
 
         private double timeElapsed;
 
@@ -36,10 +36,13 @@ namespace PingPong.Applications {
             });
 
             threadSafeChart1.AddPoint(prediction[0], prediction[1]);
-
             System.Console.WriteLine(prediction);
-            if (polyfit.go)
-                robot.MoveTo(new E6POS(collisionPoint, robot.CurrentPosition.ABC), 5);
+
+            (double LowerX, double LowerY, double LowerZ) = robot.LowerWorkspacePoint;
+            (double UpperX, double UpperY, double UpperZ) = robot.UpperWorkspacePoint;
+            if (LowerX < prediction[0] && UpperX > prediction[0]
+             && LowerY < prediction[1] && UpperY > prediction[1])
+                robot.MoveTo(new E6POS(collisionPoint, robot.CurrentPosition.ABC), prediction[2] - timeElapsed);
             timeElapsed += 0.004;
         }
 

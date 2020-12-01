@@ -15,6 +15,8 @@ namespace PingPong.Maths {
         private List<double> Y = new List<double>();
         private List<double> Z = new List<double>();
         private List<double> time = new List<double>();
+        // rather should be even (pol.: 'parzyste')
+        private int maxPointsNumber = 100;
 
         // prediction
         private double Xpred;
@@ -24,8 +26,6 @@ namespace PingPong.Maths {
 
         private double Zlevel;
 
-        public bool go = false;
-
         public Polyfit(double Zlevel) {
             this.Zlevel = Zlevel;
             prediction = Vector<double>.Build.Dense(3);
@@ -33,14 +33,23 @@ namespace PingPong.Maths {
 
         public void AddNewPosition(double X, double Y, double Z, double time) {
             if (X > -390 && X < 700 && Y > -100 && Y < 700 && Z > 100 && Z < 1000) {
-                if (this.X.Count < 30) {
-                    this.X.Add(X);
-                    this.Y.Add(Y);
-                    this.Z.Add(Z);
-                    this.time.Add(time);
-                } else {
-                    go = true;
+
+                if (this.X.Count >= maxPointsNumber) {
+                    for (int i = 0; i < maxPointsNumber / 2; i++) {
+                        this.X[i] = this.X[2 * i];
+                        this.Y[i] = this.Y[2 * i];
+                        this.Z[i] = this.Z[2 * i];
+                        this.time[i] = this.time[2 * i];
+                    }
+                    this.X.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                    this.Y.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                    this.Z.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                    this.time.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
                 }
+                this.X.Add(X);
+                this.Y.Add(Y);
+                this.Z.Add(Z);
+                this.time.Add(time);
 
                 if (this.X.Count > 2) {
                     Xcoeff = GetCoeff(this.X, 1);
@@ -55,6 +64,7 @@ namespace PingPong.Maths {
             }
         }
 
+        // return Vector [ x y t]
         public Vector<double> GetPrediction() {
             if (X.Count > 2) {
                 CountPrediction();
