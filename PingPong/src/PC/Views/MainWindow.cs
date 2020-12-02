@@ -151,44 +151,6 @@ namespace PingPong.Views {
                 }
                 
             };
-
-            /*E6POS current3 = new E6POS(0, 125, 550);
-            E6POS current5 = new E6POS(0, 125, 550);
-            E6POS target = current3 + new E6POS(150, 0, 0);
-
-            TrajectoryGenerator gen3 = new TrajectoryGenerator(current3);
-            TrajectoryGenerator5 gen5 = new TrajectoryGenerator5(current5);
-
-            gen3.SetTargetPosition(target, 4);
-            gen5.SetTargetPosition(target, 4);
-
-            Random random = new Random();
-
-            Task.Run(() => {
-                while (true) {
-                    E6POS c3 = gen3.GetNextCorrection(current3);
-                    E6POS c5 = gen5.GetNextCorrection(current5);
-
-                    E6POS rand = new E6POS((random.NextDouble() - 0.5) * 0.01, (random.NextDouble() - 0.5) * 0.01, (random.NextDouble() - 0.5) * 0.01);
-                    current3 += c3 + rand;
-                    current5 += c5 + rand;
-
-                    threadSafeChart1.AddPoint(current5.X, gen5.Velocity[0]);
-                    Thread.Sleep(4);
-                }
-            });
-
-            incXBtn.Click += (s, e) => {
-                target += new E6POS(50, 0, 0);
-                gen3.SetTargetPosition(target, 4);
-                gen5.SetTargetPosition(target, 4);
-            };
-
-            decXBtn.Click += (s, e) => {
-                target -= new E6POS(50, 0, 0);
-                gen3.SetTargetPosition(target, 4);
-                gen5.SetTargetPosition(target, 4);
-            };*/
         }
 
         public void ShowCalibrationWindow() {
