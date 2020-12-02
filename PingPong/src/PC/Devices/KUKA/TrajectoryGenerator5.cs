@@ -21,6 +21,9 @@ namespace PingPong.KUKA {
             public double A { get; private set; }
 
             public double GetNextValue(double x0, double x1, double v1, double T, double t) {
+                V = Vn;
+                A = An;
+
                 double T1 = T;
                 double T2 = T1 * T1;
                 double T3 = T1 * T2;
@@ -31,7 +34,7 @@ namespace PingPong.KUKA {
                 k1 = Vn;
                 k2 = An / 2.0;
                 k3 = 1.0 / (2.0 * T3) * (-3.0 * T2 * An - 12.0 * T1 * Vn - 8.0 * T1 * v1 + 20.0 * (x1 - x0));
-                k4 = 1.0 / (2.0 * T4) * (3.0 * T2 * An + 16.0 * T1 * Vn + 14.0 * T1 * v1 + 30.0 * (x0 - x1));
+                k4 = 1.0 / (2.0 * T4) * (3.0 * T2 * An + 16.0 * T1 * Vn + 14.0 * T1 * v1 - 30.0 * (x1 - x0));
                 k5 = 1.0 / (2.0 * T5) * (-T2 * An - 6.0 * T1 * (Vn + v1) + 12.0 * (x1 - x0));
 
                 double t1 = t;
@@ -39,9 +42,6 @@ namespace PingPong.KUKA {
                 double t3 = t1 * t2;
                 double t4 = t1 * t3;
                 double t5 = t1 * t4;
-
-                V = Vn;
-                A = An;
 
                 Xn = k5 * t5 + k4 * t4 + k3 * t3 + k2 * t2 + k1 * t1 + k0;
                 Vn = 5.0 * k5 * t4 + 4.0 * k4 * t3 + 3.0 * k3 * t2 + 2.0 * k2 * t1 + k1;
@@ -138,16 +138,17 @@ namespace PingPong.KUKA {
         public E6POS GetNextCorrection(E6POS currentPosition) {
             lock (syncLock) {
                 if (timeLeft >= Ts) {
+                    double nx = polyX.GetNextValue(currentPosition.X, targetPosition.X, 0.0, timeLeft, Ts);
+                    double ny = polyY.GetNextValue(currentPosition.Y, targetPosition.Y, 0.0, timeLeft, Ts);
+                    double nz = polyZ.GetNextValue(currentPosition.Z, targetPosition.Z, 0.0, timeLeft, Ts);
+                    double na = polyA.GetNextValue(currentPosition.A, targetPosition.A, 0.0, timeLeft, Ts);
+                    double nb = polyB.GetNextValue(currentPosition.B, targetPosition.B, 0.0, timeLeft, Ts);
+                    double nc = polyC.GetNextValue(currentPosition.C, targetPosition.C, 0.0, timeLeft, Ts);
+
+                    E6POS nextPosition = new E6POS(nx, ny, nz, na, nb, nc);
                     timeLeft -= Ts;
 
-                    return new E6POS(
-                        polyX.GetNextValue(currentPosition.X, targetPosition.X, 0.0, timeLeft, Ts),
-                        polyY.GetNextValue(currentPosition.Y, targetPosition.Y, 0.0, timeLeft, Ts),
-                        polyZ.GetNextValue(currentPosition.Z, targetPosition.Z, 0.0, timeLeft, Ts),
-                        polyA.GetNextValue(currentPosition.A, targetPosition.A, 0.0, timeLeft, Ts),
-                        polyB.GetNextValue(currentPosition.B, targetPosition.B, 0.0, timeLeft, Ts),
-                        polyC.GetNextValue(currentPosition.C, targetPosition.C, 0.0, timeLeft, Ts)
-                    ) - currentPosition;
+                    return nextPosition - currentPosition;
                 } else {
                     targetPositionReached = true;
                     polyX.Reset();

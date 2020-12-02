@@ -18,15 +18,15 @@ namespace PingPong.Views {
 
         private long deltaTime = 0;
 
-        public int MaxSamples { get; set; }
+        private readonly int MaxSamples;
 
-        public int RefreshTime { get; set; }
+        private readonly int RefreshTime;
 
         public ThreadSafeChart() {
             InitializeComponent();
 
             MaxSamples = 5000;
-            RefreshTime = 20;
+            RefreshTime = 10;
 
             series1 = new Series {
                 ChartType = SeriesChartType.Line,
