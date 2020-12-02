@@ -51,7 +51,7 @@ namespace PingPong.Views {
 
                     // Move robot to first calibration point and wait
                     //MoveRobotToPoint(robot, calibrationPoints[0], robot.Limits.MaxVelocity.XYZ / 3.0);
-                    robot.ForceMoveTo(new E6POS(calibrationPoints[0], robot.Position.ABC), 6.0);
+                    robot.ForceMoveTo(new E6POS(calibrationPoints[0], robot.Position.ABC), 15.0);
 
                     for (int i = 0; i < calibrationPoints.Count; i++) {
                         // Move robot to next calibration point and wait
@@ -74,7 +74,7 @@ namespace PingPong.Views {
                     }
 
                     //MoveRobotToPoint(robot, robot.HomePosition.XYZ, robot.Limits.MaxVelocity.XYZ / 3.0);
-                    robot.ForceMoveTo(robot.HomePosition, 6.0);
+                    //robot.ForceMoveTo(robot.HomePosition, 6.0);
                 };
 
                 worker.RunWorkerCompleted += (s, e) => {

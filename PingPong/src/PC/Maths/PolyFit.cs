@@ -11,7 +11,7 @@ namespace PingPong.Maths {
         private Vector<double> Zcoeff;
 
         // ball positions lists
-        private List<double> X = new List<double>();
+        public List<double> X = new List<double>();
         private List<double> Y = new List<double>();
         private List<double> Z = new List<double>();
         private List<double> time = new List<double>();
@@ -32,26 +32,30 @@ namespace PingPong.Maths {
         }
 
         public void AddNewPosition(double X, double Y, double Z, double time) {
-            if (X > -390 && X < 700 && Y > -100 && Y < 700 && Z > 100 && Z < 1000) {
+            if (X > -390 && X < 900 && Y > -100 && Y < 1000 && Z > 100) {
 
                 if (this.X.Count >= maxPointsNumber) {
-                    for (int i = 0; i < maxPointsNumber / 2; i++) {
-                        this.X[i] = this.X[2 * i];
-                        this.Y[i] = this.Y[2 * i];
-                        this.Z[i] = this.Z[2 * i];
-                        this.time[i] = this.time[2 * i];
-                    }
-                    this.X.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
-                    this.Y.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
-                    this.Z.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
-                    this.time.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                    this.X.Clear();
+                    this.Y.Clear();
+                    this.Z.Clear();
+                    this.time.Clear();
+                    /* for (int i = 0; i < maxPointsNumber / 2; i++) {
+                         this.X[i] = this.X[2 * i];
+                         this.Y[i] = this.Y[2 * i];
+                         this.Z[i] = this.Z[2 * i];
+                         this.time[i] = this.time[2 * i];
+                     }
+                     this.X.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                     this.Y.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                     this.Z.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);
+                     this.time.RemoveRange(maxPointsNumber / 2, maxPointsNumber / 2);*/
                 }
                 this.X.Add(X);
                 this.Y.Add(Y);
                 this.Z.Add(Z);
                 this.time.Add(time);
 
-                if (this.X.Count > 2) {
+                if (this.X.Count > 5) {
                     Xcoeff = GetCoeff(this.X, 1);
                     Ycoeff = GetCoeff(this.Y, 1);
                     Zcoeff = GetCoeff(this.Z, 2);
@@ -66,7 +70,7 @@ namespace PingPong.Maths {
 
         // return Vector [ x y t]
         public Vector<double> GetPrediction() {
-            if (X.Count > 2) {
+            if (X.Count > 5) {
                 CountPrediction();
                 prediction[0] = Xpred;
                 prediction[1] = Ypred;

@@ -16,7 +16,7 @@ namespace PingPong.KUKA {
 
         private readonly RSIAdapter rsiAdapter;
 
-        private TrajectoryGenerator5 generator;
+        private TrajectoryGenerator generator;
 
         private bool isInitialized = false;
 
@@ -116,7 +116,7 @@ namespace PingPong.KUKA {
             worker.DoWork += async (sender, args) => {
                 // Connect with the robot
                 InputFrame receivedFrame = await rsiAdapter.Connect();
-                generator = new TrajectoryGenerator5(receivedFrame.Position);
+                generator = new TrajectoryGenerator(receivedFrame.Position);
 
                 lock (receivedDataSyncLock) {
                     IPOC = receivedFrame.IPOC;
@@ -180,6 +180,8 @@ namespace PingPong.KUKA {
                 correction = generator.GetNextCorrection(position);
             }
 
+            correction = new E6POS(correction.X, correction.Y, correction.Z, 0, correction.B, correction.C);
+
             if (!Limits.CheckCorrection(correction)) {
                 Uninitialize();
                 throw new InvalidOperationException($"Correction limit has been exceeded:{Environment.NewLine}{correction}");
@@ -235,8 +237,10 @@ namespace PingPong.KUKA {
         /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
         /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
         public void ForceMoveTo(E6POS targetPosition, double targetDuration) {
+            Console.WriteLine(targetPosition);
             MoveTo(targetPosition, targetDuration);
 
+            
             lock (forceMoveSyncLock) {
                 forceMoveMode = true;
             }
@@ -256,6 +260,7 @@ namespace PingPong.KUKA {
             lock (forceMoveSyncLock) {
                 forceMoveMode = false;
             }
+            
         }
 
         /// <summary>

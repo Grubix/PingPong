@@ -41,7 +41,7 @@ namespace PingPong.KUKA {
             MaxVelocity = (maxCorrection.XYZ / 0.004, maxCorrection.ABC / 0.004);
 
             LowerWorkspaceLimit = (LimitX.Min, LimitY.Min, LimitZ.Min);
-            LowerWorkspaceLimit = (LimitX.max, LimitY.max, LimitZ.max);
+            UpperWorkspaceLimit = (LimitX.max, LimitY.max, LimitZ.max);
         }
 
         public bool CheckPosition(E6POS position) {

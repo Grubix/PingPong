@@ -7,7 +7,7 @@ using PingPong.OptiTrack;
 namespace PingPong.Applications {
     class Ping : IApplication {
 
-        private const double Zlevel = 596.5;
+        private const double Zlevel = 283;
 
         private readonly KUKARobot robot;
 
@@ -36,14 +36,15 @@ namespace PingPong.Applications {
             });
 
             threadSafeChart1.AddPoint(prediction[0], prediction[1]);
-            System.Console.WriteLine(prediction);
+            System.Console.WriteLine(polyfit.GetPrediction()[0]);
+            System.Console.WriteLine("***** ***");
 
             (double LowerX, double LowerY, double LowerZ) = robot.Limits.LowerWorkspaceLimit;
-            (double UpperX, double UpperY, double UpperZ) = robot.Limits.LowerWorkspaceLimit;
+            (double UpperX, double UpperY, double UpperZ) = robot.Limits.UpperWorkspaceLimit;
             if (LowerX < prediction[0] && UpperX > prediction[0]
              && LowerY < prediction[1] && UpperY > prediction[1])
-                robot.MoveTo(new E6POS(collisionPoint, robot.Position.ABC), prediction[2] - timeElapsed);
-            timeElapsed += 0.004;
+                //robot.MoveTo(new E6POS(collisionPoint, robot.Position.ABC), 5);
+            timeElapsed += 0.00416;
         }
 
     }

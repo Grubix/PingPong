@@ -86,9 +86,9 @@ namespace PingPong.KUKA {
             double B = double.Parse(tag["B"]);
             double C = double.Parse(tag["C"]);
 
-            A = A < 0 ? 360.0 + A : A;
-            B = B < 0 ? 360.0 + B : B;
-            C = C < 0 ? 360.0 + C : C;
+            //A = A < 0 ? 360.0 + A : A;
+            //B = B < 0 ? 360.0 + B : B;
+            //C = C < 0 ? 360.0 + C : C;
 
             return new E6POS(X, Y, Z, A, B, C);
         }

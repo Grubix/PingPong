@@ -120,7 +120,7 @@ namespace PingPong.KUKA {
             Y.UpdateCoefficients(currentPosition.Y, targetPosition.Y, 0.0, time2Dest);
             Z.UpdateCoefficients(currentPosition.Z, targetPosition.Z, 0.0, time2Dest);
 
-            Vector<double> currentABC = currentPosition.ABC;
+           /* Vector<double> currentABC = currentPosition.ABC;
             Vector<double> targetABC = targetPosition.ABC;
 
             // handling passing through +-180
@@ -140,7 +140,7 @@ namespace PingPong.KUKA {
             }
 
             currentPosition += new E6POS(0.0, 0.0, 0.0, currentABC[0], currentABC[1], currentABC[2]);
-            targetPosition += new E6POS(0.0, 0.0, 0.0, targetABC[0], targetABC[1], targetABC[2]);
+            targetPosition += new E6POS(0.0, 0.0, 0.0, targetABC[0], targetABC[1], targetABC[2]);*/
 
             A.UpdateCoefficients(currentPosition.A, targetPosition.A, 0.0, time2Dest);
             B.UpdateCoefficients(currentPosition.B, targetPosition.B, 0.0, time2Dest);
@@ -178,7 +178,7 @@ namespace PingPong.KUKA {
             get {
                 lock (syncLock) {
                     return Vector<double>.Build.DenseOfArray(new double[] {
-                        X.V, X.V, X.V, X.V, X.V, X.V
+                        X.V, Y.V, Z.V, A.V, B.V, C.V
                     });
                 }
             }
