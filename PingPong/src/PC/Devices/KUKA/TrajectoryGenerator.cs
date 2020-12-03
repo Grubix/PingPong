@@ -92,7 +92,7 @@ namespace PingPong.KUKA {
         public E6POS GetNextCorrection(E6POS currentPosition) {
             lock (syncLock) {
                 if (time2Dest >= 0.004) {
-                    UpdateCoefficients(currentPosition, targetPosition);
+                    UpdateCoefficients(currentPosition, targetPosition, time2Dest);
                     ComputeNextPoint();
                     time2Dest -= period;
                     UpdateVelocity();
@@ -114,11 +114,60 @@ namespace PingPong.KUKA {
             }
         }
 
-        private void UpdateCoefficients(E6POS currentPosition, E6POS targetPosition) {
+        // UWAGA: TOTALNIE NIE WIADOMO CZY DZIAŁA   
+        // targetZVelocity [mm / s]
+        public E6POS Hit(E6POS currentPosition, double targetZVelocity) {
+            lock (syncLock) {
+                if (totalTime2Dest > 0 && time2Dest - 50 / targetZVelocity > 0.004) {
+                    // ruch do punktu pod pilka
+                    E6POS underTargetPosition = targetPosition + new E6POS(0, 0, -50, 0, 0, 0);
+                    UpdateCoefficients(currentPosition, underTargetPosition, time2Dest - 50 / targetZVelocity, targetZVelocity);
+                    ComputeNextPoint();
+                    time2Dest -= period;
+                    UpdateVelocity();
+
+                    return new E6POS(
+                        X.GetNextValue(),
+                        Y.GetNextValue(),
+                        Z.GetNextValue(),
+                        A.GetNextValue(),
+                        B.GetNextValue(),
+                        C.GetNextValue()
+                    );
+                } else if (time2Dest + 50 / targetZVelocity > 0.004) {
+                    // ruch v = const 
+                    time2Dest -= period;
+                    return new E6POS(0, 0, targetZVelocity * period, 0, 0, 0);
+                } else if (time2Dest + 50 / targetZVelocity + 3 > 0.004) {
+                    // wytracenie predkosci w czasie np: 3s, do pozycji odbicia
+                    UpdateCoefficients(currentPosition, targetPosition, time2Dest + 50 / targetZVelocity + 3);
+                    ComputeNextPoint();
+                    time2Dest -= period;
+                    UpdateVelocity();
+
+                    return new E6POS(
+                        X.GetNextValue(),
+                        Y.GetNextValue(),
+                        Z.GetNextValue(),
+                        A.GetNextValue(),
+                        B.GetNextValue(),
+                        C.GetNextValue()
+                    );
+                } else {
+                    // zwroc 0, reset
+                    targetPositionReached = true;
+                    totalTime2Dest = 0.0;
+                    ResetVelocity();
+                    return new E6POS();
+                }
+            }
+        }
+
+        private void UpdateCoefficients(E6POS currentPosition, E6POS targetPosition, double time2Dest, double targetZLevel = 0.0) {
             // guessing targetVelocity == 0.0
             X.UpdateCoefficients(currentPosition.X, targetPosition.X, 0.0, time2Dest);
             Y.UpdateCoefficients(currentPosition.Y, targetPosition.Y, 0.0, time2Dest);
-            Z.UpdateCoefficients(currentPosition.Z, targetPosition.Z, 0.0, time2Dest);
+            Z.UpdateCoefficients(currentPosition.Z, targetPosition.Z, targetZLevel, time2Dest);
 
            /* Vector<double> currentABC = currentPosition.ABC;
             Vector<double> targetABC = targetPosition.ABC;

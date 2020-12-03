@@ -62,8 +62,10 @@ namespace PingPong.Applications {
                     var prediction = CalculatePrediction();
                     var predPosition = new E6POS(prediction.predX, prediction.predY, Zlevel, robot.Position.ABC);
 
-                    if (robot.Limits.WorkspaceLimits.CheckPosition(predPosition)) {
-                        robot.MoveTo(predPosition, prediction.timeLeft * 1);
+                    double t = prediction.timeLeft * 0.9 * Math.Exp(1 - tx / (prediction.timeLeft + tx));
+
+                    if (robot.Limits.WorkspaceLimits.CheckPosition(predPosition) && t > 0.0) {
+                        robot.MoveTo(predPosition, t);
                     }
                 }
 
