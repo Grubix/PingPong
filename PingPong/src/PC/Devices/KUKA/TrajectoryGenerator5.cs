@@ -8,7 +8,7 @@ namespace PingPong.KUKA {
 
             private double k0, k1, k2, k3, k4, k5; // Polynominal coefficients
 
-            private double Xn, Vn, An; // Next value, velocity and next acceleration
+            private double Vn, An; // Next value, velocity and next acceleration
 
             /// <summary>
             /// Current velocity
@@ -43,11 +43,11 @@ namespace PingPong.KUKA {
                 double t4 = t1 * t3;
                 double t5 = t1 * t4;
 
-                Xn = k5 * t5 + k4 * t4 + k3 * t3 + k2 * t2 + k1 * t1 + k0;
+                double nextValue = k5 * t5 + k4 * t4 + k3 * t3 + k2 * t2 + k1 * t1 + k0;
                 Vn = 5.0 * k5 * t4 + 4.0 * k4 * t3 + 3.0 * k3 * t2 + 2.0 * k2 * t1 + k1;
                 An = 20.0 * k5 * t3 + 12.0 * k4 * t2 + 6.0 * k3 * t1 + 2.0 * k2;
 
-                return Xn;
+                return nextValue;
             }
 
             public void Reset() {
@@ -117,8 +117,8 @@ namespace PingPong.KUKA {
 
         //TODO: wektor predkosci koncowej
         public void SetTargetPosition(E6POS targetPosition, double targetDuration) {
-            if (targetDuration < Ts) {
-                throw new ArgumentException($"Duration value must be equal or greater than {Ts}s, get {targetDuration}");
+            if (targetDuration <= 0.0) {
+                throw new ArgumentException($"Duration value must be greater than 0, get {targetDuration}");
             }
 
             bool targetPositionChanged = !targetPosition.Compare(this.targetPosition, 0.1, 1);

@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace PingPong.KUKA {
-    class Limits {
+    public class RobotLimits {
 
         public WorkspaceLimits WorkspaceLimits { get; }
 
@@ -11,11 +11,11 @@ namespace PingPong.KUKA {
 
         public (double XYZ, double ABC) MaxVelocity { get; }
 
-        public Limits(WorkspaceLimits workspaceLimits, AxisLimits axisLimits, double maxXYZCorrection, double maxABCCorrection) {
+        public RobotLimits(WorkspaceLimits workspaceLimits, AxisLimits axisLimits, (double XYZ, double ABC) maxCorrection) {
             WorkspaceLimits = workspaceLimits;
             AxisLimits = axisLimits;
-            MaxCorrection = (maxXYZCorrection, maxABCCorrection);
-            MaxVelocity = (maxXYZCorrection / 0.004, maxABCCorrection / 0.004);
+            MaxCorrection = maxCorrection;
+            MaxVelocity = (maxCorrection.XYZ / 0.004, maxCorrection.ABC / 0.004);
         }
 
         public bool CheckPosition(E6POS position) {

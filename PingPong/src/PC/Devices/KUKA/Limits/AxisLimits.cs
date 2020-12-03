@@ -1,5 +1,5 @@
 ﻿namespace PingPong.KUKA {
-    class AxisLimits {
+    public class AxisLimits {
 
         public (double Min, double Max) A1 { get; }
 
@@ -16,19 +16,19 @@
         public double MaxVelocity { get; }
 
         public AxisLimits(
-            (double Min, double max) limitA1, 
-            (double Min, double max) limitA2, 
-            (double Min, double max) limitA3,
-            (double Min, double max) limitA4, 
-            (double Min, double max) limitA5, 
-            (double Min, double max) limitA6
+            (double Min, double Max) A1, 
+            (double Min, double Max) A2, 
+            (double Min, double Max) A3,
+            (double Min, double Max) A4, 
+            (double Min, double Max) A5, 
+            (double Min, double Max) A6
         ) {
-            A1 = limitA1;
-            A2 = limitA2;
-            A3 = limitA3;
-            A4 = limitA4;
-            A5 = limitA5;
-            A6 = limitA6;
+            this.A1 = A1;
+            this.A2 = A2;
+            this.A3 = A3;
+            this.A4 = A4;
+            this.A5 = A5;
+            this.A6 = A6;
         }
 
         public bool CheckAxisPosition(E6AXIS axisPosition) {

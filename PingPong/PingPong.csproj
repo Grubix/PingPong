@@ -85,7 +85,7 @@
     <Compile Include="src\PC\Commands\HelpCommand.cs" />
     <Compile Include="src\PC\Commands\MoveCommand.cs" />
     <Compile Include="src\PC\Devices\KUKA\Limits\AxisLimits.cs" />
-    <Compile Include="src\PC\Devices\KUKA\Limits\Limits.cs" />
+    <Compile Include="src\PC\Devices\KUKA\Limits\RobotLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\Limits\WorkspaceLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5.cs" />
     <Compile Include="src\PC\Views\CommandLineWindow.cs">
@@ -104,7 +104,6 @@
     <Compile Include="src\PC\Maths\Algebra\SVD3.cs" />
     <Compile Include="src\PC\Maths\Algebra\Vector3.cs" />
     <Compile Include="src\PC\Devices\KUKA\E6AXIS.cs" />
-    <Compile Include="src\PC\Devices\OptiTrack\BallData.cs" />
     <Compile Include="src\PC\Views\CalibrationWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,7 +118,6 @@
     </Compile>
     <Compile Include="src\PC\Maths\Algebra\Transformation.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator.cs" />
-    <Compile Include="src\PC\Devices\KUKA\RobotLimits.cs" />
     <Compile Include="src\PC\Devices\OptiTrack\InputFrame.cs" />
     <Compile Include="src\PC\Views\ThreadSafeChart.cs">
       <SubType>UserControl</SubType>
@@ -186,6 +184,7 @@
     <None Include="src\Docs\Trajectory_Planning_for_Automatic_Machines_and_Robots.pdf" />
     <None Include="src\Kuka\RSI_Ethernet.rsix" />
     <None Include="src\Kuka\RSI_Ethernet.src" />
+    <None Include="src\PC\robot1.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

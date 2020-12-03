@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using PingPong.Maths;
 using System;
 using System.ComponentModel;
 using System.Threading;
@@ -89,6 +90,11 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
+        /// Transformation from OptiTrack coordinate system to this robot coordinate system
+        /// </summary>
+        public Transformation OptiTrackTransformation { get; set; }
+
+        /// <summary>
         /// Occurs when the robot is initialized (connection has been established)
         /// </summary>
         public event Action Initialized;
@@ -151,6 +157,8 @@ namespace PingPong.KUKA {
         private async Task ReceiveDataAsync() {
             InputFrame receivedFrame = await rsiAdapter.ReceiveDataAsync();
 
+            //TODO: ewentualnie sprawdzenie predkosci a1 - a6
+
             lock (receivedDataSyncLock) {
                 IPOC = receivedFrame.IPOC;
                 position = receivedFrame.Position;
@@ -159,12 +167,14 @@ namespace PingPong.KUKA {
 
             if (!Limits.CheckAxisPosition(axisPosition)) {
                 Uninitialize();
-                throw new InvalidOperationException($"Axis position limit has been exceeded:{Environment.NewLine}{axisPosition}");
+                throw new InvalidOperationException($"Axis position limit has been exceeded:" +
+                    $"{Environment.NewLine}{axisPosition}");
             }
 
             if (!Limits.CheckPosition(position)) {
                 Uninitialize();
-                throw new InvalidOperationException($"Available workspace limit has been exceeded:{Environment.NewLine}{position}");
+                throw new InvalidOperationException($"Available workspace limit has been exceeded:" +
+                    $"{Environment.NewLine}{position}");
             }
 
             FrameReceived?.Invoke(receivedFrame);
@@ -184,7 +194,8 @@ namespace PingPong.KUKA {
 
             if (!Limits.CheckCorrection(correction)) {
                 Uninitialize();
-                throw new InvalidOperationException($"Correction limit has been exceeded:{Environment.NewLine}{correction}");
+                throw new InvalidOperationException($"Correction limit has been exceeded:" +
+                    $"{Environment.NewLine}{correction}");
             }
 
             OutputFrame outputFrame = new OutputFrame() {
@@ -207,7 +218,8 @@ namespace PingPong.KUKA {
             }
 
             if (!Limits.CheckPosition(targetPosition)) {
-                throw new ArgumentException($"Target position is outside the available workspace:{Environment.NewLine}{targetPosition}");
+                throw new ArgumentException($"Target position is outside the available workspace:" +
+                    $"{Environment.NewLine}{targetPosition}");
             }
 
             lock (forceMoveSyncLock) {

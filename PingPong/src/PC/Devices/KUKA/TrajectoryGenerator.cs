@@ -75,8 +75,8 @@ namespace PingPong.KUKA {
         }
 
         public void SetTargetPosition(E6POS targetPosition, double time) {
-            if (time < 0.004) {
-                throw new ArgumentException($"Duration value must be equal or greater than 0.004s, get {time}");
+            if (time <= 0.0) {
+                throw new ArgumentException($"Duration value must be greater than 0, get {time}");
             }
 
             if (totalTime2Dest != time || !targetPosition.Compare(this.targetPosition, 0.1, 1)) {

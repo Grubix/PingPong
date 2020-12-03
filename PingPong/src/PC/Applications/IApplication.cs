@@ -3,7 +3,7 @@
 namespace PingPong.Applications {
     interface IApplication {
 
-        void ProcessData(BallData ballData);
+        void ProcessData(InputFrame data);
 
     }
 }

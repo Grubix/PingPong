@@ -126,8 +126,8 @@ namespace PingPong.Views {
             private void CalculateCalibrationPoints(KUKARobot robot, int pointsPerLine) {
                 calibrationPoints.Clear();
 
-                (double x0, double y0, double z0) = robot.Limits.LowerWorkspaceLimit;
-                (double x1, double y1, double z1) = robot.Limits.UpperWorkspaceLimit;
+                (double x0, double y0, double z0) = robot.Limits.WorkspaceLimits.LowerLimit;
+                (double x1, double y1, double z1) = robot.Limits.WorkspaceLimits.UpperLimit;
 
                 // Shrink workspace by 5mm
                 x0 += x1 > x0 ? 5.0 : -5.0;
@@ -150,18 +150,18 @@ namespace PingPong.Views {
                 var points = new[] { p0, p5, p3, p6, p0, p4, p1, p7, p2, p4 };
 
                 for (int i = 0; i < points.Length - 1; i++) {
-                    var startPoint = points[i];
-                    var endPoint = points[i + 1];
+                    (double px0, double py0, double pz0) = points[i];
+                    (double px1, double py1, double pz1) = points[i + 1];
 
-                    var deltaX = (endPoint.x - startPoint.x) / (pointsPerLine + 1);
-                    var deltaY = (endPoint.y - startPoint.y) / (pointsPerLine + 1);
-                    var deltaZ = (endPoint.z - startPoint.z) / (pointsPerLine + 1);
+                    var deltaX = (px1 - px0) / (pointsPerLine + 1);
+                    var deltaY = (py1 - py0) / (pointsPerLine + 1);
+                    var deltaZ = (pz1 - pz0) / (pointsPerLine + 1);
 
                     for (int j = 0; j < pointsPerLine + 1; j++) {
                         calibrationPoints.Add(Vector<double>.Build.DenseOfArray(new double[] {
-                            startPoint.x + deltaX * j,
-                            startPoint.y + deltaY * j,
-                            startPoint.z + deltaZ * j
+                            px0 + deltaX * j,
+                            py0 + deltaY * j,
+                            pz0 + deltaZ * j
                         }));
                     }
                 }
@@ -175,7 +175,7 @@ namespace PingPong.Views {
 
         private KUKARobot selectedRobot;
 
-        public CalibrationWindow(OptiTrackSystem optiTrack, BallData ballData, KUKARobot robot1, KUKARobot robot2) {
+        public CalibrationWindow(OptiTrackSystem optiTrack, KUKARobot robot1, KUKARobot robot2) {
             calibrationTool = new CalibrationTool(optiTrack);
 
             InitializeComponent();
@@ -238,7 +238,7 @@ namespace PingPong.Views {
                 });
             };
             calibrationTool.ProgressChanged += (progress, transformation) => {
-                ballData.SetTransformation(selectedRobot, transformation);
+                selectedRobot.OptiTrackTransformation = transformation;
                 UpdateUI(() => {
                     Text = $"{title} ({progress}%)";
                     progressBar.Value = progress;
@@ -264,7 +264,7 @@ namespace PingPong.Views {
                 });
             };
             calibrationTool.Completed += (transformation) => {
-                ballData.SetTransformation(selectedRobot, transformation);
+                selectedRobot.OptiTrackTransformation = transformation;
                 UpdateUI(() => {
                     robotSelect.Enabled = true;
                     startBtn.Enabled = true;
