@@ -26,9 +26,10 @@ namespace PingPong.Views {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            //optiTrack = InitializeOptiTrackSystem();
+            optiTrack = InitializeOptiTrackSystem();
             application = new Ping(robot1, chart1);
 
+            // Ping
             robot1.Initialized += () => {
                 optiTrack.FrameReceived += frame => {
                     application.ProcessData(frame);
@@ -60,7 +61,7 @@ namespace PingPong.Views {
             //    var zCoeffs = polyfitZ.CalculateCoefficients();
             //    double[] roots = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - Z);
             //    double T = 0;
-                
+
             //    if (roots.Length == 1) {
             //        T = roots[0];
             //    } else if (roots.Length == 2) {
@@ -113,7 +114,7 @@ namespace PingPong.Views {
             //            polyfitZ.yValues.RemoveRange(maxPoints / 2, maxPoints / 2);
             //        } else if (samples % sampleOffset == 0) { }
             //            //TODO: ogarnąc czas, ewentualnie uzyc stopwatcha
-                    
+
             //        polyfitX.AddPoint(tx, ballX);
             //        polyfitY.AddPoint(tx, ballY);
             //        polyfitZ.AddPoint(tx, ballZ);
@@ -130,7 +131,7 @@ namespace PingPong.Views {
             //        samples++;
             //        tx += 0.00416;
             //    }
-                
+
             //};
         }
 
@@ -170,7 +171,7 @@ namespace PingPong.Views {
         private KUKARobot InitializeRobot1() {
             WorkspaceLimits workspaceLimits = new WorkspaceLimits(
                 X: (-450, 450),
-                Y: (700, 1000),
+                Y: (700, 1100),
                 Z: (250, 600)
             );
 
@@ -186,7 +187,7 @@ namespace PingPong.Views {
             RobotLimits limits = new RobotLimits(
                 workspaceLimits, 
                 axisLimits, 
-                (0.5, 0.05)
+                (2, 0.05)
             );
 
             KUKARobot robot1 = new KUKARobot(8081, limits);
@@ -244,5 +245,8 @@ namespace PingPong.Views {
             updateAction.Invoke();
         }
 
+        private void chart1_Click(object sender, EventArgs e) {
+
+        }
     }
 }

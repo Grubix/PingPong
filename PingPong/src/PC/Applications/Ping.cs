@@ -3,12 +3,13 @@ using PingPong.KUKA;
 using PingPong.Maths;
 using PingPong.Maths.Solver;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PingPong.Applications {
     class Ping : IApplication {
 
-        private const double Zlevel = 300;
+        private const double Zlevel = 283.81;
 
         private readonly KUKARobot robot;
 
@@ -20,9 +21,19 @@ namespace PingPong.Applications {
 
         private Polyfit2 polyfitZ = new Polyfit2(2);
 
+        private bool parabolaDrawn = false;
+
+        private bool spat = false;
+
+        private double T;
+
         private readonly Chart chart;
 
         private double tx;
+
+        private int sample;
+
+        private List<double> xCoeffs, yCoeffs, zCoeffs;
 
         public Ping(KUKARobot robot, Chart chart) {
             this.robot = robot;
@@ -30,13 +41,32 @@ namespace PingPong.Applications {
         }
 
         public void ProcessData(OptiTrack.InputFrame data) {
-            var position = data.Position;
-
+            var position = robot.OptiTrackTransformation.Convert(data.Position);
             double ballX = position[0];
             double ballY = position[1];
             double ballZ = position[2];
 
-            if (ballZ > 250 && ballX != 0.0 && ballY != 0.0 && ballZ != 0.0) {
+            if (ballZ < 0 && ballZ != 148.319) {
+                spat = true;
+
+                if (parabolaDrawn) {
+                    return;
+                }
+
+                parabolaDrawn = true;
+                //UpdateUI(() => {
+                //    for (int i = 0; i < polyfitZ.PointCount; i++) {
+                //        chart.Series[0].Points.AddXY(polyfitZ.xValues[i], polyfitZ.yValues[i]);
+                //    }
+
+                //    //for (double t = 0; t < T; t += 0.1) {
+                //    //    double z = zCoeffs[2] * t * t + zCoeffs[1] * t + zCoeffs[0];
+                //    //    chart.Series[1].Points.AddXY(t, z);
+                //    //}
+                //});
+            }
+
+            if (!spat && ballZ > 250 && ballX < 1300 && ballX != 791.016 && ballY != 743.144 && ballZ != 148.319) {
                 if (polyfitZ.PointCount == maxPoints) {
                     for (int i = 0; i < maxPoints / 2; i++) {
                         polyfitX.xValues[i] = polyfitX.xValues[2 * i];
@@ -58,12 +88,20 @@ namespace PingPong.Applications {
                 polyfitY.AddPoint(tx, ballY);
                 polyfitZ.AddPoint(tx, ballZ);
 
-                if (polyfitX.xValues.Count > 5) {
+                if (polyfitX.xValues.Count > 50) {
                     var prediction = CalculatePrediction();
                     var predPosition = new E6POS(prediction.predX, prediction.predY, Zlevel, robot.Position.ABC);
+                    double k = Math.Max(2 * Math.Exp(1 - 1.5 * tx / (prediction.timeLeft + tx)), 1.0);
 
-                    double t = prediction.timeLeft * 0.9 * Math.Exp(1 - tx / (prediction.timeLeft + tx));
+                    double t = prediction.timeLeft * k;
 
+                    //Console.WriteLine($"t={t}, {predPosition}");
+                    //UpdateUI(() => {
+                    //    chart.Series[0].Points.AddXY(sample++ , k);
+                    //});
+                    UpdateUI(() => {
+                        chart.Series[0].Points.AddXY(sample++, t);
+                    });
                     if (robot.Limits.WorkspaceLimits.CheckPosition(predPosition) && t > 0.0) {
                         robot.MoveTo(predPosition, t);
                     }
@@ -74,11 +112,11 @@ namespace PingPong.Applications {
         }
 
         (double predX, double predY, double timeLeft) CalculatePrediction() {
-            var xCoeffs = polyfitX.CalculateCoefficients();
-            var yCoeffs = polyfitY.CalculateCoefficients();
-            var zCoeffs = polyfitZ.CalculateCoefficients();
+            xCoeffs = polyfitX.CalculateCoefficients();
+            yCoeffs = polyfitY.CalculateCoefficients();
+            zCoeffs = polyfitZ.CalculateCoefficients();
             double[] roots = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - Zlevel);
-            double T = 0;
+            T = 0;
 
             if (roots.Length == 1) {
                 T = roots[0];
@@ -90,8 +128,22 @@ namespace PingPong.Applications {
             double predY = yCoeffs[1] * T + yCoeffs[0];
             double timeLeft = T - tx;
 
-            Console.WriteLine($"T={timeLeft}, xpred={xCoeffs[1] * T + xCoeffs[0]}, ypred={yCoeffs[1] * T + yCoeffs[0]}");
+            
+
             return (predX, predY, timeLeft);
+        }
+
+        private void UpdateUI(Action updateAction) {
+            if (chart.InvokeRequired) {
+                Action actionWrapper = () => {
+                    updateAction.Invoke();
+                };
+
+                chart.Invoke(actionWrapper);
+                return;
+            }
+
+            updateAction.Invoke();
         }
 
     }

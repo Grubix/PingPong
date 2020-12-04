@@ -17,7 +17,7 @@ namespace PingPong.KUKA {
 
         private readonly RSIAdapter rsiAdapter;
 
-        private TrajectoryGenerator generator;
+        private TrajectoryGenerator5 generator;
 
         private bool isInitialized = false;
 
@@ -122,7 +122,7 @@ namespace PingPong.KUKA {
             worker.DoWork += async (sender, args) => {
                 // Connect with the robot
                 InputFrame receivedFrame = await rsiAdapter.Connect();
-                generator = new TrajectoryGenerator(receivedFrame.Position);
+                generator = new TrajectoryGenerator5(receivedFrame.Position);
 
                 lock (receivedDataSyncLock) {
                     IPOC = receivedFrame.IPOC;
@@ -190,7 +190,11 @@ namespace PingPong.KUKA {
                 correction = generator.GetNextCorrection(position);
             }
 
-            correction = new E6POS(correction.X, correction.Y, correction.Z, 0, correction.B, correction.C);
+            //correction = new E6POS(correction.X, correction.Y, correction.Z, 0, correction.B, correction.C);
+            correction = new E6POS(correction.X, correction.Y, correction.Z, 0, 0, 0);
+
+
+            Console.WriteLine(correction);
 
             if (!Limits.CheckCorrection(correction)) {
                 Uninitialize();
