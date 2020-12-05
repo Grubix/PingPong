@@ -100,6 +100,14 @@ namespace PingPong.KUKA {
             }
         }
 
+        public E6POS TargetPosition {
+           get {
+                lock (syncLock) {
+                    return targetPosition;
+                }
+            }
+        }
+
         public bool TargetPositionReached { 
             get {
                 lock (syncLock) {

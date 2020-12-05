@@ -60,6 +60,15 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
+        /// Robot target position
+        /// </summary>
+        public E6POS TargetPosition {
+            get {
+                return generator.TargetPosition;
+            }
+        }
+
+        /// <summary>
         /// Robot current axis position
         /// </summary>
         public E6AXIS AxisPosition {
