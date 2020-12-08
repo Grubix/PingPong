@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -9,12 +10,14 @@ namespace PingPong.Views {
             InitializeComponent();
 
             plotBtn.Click += (s, e) => Plot();
+            Plot();
         }
 
         private void Plot() {
             chart.Series[0].Points.Clear();
             chart.Series[1].Points.Clear();
             chart.Series[2].Points.Clear();
+            chart.Series[3].Points.Clear();
             chart.Annotations.Clear();
 
             double z0 = double.Parse(textz0.Text);
@@ -48,7 +51,15 @@ namespace PingPong.Views {
             double i4 = coeffs2[4];
             double i5 = coeffs2[5];
 
+            double v0p = (z1 - z0 + 9.81 * T1 * T1 / 2.0) / T1; // predkosc poczatkowa pileczki (dobrana tak zeby z(T1) = z1)
+            double v1p_1 = v0p - 9.81 * T1; // predkosc pileczki zaraz przed zderzeniem
+            double v1p_2 = 0.8 * (v1 - v1p_1) + v1; // predkosc pileczki zaraz po zderzeniu
+
+            double vxx = v1 * 1.8;
+
             for (double t = 0.0; t <= T1; t += 0.01) {
+                t = Math.Round(t * 1000) / 1000;
+
                 double t1 = t;
                 double t2 = t1 * t1;
                 double t3 = t1 * t2;
@@ -58,13 +69,17 @@ namespace PingPong.Views {
                 double x = k5 * t5 + k4 * t4 + k3 * t3 + k2 * t2 + k1 * t1 + k0;
                 double v = 5.0 * k5 * t4 + 4.0 * k4 * t3 + 3.0 * k3 * t2 + 2.0 * k2 * t1 + k1;
                 double a = 20.0 * k5 * t3 + 12.0 * k4 * t2 + 6.0 * k3 * t1 + 2.0 * k2;
+                double zp = z0 + v0p * t1 - 9.81 * t1 * t1 / 2.0;
 
                 chart.Series[0].Points.AddXY(t1, x);
                 chart.Series[1].Points.AddXY(t1, v);
                 //chart.Series[2].Points.AddXY(t1, a);
+                chart.Series[3].Points.AddXY(t1, zp);
             }
 
             for (double t = 0.0; t <= T2; t += 0.01) {
+                t = Math.Round(t * 1000) / 1000;
+
                 double t1 = t;
                 double t2 = t1 * t1;
                 double t3 = t1 * t2;
@@ -74,18 +89,24 @@ namespace PingPong.Views {
                 double x = i5 * t5 + i4 * t4 + i3 * t3 + i2 * t2 + i1 * t1 + i0;
                 double v = 5.0 * i5 * t4 + 4.0 * i4 * t3 + 3.0 * i3 * t2 + 2.0 * i2 * t1 + i1;
                 double a = 20.0 * i5 * t3 + 12.0 * i4 * t2 + 6.0 * i3 * t1 + 2.0 * i2;
+                double zp = z1 + v1p_2 * t1 - 9.81 * t1 * t1 / 2.0;
+
+                double zxx = z0 + vxx * t1 - t1 * t1 * 9.81 / 2.0; 
 
                 chart.Series[0].Points.AddXY(t1 + T1, x);
                 chart.Series[1].Points.AddXY(t1 + T1, v);
-                //chart1.Series[2].Points.AddXY(t1 + T1, a);
+                //chart.Series[2].Points.AddXY(t1 + T1, zxx);
+                chart.Series[3].Points.AddXY(t1 + T1, zp);
             }
 
-            VerticalLineAnnotation ann = new VerticalLineAnnotation();
-            ann.X = T1;
-            ann.AxisX = chart.ChartAreas[0].AxisX;
-            ann.IsInfinitive = true;
-            ann.LineColor = Color.Red;
-            ann.LineDashStyle = ChartDashStyle.DashDot;
+            VerticalLineAnnotation ann = new VerticalLineAnnotation {
+                X = T1,
+                AxisX = chart.ChartAreas[0].AxisX,
+                IsInfinitive = true,
+                LineColor = Color.Green,
+                LineDashStyle = ChartDashStyle.DashDot,
+                LineWidth = 2
+            };
 
             chart.Annotations.Add(ann);
         }

@@ -1,5 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using PingPong.Maths;
+﻿using PingPong.Maths;
 using System;
 using System.ComponentModel;
 using System.Threading;
@@ -25,12 +24,12 @@ namespace PingPong.KUKA {
 
         private long IPOC;
 
-        private E6POS position;
+        private RobotVector position;
 
-        private E6AXIS axisPosition;
+        private AxisPosition axisPosition;
 
         /// <summary>
-        /// Robot Ip adress (RSI interface)
+        /// Robot Ip adress (Robot Sensor Interface - RSI)
         /// </summary>
         public string Ip {
             get {
@@ -46,12 +45,12 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Robot home position
         /// </summary>
-        public E6POS HomePosition { get; private set; }
+        public RobotVector HomePosition { get; private set; }
 
         /// <summary>
         /// Robot current position
         /// </summary>
-        public E6POS Position {
+        public RobotVector Position {
             get {
                 lock (receivedDataSyncLock) {
                     return position;
@@ -60,18 +59,9 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Robot target position
-        /// </summary>
-        public E6POS TargetPosition {
-            get {
-                return generator.TargetPosition;
-            }
-        }
-
-        /// <summary>
         /// Robot current axis position
         /// </summary>
-        public E6AXIS AxisPosition {
+        public AxisPosition AxisPosition {
             get {
                 lock (receivedDataSyncLock) {
                     return axisPosition;
@@ -80,21 +70,38 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Robot current velocity
+        /// Robot (theoretical) current velocity
         /// </summary>
-        public Vector<double> Velocity {
+        public RobotVector Velocity {
             get {
                 return generator.Velocity;
             }
         }
 
         /// <summary>
-        /// Robot current acceleration
+        /// Robot (theoretical) current acceleration
         /// </summary>
-        public Vector<double> Acceleration {
+        public RobotVector Acceleration {
             get {
-                //return generator.Acceleration;
-                return null;
+                return generator.Acceleration;
+            }
+        }
+
+        /// <summary>
+        /// Robot current target position
+        /// </summary>
+        public RobotVector TargetPosition {
+            get {
+                return generator.TargetPosition;
+            }
+        }
+
+        /// <summary>
+        /// Flag that indicates if robot reached target position
+        /// </summary>
+        public bool IsTargetPositionReached {
+            get {
+                return generator.TargetPositionReached;
             }
         }
 
@@ -141,7 +148,7 @@ namespace PingPong.KUKA {
 
                 // Send first response (prevent connection timeout)
                 rsiAdapter.SendData(new OutputFrame() {
-                    Correction = new E6POS(),
+                    Correction = new RobotVector(),
                     IPOC = IPOC
                 });
 
@@ -193,14 +200,14 @@ namespace PingPong.KUKA {
         /// Sends data (IPOC, correction) to the robot, raises <see cref="KUKARobot.FrameSent">FrameSent</see> event
         /// </summary>
         private void SendData() {
-            E6POS correction;
+            RobotVector correction;
 
             lock (forceMoveSyncLock) {
                 correction = generator.GetNextCorrection(position);
             }
 
             //correction = new E6POS(correction.X, correction.Y, correction.Z, 0, correction.B, correction.C);
-            correction = new E6POS(correction.X, correction.Y, correction.Z, 0, 0, 0);
+            correction = new RobotVector(correction.X, correction.Y, correction.Z, 0, 0, 0);
 
 
             Console.WriteLine(correction);
@@ -221,11 +228,12 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Moves the robot to specified position (Sets target position).
+        /// Moves robot to specified position (sets target position).
         /// </summary>
         /// <param name="targetPosition">target position</param>
+        /// <param name="targetVelocity">target velocity (velocity after targetDuration)</param>
         /// <param name="targetDuration">desired movement duration in seconds</param>
-        public void MoveTo(E6POS targetPosition, double targetDuration) {
+        public void MoveTo(RobotVector targetPosition, RobotVector targetVelocity, double targetDuration) {
             if (!isInitialized) {
                 throw new InvalidOperationException("Robot is not initialized");
             }
@@ -235,37 +243,31 @@ namespace PingPong.KUKA {
                     $"{Environment.NewLine}{targetPosition}");
             }
 
+            if (!Limits.CheckVelocity(targetVelocity)) {
+                throw new ArgumentException($"target velocity exceeding max value " +
+                    $"({Limits.MaxVelocity.XYZ} mm/s, {Limits.MaxVelocity.ABC} deg/s):" +
+                    $"{Environment.NewLine}{targetVelocity}");
+            }
+
             lock (forceMoveSyncLock) {
                 if (forceMoveMode) {
                     return;
                 }
             }
 
-            generator.SetTargetPosition(targetPosition, targetDuration);
+            generator.SetTargetPosition(targetPosition, targetVelocity, targetDuration);
         }
 
         /// <summary>
-        /// Shifts robot by the specified delta position.
-        /// </summary>
-        /// <param name="deltaPosition">desired position change</param>
-        /// <param name="targetDuration">desired movement duration in seconds</param>
-        public void Shift(E6POS deltaPosition, double targetDuration) {
-            MoveTo(Position + deltaPosition, targetDuration);
-        }
-
-        /// <summary>
-        /// Moves robot to the specified position and blocks current thread until position is reached.
+        /// Moves robot to the specified position and blocks current thread until position is reached
         /// Enables force move mode during the movement.
         /// </summary>
         /// <param name="targetPosition">target position</param>
+        /// <param name="targetVelocity">target velocity (velocity after targetDuration)</param>
         /// <param name="targetDuration">desired movement duration in seconds</param>
-        /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
-        /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
-        public void ForceMoveTo(E6POS targetPosition, double targetDuration) {
-            Console.WriteLine(targetPosition);
-            MoveTo(targetPosition, targetDuration);
+        public void ForceMoveTo(RobotVector targetPosition, RobotVector targetVelocity, double targetDuration) {
+            MoveTo(targetPosition, targetVelocity, targetDuration);
 
-            
             lock (forceMoveSyncLock) {
                 forceMoveMode = true;
             }
@@ -285,7 +287,16 @@ namespace PingPong.KUKA {
             lock (forceMoveSyncLock) {
                 forceMoveMode = false;
             }
-            
+        }
+
+        /// <summary>
+        /// Shifts robot by the specified delta position
+        /// </summary>
+        /// <param name="deltaPosition">desired position change</param>
+        /// <param name="targetVelocity">target velocity (velocity after targetDuration)</param>
+        /// <param name="targetDuration">desired movement duration in seconds</param>
+        public void Shift(RobotVector deltaPosition, RobotVector targetVelocity, double targetDuration) {
+            MoveTo(Position + deltaPosition, targetVelocity, targetDuration);
         }
 
         /// <summary>
@@ -293,11 +304,10 @@ namespace PingPong.KUKA {
         /// Enables force move mode during the movement.
         /// </summary>
         /// <param name="deltaPosition">desired position change</param>
+        /// <param name="targetVelocity">target velocity (velocity after targetDuration)</param>
         /// <param name="targetDuration">desired movement duration in seconds</param>
-        /// <param name="xyzTolerance">maximum absolute XYZ error between the target and current position</param>
-        /// <param name="abcTolerance">maximum absolute ABC error between the target and current position</param>
-        public void ForceShift(E6POS deltaPosition, double targetDuration) {
-            ForceMoveTo(Position + deltaPosition, targetDuration);
+        public void ForceShift(RobotVector deltaPosition, RobotVector targetVelocity, double targetDuration) {
+            ForceMoveTo(Position + deltaPosition, targetVelocity, targetDuration);
         }
 
         public void Initialize() {

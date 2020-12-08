@@ -80,12 +80,12 @@ namespace PingPong.Views {
                     posB.Points.AddXY(totalSamples, position.B);
                     posC.Points.AddXY(totalSamples, position.C);
 
-                    velX.Points.AddXY(totalSamples, velocity[0]);
-                    velY.Points.AddXY(totalSamples, velocity[1]);
-                    velZ.Points.AddXY(totalSamples, velocity[2]);
-                    velA.Points.AddXY(totalSamples, velocity[3]);
-                    velB.Points.AddXY(totalSamples, velocity[4]);
-                    velC.Points.AddXY(totalSamples, velocity[5]);
+                    velX.Points.AddXY(totalSamples, velocity.X);
+                    velY.Points.AddXY(totalSamples, velocity.Y);
+                    velZ.Points.AddXY(totalSamples, velocity.Z);
+                    velA.Points.AddXY(totalSamples, velocity.A);
+                    velB.Points.AddXY(totalSamples, velocity.B);
+                    velC.Points.AddXY(totalSamples, velocity.C);
 
                     posXText.Text = position.X.ToString("F3");
                     posYText.Text = position.Y.ToString("F3");
@@ -94,12 +94,12 @@ namespace PingPong.Views {
                     posBText.Text = position.B.ToString("F3");
                     posCText.Text = position.C.ToString("F3");
 
-                    velXText.Text = velocity[0].ToString("F3");
-                    velYText.Text = velocity[1].ToString("F3");
-                    velZText.Text = velocity[2].ToString("F3");
-                    velAText.Text = velocity[3].ToString("F3");
-                    velBText.Text = velocity[4].ToString("F3");
-                    velCText.Text = velocity[5].ToString("F3");
+                    velXText.Text = velocity.X.ToString("F3");
+                    velYText.Text = velocity.Y.ToString("F3");
+                    velZText.Text = velocity.Z.ToString("F3");
+                    velAText.Text = velocity.A.ToString("F3");
+                    velBText.Text = velocity.B.ToString("F3");
+                    velCText.Text = velocity.C.ToString("F3");
                 });
             };
         }

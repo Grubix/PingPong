@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace PingPong.Maths.Solver {
@@ -30,17 +29,17 @@ namespace PingPong.Maths.Solver {
         }
 
         public static double[] SolveReal(double a, double b, double c) {
-            Complex[] roots = Solve(a, b, c);
-            var realRoots = new List<double>();
+            double delta = b * b - 4 * a * c;
 
-            foreach (var root in roots) {
-                if (root.Imaginary == 0.0) {
-                    realRoots.Add(root.Real);
-                }
+            if (delta < 0) {
+                return new double[] { };
             }
 
-            realRoots.Sort();
-            return realRoots.ToArray();
+            double deltaSqrt = Math.Sqrt(delta);
+            double x1 = (-b + deltaSqrt) / (2.0 * a);
+            double x2 = (-b - deltaSqrt) / (2.0 * a);
+            
+            return new double[] { x1, x2 };
         }
 
     }

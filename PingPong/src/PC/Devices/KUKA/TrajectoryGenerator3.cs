@@ -2,7 +2,7 @@
 using System;
 
 namespace PingPong.KUKA {
-    public class TrajectoryGenerator {
+    public class TrajectoryGenerator3 {
 
         private class Parameter {
 
@@ -58,7 +58,7 @@ namespace PingPong.KUKA {
         private readonly double period = 0.004;
         private double time2Dest = 0.0;
         private double totalTime2Dest = 0.0;
-        private E6POS targetPosition;
+        private RobotVector targetPosition;
 
         private bool targetPositionReached = true;
 
@@ -70,18 +70,18 @@ namespace PingPong.KUKA {
             }
         }
 
-        public TrajectoryGenerator(E6POS currentPosition) {
+        public TrajectoryGenerator3(RobotVector currentPosition) {
             targetPosition = currentPosition;
         }
 
-        public void SetTargetPosition(E6POS targetPosition, double time) {
+        public void SetTargetPosition(RobotVector targetPosition, double time) {
             if (time <= 0.0) {
                 throw new ArgumentException($"Duration value must be greater than 0, get {time}");
             }
 
             if (totalTime2Dest != time || !targetPosition.Compare(this.targetPosition, 0.1, 1)) {
                 lock (syncLock) {
-                    this.targetPosition = targetPosition.Clone() as E6POS;
+                    this.targetPosition = targetPosition.Clone() as RobotVector;
                     totalTime2Dest = time;
                     time2Dest = time;
                     targetPositionReached = false;
@@ -89,7 +89,7 @@ namespace PingPong.KUKA {
             }
         }
 
-        public E6POS GetNextCorrection(E6POS currentPosition) {
+        public RobotVector GetNextCorrection(RobotVector currentPosition) {
             lock (syncLock) {
                 if (time2Dest >= 0.004) {
                     UpdateCoefficients(currentPosition, targetPosition, time2Dest);
@@ -97,7 +97,7 @@ namespace PingPong.KUKA {
                     time2Dest -= period;
                     UpdateVelocity();
 
-                    return new E6POS(
+                    return new RobotVector(
                         X.GetNextValue(),
                         Y.GetNextValue(),
                         Z.GetNextValue(),
@@ -109,24 +109,24 @@ namespace PingPong.KUKA {
                     targetPositionReached = true;
                     totalTime2Dest = 0.0;
                     ResetVelocity();
-                    return new E6POS();
+                    return new RobotVector();
                 }
             }
         }
 
         // UWAGA: TOTALNIE NIE WIADOMO CZY DZIAŁA   
         // targetZVelocity [mm / s]
-        public E6POS Hit(E6POS currentPosition, double targetZVelocity) {
+        public RobotVector Hit(RobotVector currentPosition, double targetZVelocity) {
             lock (syncLock) {
                 if (totalTime2Dest > 0 && time2Dest - 50 / targetZVelocity > 0.004) {
                     // ruch do punktu pod pilka
-                    E6POS underTargetPosition = targetPosition + new E6POS(0, 0, -50, 0, 0, 0);
+                    RobotVector underTargetPosition = targetPosition + new RobotVector(0, 0, -50, 0, 0, 0);
                     UpdateCoefficients(currentPosition, underTargetPosition, time2Dest - 50 / targetZVelocity, targetZVelocity);
                     ComputeNextPoint();
                     time2Dest -= period;
                     UpdateVelocity();
 
-                    return new E6POS(
+                    return new RobotVector(
                         X.GetNextValue(),
                         Y.GetNextValue(),
                         Z.GetNextValue(),
@@ -137,7 +137,7 @@ namespace PingPong.KUKA {
                 } else if (time2Dest + 50 / targetZVelocity > 0.004) {
                     // ruch v = const 
                     time2Dest -= period;
-                    return new E6POS(0, 0, targetZVelocity * period, 0, 0, 0);
+                    return new RobotVector(0, 0, targetZVelocity * period, 0, 0, 0);
                 } else if (time2Dest + 50 / targetZVelocity + 3 > 0.004) {
                     // wytracenie predkosci w czasie np: 3s, do pozycji odbicia
                     UpdateCoefficients(currentPosition, targetPosition, time2Dest + 50 / targetZVelocity + 3);
@@ -145,7 +145,7 @@ namespace PingPong.KUKA {
                     time2Dest -= period;
                     UpdateVelocity();
 
-                    return new E6POS(
+                    return new RobotVector(
                         X.GetNextValue(),
                         Y.GetNextValue(),
                         Z.GetNextValue(),
@@ -158,12 +158,12 @@ namespace PingPong.KUKA {
                     targetPositionReached = true;
                     totalTime2Dest = 0.0;
                     ResetVelocity();
-                    return new E6POS();
+                    return new RobotVector();
                 }
             }
         }
 
-        private void UpdateCoefficients(E6POS currentPosition, E6POS targetPosition, double time2Dest, double targetZLevel = 0.0) {
+        private void UpdateCoefficients(RobotVector currentPosition, RobotVector targetPosition, double time2Dest, double targetZLevel = 0.0) {
             // guessing targetVelocity == 0.0
             X.UpdateCoefficients(currentPosition.X, targetPosition.X, 0.0, time2Dest);
             Y.UpdateCoefficients(currentPosition.Y, targetPosition.Y, 0.0, time2Dest);

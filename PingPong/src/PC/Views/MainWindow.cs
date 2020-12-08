@@ -2,7 +2,6 @@
 using PingPong.Applications;
 using PingPong.KUKA;
 using PingPong.Maths;
-using PingPong.Maths.Solver;
 using PingPong.OptiTrack;
 using System;
 using System.Drawing;
@@ -36,9 +35,9 @@ namespace PingPong.Views {
                 };
             };
 
-            var clw = new CollisionTest();
-            clw.Show();
-            clw.TopMost = true;
+            //var clw = new CollisionTest();
+            //clw.Show();
+            //clw.TopMost = true;
         }
 
         public void ShowCalibrationWindow() {
@@ -53,23 +52,23 @@ namespace PingPong.Views {
         }
 
         private void InitializeControls() {
-            incXBtn.Click += (s, e) => robot1.Shift(new E6POS(50, 0, 0), 10.0);
-            decXBtn.Click += (s, e) => robot1.Shift(new E6POS(-50, 0, 0), 10.0);
+            incXBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(50, 0, 0), RobotVector.Zero, 10.0);
+            decXBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(-50, 0, 0), RobotVector.Zero, 10.0);
 
-            incYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 50, 0), 10.0);
-            decYBtn.Click += (s, e) => robot1.Shift(new E6POS(0, -50, 0), 10.0);
+            incYBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 50, 0), RobotVector.Zero, 10.0);
+            decYBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, -50, 0), RobotVector.Zero, 10.0);
 
-            incZBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 50), 10.0);
-            decZBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, -50), 10.0);
+            incZBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 50), RobotVector.Zero, 10.0);
+            decZBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, -50), RobotVector.Zero, 10.0);
 
-            incABtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 1, 0, 0), 10.0);
-            decABtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, -1, 0, 0), 10.0);
+            incABtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 1, 0, 0), RobotVector.Zero, 10.0);
+            decABtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, -1, 0, 0), RobotVector.Zero, 10.0);
 
-            incBBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 1, 0), 10.0);
-            decBBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, -1, 0), 10.0);
+            incBBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, 1, 0), RobotVector.Zero, 10.0);
+            decBBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, -1, 0), RobotVector.Zero, 10.0);
 
-            incCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, 1), 10.0);
-            decCBtn.Click += (s, e) => robot1.Shift(new E6POS(0, 0, 0, 0, 0, -1), 10.0);
+            incCBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, 0, 1), RobotVector.Zero, 10.0);
+            decCBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, 0, -1), RobotVector.Zero, 10.0);
 
             calibrationBtn.Click += (s, e) => ShowCalibrationWindow();
         }
@@ -90,12 +89,7 @@ namespace PingPong.Views {
                 A6: (-360, 360)
             );
 
-            RobotLimits limits = new RobotLimits(
-                workspaceLimits, 
-                axisLimits, 
-                (2, 0.05)
-            );
-
+            RobotLimits limits = new RobotLimits(workspaceLimits, axisLimits, (2, 0.05));
             KUKARobot robot1 = new KUKARobot(8081, limits);
 
             var rotationMatrix = Matrix<double>.Build.DenseOfArray(new double[,] {

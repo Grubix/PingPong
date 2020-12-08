@@ -34,7 +34,7 @@ namespace PingPong.KUKA {
 
         public string Message { get; set; } = "Ping Pong";
 
-        public E6POS Correction { get; set; } = new E6POS();
+        public RobotVector Correction { get; set; } = new RobotVector();
 
         public long IPOC { get; set; }
 

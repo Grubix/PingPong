@@ -104,12 +104,12 @@
     <Compile Include="src\PC\Maths\Algebra\Matrix3.cs" />
     <Compile Include="src\PC\Maths\PolyFit.cs" />
     <Compile Include="src\PC\Maths\Algebra\Polyfit2.cs" />
-    <Compile Include="src\PC\Maths\Solver\CubicSolver.cs" />
-    <Compile Include="src\PC\Maths\Solver\QuadraticSolver.cs" />
-    <Compile Include="src\PC\Maths\Solver\QuarticSolver.cs" />
+    <Compile Include="src\PC\Maths\Solvers\CubicSolver.cs" />
+    <Compile Include="src\PC\Maths\Solvers\QuadraticSolver.cs" />
+    <Compile Include="src\PC\Maths\Solvers\QuarticSolver.cs" />
     <Compile Include="src\PC\Maths\Algebra\SVD3.cs" />
     <Compile Include="src\PC\Maths\Algebra\Vector3.cs" />
-    <Compile Include="src\PC\Devices\KUKA\E6AXIS.cs" />
+    <Compile Include="src\PC\Devices\KUKA\AxisPosition.cs" />
     <Compile Include="src\PC\Views\CalibrationWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,7 +123,7 @@
       <DependentUpon>RobotDataPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="src\PC\Maths\Algebra\Transformation.cs" />
-    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator.cs" />
+    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator3.cs" />
     <Compile Include="src\PC\Devices\OptiTrack\InputFrame.cs" />
     <Compile Include="src\PC\Views\ThreadSafeChart.cs">
       <SubType>UserControl</SubType>
@@ -139,7 +139,7 @@
     <Compile Include="src\PC\Views\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\PC\Devices\KUKA\E6POS.cs" />
+    <Compile Include="src\PC\Devices\KUKA\RobotVector.cs" />
     <Compile Include="src\PC\Devices\KUKA\KUKARobot.cs" />
     <Compile Include="src\PC\Devices\OptiTrack\OptiTrackSystem.cs" />
     <Compile Include="src\PC\Program.cs" />

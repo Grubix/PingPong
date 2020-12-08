@@ -13,8 +13,6 @@
 
         public (double Min, double Max) A6 { get; }
 
-        public double MaxVelocity { get; }
-
         public AxisLimits(
             (double Min, double Max) A1, 
             (double Min, double Max) A2, 
@@ -31,7 +29,7 @@
             this.A6 = A6;
         }
 
-        public bool CheckAxisPosition(E6AXIS axisPosition) {
+        public bool CheckAxisPosition(AxisPosition axisPosition) {
             bool checkA1 = axisPosition.A1 >= A1.Min && axisPosition.A1 <= A1.Max;
             bool checkA2 = axisPosition.A2 >= A2.Min && axisPosition.A2 <= A2.Max;
             bool checkA3 = axisPosition.A3 >= A3.Min && axisPosition.A3 <= A3.Max;

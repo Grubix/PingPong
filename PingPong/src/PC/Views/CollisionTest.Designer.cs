@@ -23,12 +23,15 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textzp0 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.plotBtn = new System.Windows.Forms.Button();
@@ -53,6 +56,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label9);
+            this.panel1.Controls.Add(this.textzp0);
             this.panel1.Controls.Add(this.label8);
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.plotBtn);
@@ -76,6 +81,23 @@
             this.panel1.Size = new System.Drawing.Size(140, 524);
             this.panel1.TabIndex = 32;
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(88, 223);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(24, 13);
+            this.label9.TabIndex = 18;
+            this.label9.Text = "zp0";
+            // 
+            // textzp0
+            // 
+            this.textzp0.Location = new System.Drawing.Point(12, 220);
+            this.textzp0.Name = "textzp0";
+            this.textzp0.Size = new System.Drawing.Size(70, 20);
+            this.textzp0.TabIndex = 17;
+            this.textzp0.Text = "0.0";
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -96,7 +118,7 @@
             // 
             // plotBtn
             // 
-            this.plotBtn.Location = new System.Drawing.Point(12, 220);
+            this.plotBtn.Location = new System.Drawing.Point(12, 246);
             this.plotBtn.Name = "plotBtn";
             this.plotBtn.Size = new System.Drawing.Size(70, 23);
             this.plotBtn.TabIndex = 14;
@@ -109,7 +131,7 @@
             this.textt2.Name = "textt2";
             this.textt2.Size = new System.Drawing.Size(70, 20);
             this.textt2.TabIndex = 13;
-            this.textt2.Text = "1.0";
+            this.textt2.Text = "0.55";
             // 
             // textt1
             // 
@@ -117,7 +139,7 @@
             this.textt1.Name = "textt1";
             this.textt1.Size = new System.Drawing.Size(70, 20);
             this.textt1.TabIndex = 12;
-            this.textt1.Text = "1.0";
+            this.textt1.Text = "0.6";
             // 
             // label6
             // 
@@ -179,7 +201,7 @@
             this.textv2.Name = "textv2";
             this.textv2.Size = new System.Drawing.Size(70, 20);
             this.textv2.TabIndex = 5;
-            this.textv2.Text = "0.0";
+            this.textv2.Text = "0.6";
             // 
             // textv1
             // 
@@ -187,7 +209,7 @@
             this.textv1.Name = "textv1";
             this.textv1.Size = new System.Drawing.Size(70, 20);
             this.textv1.TabIndex = 4;
-            this.textv1.Text = "1.0";
+            this.textv1.Text = "1.5";
             // 
             // textv0
             // 
@@ -211,7 +233,7 @@
             this.textz1.Name = "textz1";
             this.textz1.Size = new System.Drawing.Size(70, 20);
             this.textz1.TabIndex = 1;
-            this.textz1.Text = "0.5";
+            this.textz1.Text = "0.0";
             // 
             // textz0
             // 
@@ -223,31 +245,38 @@
             // 
             // chart
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart.ChartAreas.Add(chartArea1);
+            chartArea2.AxisX.Minimum = 0D;
+            chartArea2.Name = "ChartArea1";
+            this.chart.ChartAreas.Add(chartArea2);
             this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Name = "Legend1";
-            this.chart.Legends.Add(legend1);
+            legend2.Name = "Legend1";
+            this.chart.Legends.Add(legend2);
             this.chart.Location = new System.Drawing.Point(140, 0);
             this.chart.Name = "chart";
-            series1.BorderWidth = 3;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Legend = "Legend1";
-            series1.Name = "X";
-            series2.BorderWidth = 3;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Legend = "Legend1";
-            series2.Name = "V";
-            series3.BorderWidth = 3;
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Legend = "Legend1";
-            series3.Name = "A";
-            this.chart.Series.Add(series1);
-            this.chart.Series.Add(series2);
-            this.chart.Series.Add(series3);
+            series5.BorderWidth = 3;
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Legend = "Legend1";
+            series5.Name = "X";
+            series6.BorderWidth = 3;
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series6.Legend = "Legend1";
+            series6.Name = "V";
+            series7.BorderWidth = 3;
+            series7.ChartArea = "ChartArea1";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series7.Legend = "Legend1";
+            series7.Name = "A";
+            series8.BorderWidth = 3;
+            series8.ChartArea = "ChartArea1";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series8.Legend = "Legend1";
+            series8.Name = "Xp";
+            this.chart.Series.Add(series5);
+            this.chart.Series.Add(series6);
+            this.chart.Series.Add(series7);
+            this.chart.Series.Add(series8);
             this.chart.Size = new System.Drawing.Size(1001, 524);
             this.chart.TabIndex = 33;
             this.chart.Text = "v2";
@@ -289,5 +318,7 @@
         private System.Windows.Forms.TextBox textz0;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textzp0;
     }
 }

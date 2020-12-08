@@ -72,7 +72,9 @@ namespace PingPong.KUKA {
 
         private bool targetPositionReached;
 
-        private E6POS targetPosition;
+        private RobotVector targetPosition;
+
+        private RobotVector targetVelocity;
 
         private double targetDuration;
 
@@ -80,27 +82,7 @@ namespace PingPong.KUKA {
 
         private const double Ts = 0.004;
 
-        public Vector<double> Velocity {
-            get {
-                lock (syncLock) {
-                    return Vector<double>.Build.DenseOfArray(new double[] {
-                        polyX.V, polyY.V, polyZ.V, polyA.V, polyB.V, polyC.V
-                    });
-                }
-            }
-        }
-
-        public Vector<double> Acceleration {
-            get {
-                lock (syncLock) {
-                    return Vector<double>.Build.DenseOfArray(new double[] {
-                        polyX.A, polyY.A, polyZ.A, polyA.A, polyB.A, polyC.A
-                    });
-                }
-            }
-        }
-
-        public E6POS TargetPosition {
+        public RobotVector TargetPosition {
            get {
                 lock (syncLock) {
                     return targetPosition;
@@ -116,44 +98,61 @@ namespace PingPong.KUKA {
             }
         }
 
-        public TrajectoryGenerator5(E6POS currentPosition) {
+        public RobotVector Velocity {
+            get {
+                lock (syncLock) {
+                    return new RobotVector(polyX.V, polyY.V, polyZ.V, polyA.V, polyB.V, polyC.V);
+                }
+            }
+        }
+
+        public RobotVector Acceleration {
+            get {
+                lock (syncLock) {
+                    return new RobotVector(polyX.A, polyY.A, polyZ.A, polyA.A, polyB.A, polyC.A);
+                }
+            }
+        }
+
+        public TrajectoryGenerator5(RobotVector currentPosition) {
             targetPositionReached = true;
             targetPosition = currentPosition;
             targetDuration = 0.0;
             timeLeft = 0.0;
         }
 
-        //TODO: wektor predkosci koncowej
-        public void SetTargetPosition(E6POS targetPosition, double targetDuration) {
+        public void SetTargetPosition(RobotVector targetPosition, RobotVector targetVelocity, double targetDuration) {
             if (targetDuration <= 0.0) {
                 throw new ArgumentException($"Duration value must be greater than 0, get {targetDuration}");
             }
 
             bool targetPositionChanged = !targetPosition.Compare(this.targetPosition, 0.1, 1);
+            bool targetVelocityChanged = !targetVelocity.Compare(this.targetVelocity, 0.1, 1);
+            //TODO: sprawdzenie targetVelocity czy sie zmienilo
             bool targetDurationChanged = targetDuration != this.targetDuration;
 
-            if (targetPositionChanged || targetDurationChanged) {
+            if (targetDurationChanged || targetPositionChanged || targetVelocityChanged) {
                 lock (syncLock) {
                     targetPositionReached = false;
-                    this.targetPosition = targetPosition.Clone() as E6POS;
+                    this.targetPosition = targetPosition;
+                    this.targetVelocity = targetVelocity;
                     this.targetDuration = targetDuration;
                     timeLeft = targetDuration;
                 }
             }
         }
 
-        //TODO: wektor predkosci koncowej
-        public E6POS GetNextCorrection(E6POS currentPosition) {
+        public RobotVector GetNextCorrection(RobotVector currentPosition) {
             lock (syncLock) {
                 if (timeLeft >= Ts) {
-                    double nx = polyX.GetNextValue(currentPosition.X, targetPosition.X, 0.0, timeLeft, Ts);
-                    double ny = polyY.GetNextValue(currentPosition.Y, targetPosition.Y, 0.0, timeLeft, Ts);
-                    double nz = polyZ.GetNextValue(currentPosition.Z, targetPosition.Z, 0.0, timeLeft, Ts);
-                    double na = polyA.GetNextValue(currentPosition.A, targetPosition.A, 0.0, timeLeft, Ts);
-                    double nb = polyB.GetNextValue(currentPosition.B, targetPosition.B, 0.0, timeLeft, Ts);
-                    double nc = polyC.GetNextValue(currentPosition.C, targetPosition.C, 0.0, timeLeft, Ts);
+                    double nx = polyX.GetNextValue(currentPosition.X, targetPosition.X, targetVelocity.X, timeLeft, Ts);
+                    double ny = polyY.GetNextValue(currentPosition.Y, targetPosition.Y, targetVelocity.Y, timeLeft, Ts);
+                    double nz = polyZ.GetNextValue(currentPosition.Z, targetPosition.Z, targetVelocity.Z, timeLeft, Ts);
+                    double na = polyA.GetNextValue(currentPosition.A, targetPosition.A, targetVelocity.A, timeLeft, Ts);
+                    double nb = polyB.GetNextValue(currentPosition.B, targetPosition.B, targetVelocity.B, timeLeft, Ts);
+                    double nc = polyC.GetNextValue(currentPosition.C, targetPosition.C, targetVelocity.C, timeLeft, Ts);
 
-                    E6POS nextPosition = new E6POS(nx, ny, nz, na, nb, nc);
+                    RobotVector nextPosition = new RobotVector(nx, ny, nz, na, nb, nc);
                     timeLeft -= Ts;
 
                     return nextPosition - currentPosition;
@@ -166,7 +165,7 @@ namespace PingPong.KUKA {
                     polyB.Reset();
                     polyC.Reset();
 
-                    return new E6POS();
+                    return new RobotVector();
                 }
             }
         }

@@ -1,7 +1,5 @@
-﻿using System;
-
-namespace PingPong.KUKA {
-    public class E6AXIS {
+﻿namespace PingPong.KUKA {
+    public class AxisPosition {
 
         public double A1 { get; }
 
@@ -15,7 +13,7 @@ namespace PingPong.KUKA {
 
         public double A6 { get; }
 
-        public E6AXIS(double A1, double A2, double A3, double A4, double A5, double A6) {
+        public AxisPosition(double A1, double A2, double A3, double A4, double A5, double A6) {
             this.A1 = A1;
             this.A2 = A2;
             this.A3 = A3;

@@ -15,7 +15,7 @@ namespace PingPong.KUKA {
         private IPEndPoint remoteEndPoint;
 
         /// <summary>
-        /// Remote endpoint Ip (RSI ip)
+        /// Remote endpoint Ip (Robot Sensor Interface - RSI)
         /// </summary>
         public string Ip {
             get {
@@ -34,7 +34,7 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Connects to robot and returns the first received frame
         /// </summary>
-        /// <returns>First received frame</returns>
+        /// <returns>first received frame</returns>
         public async Task<InputFrame> Connect() {
             UdpReceiveResult result = await client.ReceiveAsync();
             remoteEndPoint = result.RemoteEndPoint;
@@ -54,7 +54,7 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Receives data from the remoteEndPoint (KUKA robot) asynchronously
         /// </summary>
-        /// <returns>Parsed data as InputFrame</returns>
+        /// <returns>parsed data as InputFrame</returns>
         public async Task<InputFrame> ReceiveDataAsync() {
             UdpReceiveResult result = await client.ReceiveAsync();
             byte[] receivedBytes = result.Buffer;

@@ -35,13 +35,13 @@ namespace PingPong.Commands {
             }
 
             string[] positionSplit = args.UserArgs[1].Trim().Split(',');
-            E6POS targetPosition;
+            RobotVector targetPosition;
 
             if (positionSplit.Length == 3) {
                 if (double.TryParse(positionSplit[0], out double x) &&
                     double.TryParse(positionSplit[1], out double y) &&
                     double.TryParse(positionSplit[2], out double z)) {
-                    targetPosition = new E6POS(x, y, z, robot.Position.ABC);
+                    targetPosition = new RobotVector(x, y, z, robot.Position.ABC);
                 } else {
                     args.CommandLine.Error($"Invalid XYZ position");
                     return;
@@ -53,7 +53,7 @@ namespace PingPong.Commands {
                     double.TryParse(positionSplit[3], out double a) &&
                     double.TryParse(positionSplit[4], out double b) &&
                     double.TryParse(positionSplit[5], out double c)) {
-                    targetPosition = new E6POS(x, y, z, a, b, c);
+                    targetPosition = new RobotVector(x, y, z, a, b, c);
                 } else {
                     args.CommandLine.Error($"Invalid XYZ position or ABC angles");
                     return;
@@ -64,7 +64,7 @@ namespace PingPong.Commands {
             }
 
             if (double.TryParse(args.UserArgs[2], out double movementDuration)) {
-                robot.MoveTo(targetPosition, movementDuration);
+                robot.MoveTo(targetPosition, RobotVector.Zero, movementDuration);
             } else {
                 args.CommandLine.Error($"Invalid movement duration");
             }

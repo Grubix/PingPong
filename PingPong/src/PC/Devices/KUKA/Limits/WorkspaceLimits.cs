@@ -14,10 +14,11 @@
             UpperLimit = (X.Max, Y.Max, Z.Max);
         }
 
-        public bool CheckPosition(E6POS position) {
+        public bool CheckPosition(RobotVector position) {
             bool checkX = position.X >= LowerLimit.X && position.X <= UpperLimit.X;
             bool checkY = position.Y >= LowerLimit.Y && position.Y <= UpperLimit.Y;
             bool checkZ = position.Z >= LowerLimit.Z && position.Z <= UpperLimit.Z;
+
             return checkX && checkY && checkZ;
         }
 

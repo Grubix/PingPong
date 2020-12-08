@@ -1,6 +1,5 @@
 using PingPong.Views;
 using System;
-using System.IO;
 using System.Windows.Forms;
 
 namespace PingPong {
@@ -14,9 +13,6 @@ namespace PingPong {
             if (Environment.OSVersion.Version.Major >= 6) {
                 SetProcessDPIAware();
             }
-
-            Directory.CreateDirectory("transformations");
-            Directory.CreateDirectory("logs");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
