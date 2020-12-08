@@ -35,7 +35,7 @@ namespace PingPong.Applications {
 
         private int sample;
 
-        private List<double> xCoeffs, yCoeffs, zCoeffs;
+        private List<double> xCoeffs, yCoeffs, zCoeffs, timeOf3Pred;
 
         public Ping(KUKARobot robot, Chart chart) {
             this.robot = robot;
@@ -130,18 +130,25 @@ namespace PingPong.Applications {
             double predY = yCoeffs[1] * T + yCoeffs[0];
             double timeLeft = T - tx;
 
-            
+            AddTimePredToCheckStability(T);
 
             return (predX, predY, timeLeft);
         }
 
-        private bool IsTimeStable() {
-            if (polyfitX.xValues.Count >= 3) {
-                double t2 = polyfitX.xValues[polyfitX.xValues.Count - 1];
-                double t1 = polyfitX.xValues[polyfitX.xValues.Count - 2];
-                double t0 = polyfitX.xValues[polyfitX.xValues.Count - 3];
+        private void AddTimePredToCheckStability(double time) {
+            if (timeOf3Pred.Count >= 3) {
+                timeOf3Pred[0] = timeOf3Pred[1];
+                timeOf3Pred[1] = timeOf3Pred[2];
+                timeOf3Pred[2] = time;
+            } else {
+                timeOf3Pred.Add(time);
+            }
+        }
 
-                if (Math.Abs(t2 - t1) < stabilityParameter && Math.Abs(t1 - t0) < stabilityParameter)
+        private bool IsTimeStable() {
+            if (timeOf3Pred.Count >= 3) {
+                if (Math.Abs(timeOf3Pred[2] - timeOf3Pred[1]) < stabilityParameter
+                 && Math.Abs(timeOf3Pred[1] - timeOf3Pred[0]) < stabilityParameter)
                     return true;
             }
 
