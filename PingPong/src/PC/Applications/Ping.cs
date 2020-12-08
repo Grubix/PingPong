@@ -14,7 +14,9 @@ namespace PingPong.Applications {
 
         private readonly int maxPoints = 100;
 
-        private readonly Polyfit2 polyfitX = new Polyfit2(1);
+        private readonly double stabilityParameter = 0.005;
+
+        private Polyfit2 polyfitX = new Polyfit2(1);
         
         private readonly Polyfit2 polyfitY = new Polyfit2(1);
 
@@ -116,7 +118,35 @@ namespace PingPong.Applications {
 
                 elapsedTime += data.FrameDeltaTime;
             }
+
+            double predX = xCoeffs[1] * T + xCoeffs[0];
+            double predY = yCoeffs[1] * T + yCoeffs[0];
+            double timeLeft = T - tx;
+
+            AddTimePredToCheckStability(T);
+
+            return (predX, predY, timeLeft);
         }
+
+        private void AddTimePredToCheckStability(double time) {
+            if (timeOf3Pred.Count >= 3) {
+                timeOf3Pred[0] = timeOf3Pred[1];
+                timeOf3Pred[1] = timeOf3Pred[2];
+                timeOf3Pred[2] = time;
+            } else {
+                timeOf3Pred.Add(time);
+            }
+        }
+
+        private bool IsTimeStable() {
+            if (timeOf3Pred.Count >= 3) {
+                if (Math.Abs(timeOf3Pred[2] - timeOf3Pred[1]) < stabilityParameter
+                 && Math.Abs(timeOf3Pred[1] - timeOf3Pred[0]) < stabilityParameter)
+                    return true;
+            }
+
+            return false;
+        } 
 
         private void UpdateUI(Action updateAction) {
             if (chart.InvokeRequired) {
