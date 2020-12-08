@@ -101,6 +101,7 @@ namespace PingPong.Applications {
                     double predX = xCoeffs[1] * T + xCoeffs[0];
                     double predY = yCoeffs[1] * T + yCoeffs[0];
 
+                    AddTimePredToCheckStability(T);
                     RobotVector predPosition = new RobotVector(predX, predY, Zlevel, robot.Position.ABC);
                     double k = Math.Max(2 * Math.Exp(1 - 1.5 * elapsedTime / (timeLeft + elapsedTime)), 1.0);
 
@@ -120,8 +121,6 @@ namespace PingPong.Applications {
 
                 elapsedTime += data.FrameDeltaTime;
             }
-
-            AddTimePredToCheckStability(T);
         }
 
         private void AddTimePredToCheckStability(double time) {
