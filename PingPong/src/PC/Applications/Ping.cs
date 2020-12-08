@@ -3,6 +3,7 @@ using PingPong.KUKA;
 using PingPong.Maths;
 using PingPong.Maths.Solver;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PingPong.Applications {
@@ -16,7 +17,7 @@ namespace PingPong.Applications {
 
         private readonly double stabilityParameter = 0.005;
 
-        private Polyfit2 polyfitX = new Polyfit2(1);
+        private readonly Polyfit2 polyfitX = new Polyfit2(1);
         
         private readonly Polyfit2 polyfitY = new Polyfit2(1);
 
@@ -33,6 +34,8 @@ namespace PingPong.Applications {
         private readonly Chart chart;
 
         private double elapsedTime;
+
+        private List<double> timeOf3Pred = new List<double>(); 
 
         public Ping(KUKARobot robot, Chart chart) {
             this.robot = robot;
@@ -105,10 +108,9 @@ namespace PingPong.Applications {
 
                     if (robot.Limits.WorkspaceLimits.CheckPosition(predPosition) && timeLeft > 0.0) {
                         if (ballHit) {
-                            var velocity = Vector<double>.Build.DenseOfArray(new double[] { 0, 0, 0, 0, 0, 0 });
-                            //robot.MoveTo(positionAtHit, velocity, 1.5);
+                            //robot.MoveTo(positionAtHit, RobotVector.Zero, 1.5);
                         } else {
-                            var velocity = Vector<double>.Build.DenseOfArray(new double[] { 0, 0, 0.6, 0, 0, 0 });
+                            RobotVector velocity = new RobotVector(0, 0, 0.6, 0, 0, 0);
                             //robot.MoveTo(predPosition, velocity, timeLeft);
                         }
 
@@ -119,13 +121,7 @@ namespace PingPong.Applications {
                 elapsedTime += data.FrameDeltaTime;
             }
 
-            double predX = xCoeffs[1] * T + xCoeffs[0];
-            double predY = yCoeffs[1] * T + yCoeffs[0];
-            double timeLeft = T - tx;
-
             AddTimePredToCheckStability(T);
-
-            return (predX, predY, timeLeft);
         }
 
         private void AddTimePredToCheckStability(double time) {
