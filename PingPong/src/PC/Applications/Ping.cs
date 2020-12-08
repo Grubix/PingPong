@@ -15,6 +15,8 @@ namespace PingPong.Applications {
 
         private readonly int maxPoints = 100;
 
+        private readonly double stabilityParameter = 0.005;
+
         private Polyfit2 polyfitX = new Polyfit2(1);
         
         private Polyfit2 polyfitY = new Polyfit2(1);
@@ -102,7 +104,7 @@ namespace PingPong.Applications {
                     UpdateUI(() => {
                         chart.Series[0].Points.AddXY(sample++, t);
                     });
-                    if (robot.Limits.WorkspaceLimits.CheckPosition(predPosition) && t > 0.0) {
+                    if (IsTimeStable() && robot.Limits.WorkspaceLimits.CheckPosition(predPosition) && t > 0.0) {
                         robot.MoveTo(predPosition, t);
                     }
                 }
@@ -132,6 +134,19 @@ namespace PingPong.Applications {
 
             return (predX, predY, timeLeft);
         }
+
+        private bool IsTimeStable() {
+            if (polyfitX.xValues.Count >= 3) {
+                double t2 = polyfitX.xValues[polyfitX.xValues.Count - 1];
+                double t1 = polyfitX.xValues[polyfitX.xValues.Count - 2];
+                double t0 = polyfitX.xValues[polyfitX.xValues.Count - 3];
+
+                if (Math.Abs(t2 - t1) < stabilityParameter && Math.Abs(t1 - t0) < stabilityParameter)
+                    return true;
+            }
+
+            return false;
+        } 
 
         private void UpdateUI(Action updateAction) {
             if (chart.InvokeRequired) {
