@@ -51,7 +51,7 @@ namespace PingPong.KUKA {
             }
 
             public void Reset() {
-                V = Vn = A = An = 0.0;
+                //V = Vn = A = An = 0.0;
             }
 
         }
@@ -117,6 +117,7 @@ namespace PingPong.KUKA {
         public TrajectoryGenerator5(RobotVector currentPosition) {
             targetPositionReached = true;
             targetPosition = currentPosition;
+            targetVelocity = new RobotVector();
             targetDuration = 0.0;
             timeLeft = 0.0;
         }
@@ -128,7 +129,6 @@ namespace PingPong.KUKA {
 
             bool targetPositionChanged = !targetPosition.Compare(this.targetPosition, 0.1, 1);
             bool targetVelocityChanged = !targetVelocity.Compare(this.targetVelocity, 0.1, 1);
-            //TODO: sprawdzenie targetVelocity czy sie zmienilo
             bool targetDurationChanged = targetDuration != this.targetDuration;
 
             if (targetDurationChanged || targetPositionChanged || targetVelocityChanged) {
@@ -145,6 +145,7 @@ namespace PingPong.KUKA {
         public RobotVector GetNextCorrection(RobotVector currentPosition) {
             lock (syncLock) {
                 if (timeLeft >= Ts) {
+                    targetPositionReached = false;
                     double nx = polyX.GetNextValue(currentPosition.X, targetPosition.X, targetVelocity.X, timeLeft, Ts);
                     double ny = polyY.GetNextValue(currentPosition.Y, targetPosition.Y, targetVelocity.Y, timeLeft, Ts);
                     double nz = polyZ.GetNextValue(currentPosition.Z, targetPosition.Z, targetVelocity.Z, timeLeft, Ts);

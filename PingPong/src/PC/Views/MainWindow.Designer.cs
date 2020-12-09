@@ -43,8 +43,8 @@
             this.decCBtn = new System.Windows.Forms.Button();
             this.calibrationBtn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.robot1Panel = new PingPong.Views.RobotDataPanel();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.robot1Panel = new PingPong.Views.RobotDataPanel();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
@@ -183,26 +183,21 @@
             this.panel1.Controls.Add(this.incABtn);
             this.panel1.Controls.Add(this.decABtn);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(994, 0);
+            this.panel1.Location = new System.Drawing.Point(760, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(140, 511);
+            this.panel1.Size = new System.Drawing.Size(374, 511);
             this.panel1.TabIndex = 28;
-            // 
-            // robot1Panel
-            // 
-            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.robot1Panel.Location = new System.Drawing.Point(0, 0);
-            this.robot1Panel.Name = "robot1Panel";
-            this.robot1Panel.Size = new System.Drawing.Size(994, 511);
-            this.robot1Panel.TabIndex = 0;
             // 
             // chart1
             // 
+            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(55, 447);
+            this.chart1.Location = new System.Drawing.Point(0, 319);
             this.chart1.Name = "chart1";
             series1.BorderWidth = 3;
             series1.ChartArea = "ChartArea1";
@@ -222,9 +217,17 @@
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Series.Add(series3);
-            this.chart1.Size = new System.Drawing.Size(85, 64);
+            this.chart1.Size = new System.Drawing.Size(374, 192);
             this.chart1.TabIndex = 30;
             this.chart1.Text = "chart1";
+            // 
+            // robot1Panel
+            // 
+            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.robot1Panel.Location = new System.Drawing.Point(0, 0);
+            this.robot1Panel.Name = "robot1Panel";
+            this.robot1Panel.Size = new System.Drawing.Size(760, 511);
+            this.robot1Panel.TabIndex = 0;
             // 
             // MainWindow
             // 

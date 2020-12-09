@@ -209,9 +209,6 @@ namespace PingPong.KUKA {
             //correction = new E6POS(correction.X, correction.Y, correction.Z, 0, correction.B, correction.C);
             correction = new RobotVector(correction.X, correction.Y, correction.Z, 0, 0, 0);
 
-
-            Console.WriteLine(correction);
-
             if (!Limits.CheckCorrection(correction)) {
                 Uninitialize();
                 throw new InvalidOperationException($"Correction limit has been exceeded:" +

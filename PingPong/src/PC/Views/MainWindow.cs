@@ -25,19 +25,19 @@ namespace PingPong.Views {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            //optiTrack = InitializeOptiTrackSystem();
+            optiTrack = InitializeOptiTrackSystem();
             application = new Ping(robot1, chart1);
 
             // Ping
-            robot1.Initialized += () => {
-                optiTrack.FrameReceived += frame => {
-                    application.ProcessData(frame);
-                };
-            };
+            //robot1.Initialized += () => {
+            //    optiTrack.FrameReceived += frame => {
+            //        application.ProcessData(frame);
+            //    };
+            //};
 
-            //var clw = new CollisionTest();
-            //clw.Show();
-            //clw.TopMost = true;
+            var clw = new CollisionTest();
+            clw.Show();
+            clw.TopMost = true;
         }
 
         public void ShowCalibrationWindow() {
@@ -75,8 +75,8 @@ namespace PingPong.Views {
 
         private KUKARobot InitializeRobot1() {
             WorkspaceLimits workspaceLimits = new WorkspaceLimits(
-                X: (-450, 450),
-                Y: (700, 1100),
+                X: (-250, 250),
+                Y: (700, 950),
                 Z: (250, 600)
             );
 
@@ -89,7 +89,7 @@ namespace PingPong.Views {
                 A6: (-360, 360)
             );
 
-            RobotLimits limits = new RobotLimits(workspaceLimits, axisLimits, (2, 0.05));
+            RobotLimits limits = new RobotLimits(workspaceLimits, axisLimits, (2.7, 0.05));
             KUKARobot robot1 = new KUKARobot(8081, limits);
 
             var rotationMatrix = Matrix<double>.Build.DenseOfArray(new double[,] {

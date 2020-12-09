@@ -9,7 +9,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 namespace PingPong.Applications {
     class Ping : IApplication {
 
-        private const double Zlevel = 283.81;
+        private const double Zlevel = 290.46;
 
         private readonly KUKARobot robot;
 
@@ -23,6 +23,8 @@ namespace PingPong.Applications {
 
         private readonly Polyfit2 polyfitZ = new Polyfit2(2);
 
+        RobotVector predPosition;
+
         private bool ballFell = false;
 
         private bool ballHit = false;
@@ -34,6 +36,8 @@ namespace PingPong.Applications {
         private readonly Chart chart;
 
         private double elapsedTime;
+
+        private int sample = 0;
 
         private List<double> timeOf3Pred = new List<double>(); 
 
@@ -59,7 +63,7 @@ namespace PingPong.Applications {
                 ballFell = true;
             }
 
-            if (!ballFell && ballZ > 250 && ballX < 1300 && ballX != 791.016 && ballY != 743.144 && ballZ != 148.319) {
+            if (!ballFell && ballZ > 250 && ballX < 1200 && ballX != 791.016 && ballY != 743.144 && ballZ != 148.319) {
                 if (polyfitZ.PointCount == maxPoints) {
                     for (int i = 0; i < maxPoints / 2; i++) {
                         polyfitX.xValues[i] = polyfitX.xValues[2 * i];
@@ -86,7 +90,7 @@ namespace PingPong.Applications {
                 polyfitY.AddPoint(elapsedTime, ballY);
                 polyfitZ.AddPoint(elapsedTime, ballZ);
 
-                if (polyfitX.xValues.Count > 50) { //TODO: TUTAJ PAN WOJCIECH M. DORABIA JAKIS FAJNY WARUNEK MOWIACY O TYM ZE CZAS JEST STABILNY
+                if (polyfitX.xValues.Count > 40) { //TODO: TUTAJ PAN WOJCIECH M. DORABIA JAKIS FAJNY WARUNEK MOWIACY O TYM ZE CZAS JEST STABILNY
                     var xCoeffs = polyfitX.CalculateCoefficients();
                     var yCoeffs = polyfitY.CalculateCoefficients();
                     var zCoeffs = polyfitZ.CalculateCoefficients();
@@ -101,22 +105,34 @@ namespace PingPong.Applications {
                     double predX = xCoeffs[1] * T + xCoeffs[0];
                     double predY = yCoeffs[1] * T + yCoeffs[0];
 
-                    AddTimePredToCheckStability(T);
-                    RobotVector predPosition = new RobotVector(predX, predY, Zlevel, robot.Position.ABC);
-                    double k = Math.Max(2 * Math.Exp(1 - 1.5 * elapsedTime / (timeLeft + elapsedTime)), 1.0);
+                    UpdateUI(() => {
+                        chart.Series[0].Points.AddXY(sample++, timeLeft);
+                    });
 
-                    timeLeft *= k;
+                    AddTimePredToCheckStability(T);
+                    if (sample < 140) {
+                        predPosition = new RobotVector(predX, predY, Zlevel, robot.Position.ABC);
+                    }
+
+                    //double k = Math.Max(2 * Math.Exp(1 - 1.5 * elapsedTime / (timeLeft + elapsedTime)), 1.0);
+                    //Console.WriteLine(predPosition);
+                    //Console.WriteLine(timeLeft);
+                    //timeLeft *= k;
+                    Console.WriteLine(predPosition);
 
                     if (robot.Limits.WorkspaceLimits.CheckPosition(predPosition) && timeLeft > 0.0) {
                         if (ballHit) {
-                            //robot.MoveTo(positionAtHit, RobotVector.Zero, 1.5);
+                            robot.MoveTo(positionAtHit, RobotVector.Zero, 1.5);
                         } else {
-                            RobotVector velocity = new RobotVector(0, 0, 0.6, 0, 0, 0);
-                            //robot.MoveTo(predPosition, velocity, timeLeft);
+                            RobotVector velocity = new RobotVector(0, 0, 20.0, 0, 0, 0);
+                            robot.MoveTo(predPosition, velocity, timeLeft);
                         }
 
                         robotMoved = true;
                     }
+                    //Console.WriteLine(predPosition);
+
+                    sample++;
                 }
 
                 elapsedTime += data.FrameDeltaTime;

@@ -74,7 +74,7 @@ namespace PingPong.Views {
                 chart.Series[0].Points.AddXY(t1, x);
                 chart.Series[1].Points.AddXY(t1, v);
                 //chart.Series[2].Points.AddXY(t1, a);
-                chart.Series[3].Points.AddXY(t1, zp);
+                //chart.Series[3].Points.AddXY(t1, zp);
             }
 
             for (double t = 0.0; t <= T2; t += 0.01) {
@@ -96,7 +96,7 @@ namespace PingPong.Views {
                 chart.Series[0].Points.AddXY(t1 + T1, x);
                 chart.Series[1].Points.AddXY(t1 + T1, v);
                 //chart.Series[2].Points.AddXY(t1 + T1, zxx);
-                chart.Series[3].Points.AddXY(t1 + T1, zp);
+                //chart.Series[3].Points.AddXY(t1 + T1, zp);
             }
 
             VerticalLineAnnotation ann = new VerticalLineAnnotation {
