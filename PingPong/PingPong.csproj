@@ -88,6 +88,7 @@
     <Compile Include="src\PC\Devices\KUKA\Limits\RobotLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\Limits\WorkspaceLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5.cs" />
+    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator6.cs" />
     <Compile Include="src\PC\Views\CollisionTest.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,8 +103,8 @@
     </Compile>
     <Compile Include="src\PC\Maths\Algebra\LUD3.cs" />
     <Compile Include="src\PC\Maths\Algebra\Matrix3.cs" />
-    <Compile Include="src\PC\Maths\PolyFit.cs" />
-    <Compile Include="src\PC\Maths\Algebra\Polyfit2.cs" />
+    <Compile Include="src\PC\Maths\Polyfit2.cs" />
+    <Compile Include="src\PC\Maths\Polyfit.cs" />
     <Compile Include="src\PC\Maths\Solvers\CubicSolver.cs" />
     <Compile Include="src\PC\Maths\Solvers\QuadraticSolver.cs" />
     <Compile Include="src\PC\Maths\Solvers\QuarticSolver.cs" />

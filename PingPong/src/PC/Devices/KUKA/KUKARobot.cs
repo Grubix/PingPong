@@ -101,7 +101,7 @@ namespace PingPong.KUKA {
         /// </summary>
         public bool IsTargetPositionReached {
             get {
-                return generator.TargetPositionReached;
+                return generator.IsTargetPositionReached;
             }
         }
 
@@ -272,7 +272,7 @@ namespace PingPong.KUKA {
             ManualResetEvent targetPositionReached = new ManualResetEvent(false);
 
             void checkPosition(InputFrame frameReceived) {
-                if (generator.TargetPositionReached) {
+                if (generator.IsTargetPositionReached) {
                     targetPositionReached.Set();
                 }
             };

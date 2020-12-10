@@ -25,19 +25,19 @@ namespace PingPong.Views {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            optiTrack = InitializeOptiTrackSystem();
+            //optiTrack = InitializeOptiTrackSystem();
             application = new Ping(robot1, chart1);
 
             // Ping
-            //robot1.Initialized += () => {
-            //    optiTrack.FrameReceived += frame => {
-            //        application.ProcessData(frame);
-            //    };
-            //};
+            robot1.Initialized += () => {
+                optiTrack.FrameReceived += frame => {
+                    application.ProcessData(frame);
+                };
+            };
 
-            var clw = new CollisionTest();
-            clw.Show();
-            clw.TopMost = true;
+            //var clw = new CollisionTest();
+            //clw.Show();
+            //clw.TopMost = true;
         }
 
         public void ShowCalibrationWindow() {

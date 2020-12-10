@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -26,7 +25,7 @@ namespace PingPong.Views {
             InitializeComponent();
 
             MaxSamples = 5000;
-            RefreshTime = 10;
+            RefreshTime = 30;
 
             series1 = new Series {
                 ChartType = SeriesChartType.Line,
