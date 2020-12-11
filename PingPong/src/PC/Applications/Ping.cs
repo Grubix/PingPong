@@ -8,9 +8,9 @@ using System.Windows.Forms.DataVisualization.Charting;
 namespace PingPong.Applications {
     class Ping : IApplication {
 
-        private const double zPositionAtHit = 290.46;
+        private const double zPositionAtHit = 340;//290.46;
 
-        private const double timeErrorTolerance = 0.05; // DO SPRAWDZENIA!
+        private const double timeErrorTolerance = 0.03; // DO SPRAWDZENIA!
 
         private const int maxPolyfitPoints = 100;
 
@@ -93,24 +93,26 @@ namespace PingPong.Applications {
 
                 double T = roots[1];
 
-                if (sample >= 20 && IsTimeStable(T)) {
+                if (IsTimeStable(T) && polyfitX.Values.Count >= 10) {
                     double timeToHit = T - elapsedTime;
                     double predX = xCoeffs[1] * T + xCoeffs[0];
                     double predY = yCoeffs[1] * T + yCoeffs[0];
 
                     UpdateUI(() => {
-                        chart.Series[0].Points.AddXY(sample++, timeToHit);
+                        chart.Series[0].Points.AddXY(sample, predX);
+                        chart.Series[1].Points.AddXY(sample++, predY);
                     });
+                    Console.WriteLine("T: " + T + " X: " + predX + " Y: " + predY);
 
-                    if (!ballHit && timeToHit >= 0.1) { // 0.1 DO SPRAWDZENIA!
+                    if (!ballHit && timeToHit >= 0.05) { // 0.1 DO SPRAWDZENIA!
                         RobotVector predictedHitPosition = new RobotVector(predX, predY, zPositionAtHit, robot.Position.ABC);
 
                         if (robot.Limits.WorkspaceLimits.CheckPosition(predictedHitPosition)) {
                             //predkosc na osiach w [mm/s]
-                            RobotVector velocity = new RobotVector(0, 0, 0);
+                            // RobotVector velocity = new RobotVector(0, 0, 0);
 
                             // Dla odwaznych: 
-                            // RobotVector velocity = new RobotVector(0, 0, 100);
+                            RobotVector velocity = new RobotVector(0, 0, 150);
 
                             robot.MoveTo(predictedHitPosition, velocity, timeToHit);
                             robotMoved = true;

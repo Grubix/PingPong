@@ -29,9 +29,9 @@ namespace PingPong.KUKA {
                 double T4 = T1 * T3;
                 double T5 = T1 * T4;
 
-                if (T < 0.5) { //TODO: do sprawdzenia
+                /*if (T < 0.05) { //TODO: do sprawdzenia
                     x0 = xn;
-                }
+                }*/
 
                 k0 = x0;
                 k1 = vn;
@@ -131,8 +131,8 @@ namespace PingPong.KUKA {
                 throw new ArgumentException($"Duration value must be greater than 0, get {targetDuration}");
             }
 
-            bool targetPositionChanged = !targetPosition.Compare(this.targetPosition, 0.1, 1);
-            bool targetVelocityChanged = !targetVelocity.Compare(this.targetVelocity, 0.1, 1);
+            bool targetPositionChanged = !targetPosition.Compare(this.targetPosition, 0.1, 0.1);
+            bool targetVelocityChanged = !targetVelocity.Compare(this.targetVelocity, 0.1, 0.1);
             bool targetDurationChanged = targetDuration != this.targetDuration;
 
             if (targetDurationChanged || targetPositionChanged || targetVelocityChanged) {
@@ -148,7 +148,7 @@ namespace PingPong.KUKA {
 
         public RobotVector GetNextCorrection(RobotVector currentPosition) {
             lock (syncLock) {
-                if (timeLeft >= Ts) {
+                if (!targetPositionReached && timeLeft >= Ts && !currentPosition.Compare(targetPosition, 0.02, 0.004)) {
                     targetPositionReached = false;
                     double nx = polyX.GetNextValue(currentPosition.X, targetPosition.X, targetVelocity.X, timeLeft, Ts);
                     double ny = polyY.GetNextValue(currentPosition.Y, targetPosition.Y, targetVelocity.Y, timeLeft, Ts);
