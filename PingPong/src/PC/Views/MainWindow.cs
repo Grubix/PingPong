@@ -27,7 +27,7 @@ namespace PingPong.Views {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            //optiTrack = InitializeOptiTrackSystem();
+            optiTrack = InitializeOptiTrackSystem();
             application = new Ping(robot1, chart1);
 
             // Ping
@@ -56,23 +56,23 @@ namespace PingPong.Views {
         }
 
         private void InitializeControls() {
-            incXBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(50, 0, 0), RobotVector.Zero, 10.0);
-            decXBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(-50, 0, 0), RobotVector.Zero, 10.0);
+            incXBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(50, 0, 0), RobotVector.Zero, 5.0);
+            decXBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(-50, 0, 0), RobotVector.Zero, 5.0);
 
-            incYBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 50, 0), RobotVector.Zero, 10.0);
-            decYBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, -50, 0), RobotVector.Zero, 10.0);
+            incYBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 50, 0), RobotVector.Zero, 5.0);
+            decYBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, -50, 0), RobotVector.Zero, 5.0);
 
-            incZBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 50), RobotVector.Zero, 10.0);
-            decZBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, -50), RobotVector.Zero, 10.0);
+            incZBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 50), RobotVector.Zero, 5.0);
+            decZBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, -50), RobotVector.Zero, 5.0);
 
-            incABtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 1, 0, 0), RobotVector.Zero, 10.0);
-            decABtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, -1, 0, 0), RobotVector.Zero, 10.0);
+            incABtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 1, 0, 0), RobotVector.Zero, 5.0);
+            decABtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, -1, 0, 0), RobotVector.Zero, 5.0);
 
-            incBBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, 1, 0), RobotVector.Zero, 10.0);
-            decBBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, -1, 0), RobotVector.Zero, 10.0);
+            incBBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, 1, 0), RobotVector.Zero, 5.0);
+            decBBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, -1, 0), RobotVector.Zero, 5.0);
 
-            incCBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, 0, 1), RobotVector.Zero, 10.0);
-            decCBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, 0, -1), RobotVector.Zero, 10.0);
+            incCBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, 0, 1), RobotVector.Zero, 5.0);
+            decCBtn.Click += (s, e) => robot1.MoveTo(robot1.TargetPosition + new RobotVector(0, 0, 0, 0, 0, -1), RobotVector.Zero, 5.0);
 
             calibrationBtn.Click += (s, e) => ShowCalibrationWindow();
         }

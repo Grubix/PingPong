@@ -141,7 +141,7 @@
             // 
             // incCBtn
             // 
-            this.incCBtn.Location = new System.Drawing.Point(73, 151);
+            this.incCBtn.Location = new System.Drawing.Point(6, 151);
             this.incCBtn.Name = "incCBtn";
             this.incCBtn.Size = new System.Drawing.Size(61, 23);
             this.incCBtn.TabIndex = 10;
@@ -150,7 +150,7 @@
             // 
             // decCBtn
             // 
-            this.decCBtn.Location = new System.Drawing.Point(6, 151);
+            this.decCBtn.Location = new System.Drawing.Point(73, 151);
             this.decCBtn.Name = "decCBtn";
             this.decCBtn.Size = new System.Drawing.Size(61, 23);
             this.decCBtn.TabIndex = 11;
@@ -168,7 +168,6 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.chart1);
             this.panel1.Controls.Add(this.incYBtn);
             this.panel1.Controls.Add(this.incXBtn);
             this.panel1.Controls.Add(this.calibrationBtn);
@@ -190,14 +189,12 @@
             // 
             // chart1
             // 
-            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(0, 319);
+            this.chart1.Location = new System.Drawing.Point(810, 249);
             this.chart1.Name = "chart1";
             series1.BorderWidth = 3;
             series1.ChartArea = "ChartArea1";
@@ -217,13 +214,15 @@
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Series.Add(series3);
-            this.chart1.Size = new System.Drawing.Size(374, 192);
+            this.chart1.Size = new System.Drawing.Size(321, 259);
             this.chart1.TabIndex = 30;
             this.chart1.Text = "chart1";
             // 
             // robot1Panel
             // 
-            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.robot1Panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.robot1Panel.Location = new System.Drawing.Point(0, 0);
             this.robot1Panel.Name = "robot1Panel";
             this.robot1Panel.Size = new System.Drawing.Size(760, 511);
@@ -236,6 +235,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1134, 511);
             this.Controls.Add(this.robot1Panel);
+            this.Controls.Add(this.chart1);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
