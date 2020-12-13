@@ -4,6 +4,7 @@ using PingPong.Maths.Solver;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace PingPong.Applications {
     class Ping_FlyVertically : IApplication {
@@ -36,7 +37,7 @@ namespace PingPong.Applications {
 
         private int sample;
 
-        private Vector3 reflectionVector = new Vector3(0, 0, 1);
+        private Vector<double> reflectionVector = Vector<double>.Build.DenseOfArray(new double[] { 0, 0, 1 });
 
         public Ping_FlyVertically(KUKARobot robot, Chart chart) {
             this.robot = robot;
@@ -95,8 +96,8 @@ namespace PingPong.Applications {
 
                 double T = roots[1];
 
-                var ballTargetVelocity = new Vector3(xCoeffs[1], yCoeffs[1], 2 * zCoeffs[2] * T + zCoeffs[1]);
-                Vector3 paddleNormal = reflectionVector.Normalize() - ballTargetVelocity.Normalize();
+                var ballTargetVelocity = Vector<double>.Build.DenseOfArray(new double[] { xCoeffs[1], yCoeffs[1], 2 * zCoeffs[2] * T + zCoeffs[1] });
+                Vector<double> paddleNormal = Normalize(reflectionVector) - Normalize(ballTargetVelocity);
 
                 if (IsTimeStable(T) && polyfitX.Values.Count >= 10) {
                     double timeToHit = T - elapsedTime;
@@ -112,7 +113,7 @@ namespace PingPong.Applications {
                     if (!ballHit && timeToHit >= 0.05) { // 0.1 DO SPRAWDZENIA!
                         RobotVector predictedHitPosition = new RobotVector(
                             predX, predY, zPositionAtHit,
-                            0, Math.Atan2(paddleNormal.X, paddleNormal.Z), Math.Atan2(paddleNormal.Y, paddleNormal.Z)
+                            0, Math.Atan2(paddleNormal[0], paddleNormal[2]), Math.Atan2(paddleNormal[1], paddleNormal[2])
                          );
 
                         if (robot.Limits.WorkspaceLimits.CheckPosition(predictedHitPosition)) {
@@ -144,6 +145,14 @@ namespace PingPong.Applications {
             return timeOf3Pred.Count >= 3 &&
                 Math.Abs(timeOf3Pred[2] - timeOf3Pred[1]) < timeErrorTolerance &&
                 Math.Abs(timeOf3Pred[1] - timeOf3Pred[0]) < timeErrorTolerance;
+        }
+
+        private Vector<double> Normalize(Vector<double> vec) {
+            double vecTvec = 0;
+            for (int i = 0; i < vec.Count; i++) {
+                vecTvec += vec[i] * vec[i];
+            }
+            return vec / Math.Sqrt(vecTvec);
         }
 
         private void UpdateUI(Action updateAction) {
