@@ -88,6 +88,7 @@
     <Compile Include="src\PC\Devices\KUKA\Limits\RobotLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\Limits\WorkspaceLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5.cs" />
+    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5v1.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator6.cs" />
     <Compile Include="src\PC\Views\CollisionTest.cs">
       <SubType>Form</SubType>
@@ -116,6 +117,12 @@
     </Compile>
     <Compile Include="src\PC\Views\CalibrationWindow.Designer.cs">
       <DependentUpon>CalibrationWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\PC\Views\CORTester.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\PC\Views\CORTester.Designer.cs">
+      <DependentUpon>CORTester.cs</DependentUpon>
     </Compile>
     <Compile Include="src\PC\Views\RobotDataPanel.cs">
       <SubType>UserControl</SubType>
@@ -164,6 +171,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\PC\Views\CommandLineWindow.resx">
       <DependentUpon>CommandLineWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\PC\Views\CORTester.resx">
+      <DependentUpon>CORTester.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\PC\Views\ThreadSafeChart.resx">
       <DependentUpon>ThreadSafeChart.cs</DependentUpon>
