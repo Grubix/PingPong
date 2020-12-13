@@ -27,7 +27,7 @@ namespace PingPong.Views {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            optiTrack = InitializeOptiTrackSystem();
+            //optiTrack = InitializeOptiTrackSystem();
             application = new Ping(robot1, chart1);
 
             // Ping
@@ -41,7 +41,7 @@ namespace PingPong.Views {
             //clw.Show();
             //clw.TopMost = true;
 
-            new CORTester(optiTrack).Show();
+            //new CORTester(optiTrack).Show();
         }
 
         public void ShowCalibrationWindow() {
@@ -151,21 +151,20 @@ namespace PingPong.Views {
 
         private void Test() {
             RobotVector current = new RobotVector();
-            RobotVector target = new RobotVector(50, 0, 0);
-            var gen = new TrajectoryGenerator5v1(current);
+            RobotVector target = new RobotVector(0, 0, 0);
+            var gen = new TrajectoryGenerator5v2(current);
             Random rand = new Random();
-            gen.SetTargetPosition(current ,target, new RobotVector(150, 0, 0), 3.0);
+            gen.SetTargetPosition(current, target, new RobotVector(150, 0, 0), 3.0);
 
             Task.Run(() => {
                 for (int i = 0; i < 2000; i++) {
-                    var corr = gen.GetNextCorrection(current);
-                    current += corr;
+                    current = gen.GetNextValue(current);
                     
-                    if (!gen.IsTargetPositionReached && corr.X != 0.0 && gen.Velocity.X >= 0.0) {
-                        current += new RobotVector(rand.NextDouble() * 0.05, 0, 0);
+                    if (!gen.IsTargetPositionReached) {
+                        //current += new RobotVector(rand.NextDouble() * 0.05, 0, 0);
                     }
 
-                    //threadSafeChart1.AddPoint(current.X, gen.Velocity.X);
+                    threadSafeChart1.AddPoint(current.X, gen.Velocity.X);
                     Thread.Sleep(4);
                 }
             });

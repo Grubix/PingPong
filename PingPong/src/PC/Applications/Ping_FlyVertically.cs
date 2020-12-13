@@ -87,7 +87,7 @@ namespace PingPong.Applications {
                 var xCoeffs = polyfitX.CalculateCoefficients();
                 var yCoeffs = polyfitY.CalculateCoefficients();
                 var zCoeffs = polyfitZ.CalculateCoefficients();
-                var roots = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - zPositionAtHit);
+                var roots = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - zPositionAtHit - 20.0);
 
                 if (roots.Length == 0) {
                     // No real roots

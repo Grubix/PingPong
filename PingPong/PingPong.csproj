@@ -89,9 +89,9 @@
     <Compile Include="src\PC\Devices\KUKA\Limits\AxisLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\Limits\RobotLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\Limits\WorkspaceLimits.cs" />
-    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5v1.cs" />
-    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator6.cs" />
+    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5.cs" />
+    <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5v2.cs" />
     <Compile Include="src\PC\Views\CollisionTest.cs">
       <SubType>Form</SubType>
     </Compile>
