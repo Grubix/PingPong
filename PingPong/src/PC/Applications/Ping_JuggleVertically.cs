@@ -1,10 +1,10 @@
-﻿using PingPong.KUKA;
+﻿using MathNet.Numerics.LinearAlgebra;
+using PingPong.KUKA;
 using PingPong.Maths;
 using PingPong.Maths.Solver;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
-using MathNet.Numerics.LinearAlgebra;
 
 namespace PingPong.Applications {
     class Ping_JuggleVertically : IApplication {
@@ -110,10 +110,12 @@ namespace PingPong.Applications {
                     Console.WriteLine("T: " + T + " X: " + predX + " Y: " + predY);
 
                     if (timeToHit >= 0.05) { // 0.1 DO SPRAWDZENIA!
+                        double angleB = Math.Atan2(paddleNormal[0], paddleNormal[2]) * 180.0 / Math.PI;
+                        double angleC = -90.0 - Math.Atan2(paddleNormal[1], paddleNormal[2]) * 180.0 / Math.PI;
+
                         RobotVector predictedHitPosition = new RobotVector(
-                            predX, predY, zPositionAtHit,
-                            0, Math.Atan2(paddleNormal[0], paddleNormal[2]), Math.Atan2(paddleNormal[1], paddleNormal[2])
-                         );
+                            predX, predY, zPositionAtHit, 0, angleB, angleC
+                        );
 
                         if (robot.Limits.WorkspaceLimits.CheckPosition(predictedHitPosition)) {
                             //predkosc na osiach w [mm/s]
@@ -146,7 +148,7 @@ namespace PingPong.Applications {
                 Math.Abs(timeOf3Pred[1] - timeOf3Pred[0]) < timeErrorTolerance;
         }
 
-        private Vector<double> Normalize(Vector<double> vec) {
+        private MathNet.Numerics.LinearAlgebra.Vector<double> Normalize(MathNet.Numerics.LinearAlgebra.Vector<double> vec) {
             double vecTvec = 0;
             for (int i = 0; i < vec.Count; i++) {
                 vecTvec += vec[i] * vec[i];

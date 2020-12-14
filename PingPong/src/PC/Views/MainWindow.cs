@@ -28,7 +28,7 @@ namespace PingPong.Views {
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
-            application = new Ping(robot1, chart1);
+            application = new Ping(robot1, threadSafeChart);
 
             // Ping
             robot1.Initialized += () => {
@@ -126,11 +126,6 @@ namespace PingPong.Views {
 
         private OptiTrackSystem InitializeOptiTrackSystem() {
             OptiTrackSystem optiTrack = new OptiTrackSystem();
-
-            /*optiTrack.FrameReceived += frame => {
-                ballData.Update(frame);
-            };*/
-
             optiTrack.Initialize();
 
             return optiTrack;
@@ -164,7 +159,7 @@ namespace PingPong.Views {
                         //current += new RobotVector(rand.NextDouble() * 0.05, 0, 0);
                     }
 
-                    threadSafeChart1.AddPoint(current.X, gen.Velocity.X);
+                    //threadSafeChart1.AddPoint(current.X, gen.Velocity.X);
                     Thread.Sleep(4);
                 }
             });

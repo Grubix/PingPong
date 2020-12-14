@@ -1,16 +1,23 @@
-﻿using PingPong.KUKA;
+﻿using MathNet.Numerics.LinearAlgebra;
+using PingPong.KUKA;
 using PingPong.Maths;
 using PingPong.Maths.Solver;
+using PingPong.Views;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PingPong.Applications {
     class Ping : IApplication {
 
-        private const double zPositionAtHit = 340;//290.46;
+        private const double ballRadius = 20.0;
 
-        private const double timeErrorTolerance = 0.03; // DO SPRAWDZENIA!
+        private const double targetHitHeight = 180.0;
+
+        private const double ballFellHeightTreshold = 0.0;
+
+        private const double timeErrorTolerance = 0.03;
+
+        private const int timeCheckRange = 5;
 
         private const int maxPolyfitPoints = 100;
 
@@ -22,7 +29,9 @@ namespace PingPong.Applications {
 
         private readonly Polyfit polyfitZ = new Polyfit(2);
 
-        private readonly List<double> timeOf3Pred = new List<double>();
+        private readonly List<double> predictedTimeSamples = new List<double>();
+
+        private readonly ThreadSafeChart chart;
 
         private bool ballFell = false; // jak ta flaga ustawi sie na true, to robot na 100% sie nie ruszy
 
@@ -30,13 +39,9 @@ namespace PingPong.Applications {
 
         private bool robotMoved = false; // flaga mowiaca ze robot wgl sie ruszyl
 
-        private readonly Chart chart;
-
         private double elapsedTime;
 
-        private int sample;
-
-        public Ping(KUKARobot robot, Chart chart) {
+        public Ping(KUKARobot robot, ThreadSafeChart chart) {
             this.robot = robot;
             this.chart = chart;
 
@@ -47,24 +52,19 @@ namespace PingPong.Applications {
 
                 if (robotMoved && robot.IsTargetPositionReached) {
                     ballHit = true;
-                    robot.MoveTo(robot.Position, RobotVector.Zero, 1.5);
+                    robot.MoveTo(new RobotVector(robot.Position.XYZ, robot.HomePosition.ABC), RobotVector.Zero, 1.5);
                 }
             };
         }
 
         public void ProcessData(OptiTrack.InputFrame data) {
-            // Pozycja przekonwertowana z układu optitracka do układu odpowiedniej KUKI
-            var position = robot.OptiTrackTransformation.Convert(data.Position);
-            double ballX = position[0];
-            double ballY = position[1];
-            double ballZ = position[2];
+            var ballPosition = robot.OptiTrackTransformation.Convert(data.Position);
 
-            if (ballZ < 0) {
+            if (ballPosition[2] < ballFellHeightTreshold) {
                 ballFell = true;
             }
 
-            // Zamiast zabawy w te ify trzeba ogarnac LabeledMarkers w optitracku zeby wykryc kiedy dokladnie widzimy pileczke a kiedy nie
-            if (!ballFell && ballZ > 250 && ballX < 1200 && ballX != 791.016 && ballY != 743.144 && ballZ != 148.319) {
+            if (IsBallVisible(ballPosition)) {
                 if (polyfitZ.Values.Count == maxPolyfitPoints) {
                     for (int i = 0; i < maxPolyfitPoints / 2; i++) {
                         polyfitX.Values[i] = polyfitX.Values[2 * i];
@@ -77,21 +77,26 @@ namespace PingPong.Applications {
                     polyfitZ.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
                 }
 
-                polyfitX.AddPoint(elapsedTime, ballX);
-                polyfitY.AddPoint(elapsedTime, ballY);
-                polyfitZ.AddPoint(elapsedTime, ballZ);
+                polyfitX.AddPoint(elapsedTime, ballPosition[0]);
+                polyfitY.AddPoint(elapsedTime, ballPosition[1]);
+                polyfitZ.AddPoint(elapsedTime, ballPosition[2]);
 
                 var xCoeffs = polyfitX.CalculateCoefficients();
                 var yCoeffs = polyfitY.CalculateCoefficients();
                 var zCoeffs = polyfitZ.CalculateCoefficients();
 
-                var roots = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - zPositionAtHit - 20.0);
+                // center of the ball on z axis (t) = a0 / 2 * t^2 + v0 * t + z0
+                // bottom of the ball on z axis (t) = a0 / 2 * t^2 + v0 * t + z0 - {ball radius}
+                // a0 / 2 * t^2 + v0 * t + z0 - {ball radius} = {target hit height}
+                // a0 / 2 * t^2 + v0 * t + z0 - {target hit height} - {ball radius} = 0
+
+                var roots = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - targetHitHeight - ballRadius);
 
                 if (roots.Length == 0) {
-                    // No real roots
-                    return;
+                    return; // No real roots
                 }
 
+                // bottom of the ball on z axis(T) = {target hit height} + {ball radius} - z0
                 double T = roots[1];
 
                 if (IsTimeStable(T) && polyfitX.Values.Count >= 10) {
@@ -99,24 +104,13 @@ namespace PingPong.Applications {
                     double predX = xCoeffs[1] * T + xCoeffs[0];
                     double predY = yCoeffs[1] * T + yCoeffs[0];
 
-                    UpdateUI(() => {
-                        chart.Series[0].Points.AddXY(sample, predX);
-                        chart.Series[1].Points.AddXY(sample++, predY);
-                    });
-                    Console.WriteLine("T: " + T + " X: " + predX + " Y: " + predY);
-
-                    if (!ballHit && timeToHit >= 0.05) { // 0.1 DO SPRAWDZENIA!
-                        RobotVector predictedHitPosition = new RobotVector(predX, predY, zPositionAtHit, robot.Position.ABC);
+                    if (!ballHit && timeToHit >= 0.05) {
+                        RobotVector predictedHitPosition = new RobotVector(predX, predY, targetHitHeight, robot.HomePosition.ABC);
 
                         if (robot.Limits.WorkspaceLimits.CheckPosition(predictedHitPosition)) {
-                            //predkosc na osiach w [mm/s]
-                            // RobotVector velocity = new RobotVector(0, 0, 0);
-
-                            // Dla odwaznych: 
-                            RobotVector velocity = new RobotVector(0, 0, 150);
-
-                            robot.MoveTo(predictedHitPosition, velocity, timeToHit);
                             robotMoved = true;
+                            RobotVector velocity = new RobotVector(0, 0, 0);
+                            robot.MoveTo(predictedHitPosition, velocity, timeToHit);
                         }
                     }
                 }
@@ -125,31 +119,35 @@ namespace PingPong.Applications {
             }
         }
 
+        private bool IsBallVisible(Vector<double> ballPosition) {
+            var translationVector = robot.OptiTrackTransformation.Translation;
+
+            return
+                !ballFell &&
+                ballPosition[0] < 1200.0 &&
+                ballPosition[2] > 250.0 &&
+                ballPosition[0] != translationVector[0] &&
+                ballPosition[1] != translationVector[1] &&
+                ballPosition[2] != translationVector[2];
+        }
+
         private bool IsTimeStable(double time) {
-            if (timeOf3Pred.Count >= 3) {
-                timeOf3Pred[0] = timeOf3Pred[1];
-                timeOf3Pred[1] = timeOf3Pred[2];
-                timeOf3Pred[2] = time;
+            if (predictedTimeSamples.Count == timeCheckRange) {
+                predictedTimeSamples.RemoveAt(0);
+                predictedTimeSamples.Add(time);
+
+                bool isTimeStable = true;
+
+                for (int i = 1; i < predictedTimeSamples.Count; i++) {
+                    isTimeStable &= Math.Abs(predictedTimeSamples[i] - predictedTimeSamples[i - 1]) <= timeErrorTolerance;
+                }
+
+                return isTimeStable;
             } else {
-                timeOf3Pred.Add(time);
+                predictedTimeSamples.Add(time);
+
+                return false;
             }
-
-            return timeOf3Pred.Count >= 3 &&
-                Math.Abs(timeOf3Pred[2] - timeOf3Pred[1]) < timeErrorTolerance &&
-                Math.Abs(timeOf3Pred[1] - timeOf3Pred[0]) < timeErrorTolerance;
-        } 
-
-        private void UpdateUI(Action updateAction) {
-            if (chart.InvokeRequired) {
-                Action actionWrapper = () => {
-                    updateAction.Invoke();
-                };
-
-                chart.Invoke(actionWrapper);
-                return;
-            }
-
-            updateAction.Invoke();
         }
 
     }

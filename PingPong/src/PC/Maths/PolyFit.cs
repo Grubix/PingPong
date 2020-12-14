@@ -44,6 +44,7 @@ namespace PingPong.Maths {
             var XT = X.Transpose();
             var XTX = XT * X;
 
+            // Check if XTX matrix is inversible
             if (XTX.Determinant() == 0.0) {
                 for (int i = 0; i < Order + 1; i++) {
                     coefficients.Add(0.0);

@@ -8,11 +8,11 @@ namespace PingPong.Maths {
     /// </summary>
     public class Transformation {
 
-        private readonly Matrix<double> rotation;
+        public Matrix<double> Matrix { get; }
 
-        private readonly Vector<double> translation;
+        public Matrix<double> Rotation { get; }
 
-        private readonly Matrix<double> matrix;
+        public Vector<double> Translation { get; }
 
         /// <summary>
         /// Gets the value of <see cref="Matrix"></see> at the given row and column
@@ -22,7 +22,7 @@ namespace PingPong.Maths {
         /// <returns></returns>
         public double this[int i, int j] {
             get {
-                return matrix[i, j];
+                return Matrix[i, j];
             }
         }
 
@@ -77,21 +77,21 @@ namespace PingPong.Maths {
                 V[2, 2] *= -1;
             }
 
-            rotation = V * UT;
-            translation = -1 * rotation * centroidA + centroidB;
+            Rotation = V * UT;
+            Translation = -1 * Rotation * centroidA + centroidB;
 
-            matrix = Matrix<double>.Build.DenseOfArray(new double[,] {
-                { rotation[0, 0], rotation[0, 1], rotation[0, 2], translation[0] },
-                { rotation[1, 0], rotation[1, 1], rotation[1, 2], translation[1] },
-                { rotation[2, 0], rotation[2, 1], rotation[2, 2], translation[2] },
+            Matrix = Matrix<double>.Build.DenseOfArray(new double[,] {
+                { Rotation[0, 0], Rotation[0, 1], Rotation[0, 2], Translation[0] },
+                { Rotation[1, 0], Rotation[1, 1], Rotation[1, 2], Translation[1] },
+                { Rotation[2, 0], Rotation[2, 1], Rotation[2, 2], Translation[2] },
                 { 0.0, 0.0, 0.0, 1.0 }
             });
         }
 
         public Transformation(Matrix<double> rotation, Vector<double> translation) {
-            this.rotation = rotation.Clone();
-            this.translation = translation.Clone();
-            matrix = Matrix<double>.Build.DenseOfArray(new double[,] {
+            Rotation = rotation.Clone();
+            Translation = translation.Clone();
+            Matrix = Matrix<double>.Build.DenseOfArray(new double[,] {
                 { rotation[0, 0], rotation[0, 1], rotation[0, 2], translation[0] },
                 { rotation[1, 0], rotation[1, 1], rotation[1, 2], translation[1] },
                 { rotation[2, 0], rotation[2, 1], rotation[2, 2], translation[2] },
@@ -105,7 +105,7 @@ namespace PingPong.Maths {
         /// <param name="pointInA">vector in A coordinate system</param>
         /// <returns></returns>
         public Vector<double> Convert(Vector<double> pointInA) {
-            return rotation * pointInA + translation;
+            return Rotation * pointInA + Translation;
         }
 
     }
