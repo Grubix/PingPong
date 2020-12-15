@@ -242,7 +242,7 @@ namespace PingPong.KUKA {
 
             if (!Limits.CheckVelocity(targetVelocity)) {
                 throw new ArgumentException($"target velocity exceeding max value " +
-                    $"({Limits.MaxVelocity.XYZ} mm/s, {Limits.MaxVelocity.ABC} deg/s):" +
+                    $"({Limits.MaxVelocity.XYZ} [mm/s], {Limits.MaxVelocity.ABC} deg/s):" +
                     $"{Environment.NewLine}{targetVelocity}");
             }
 

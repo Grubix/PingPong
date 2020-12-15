@@ -42,6 +42,8 @@ namespace PingPong.Views {
             //clw.TopMost = true;
 
             //new CORTester(optiTrack).Show();
+
+            Console.WriteLine(threadSafeChart.MaxSamples);
         }
 
         public void ShowCalibrationWindow() {
@@ -81,7 +83,7 @@ namespace PingPong.Views {
             WorkspaceLimits workspaceLimits = new WorkspaceLimits(
                 X: (-250, 250),
                 Y: (700, 950),
-                Z: (250, 600)
+                Z: (150, 400)
             );
 
             AxisLimits axisLimits = new AxisLimits(

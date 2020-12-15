@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -17,15 +18,14 @@ namespace PingPong.Views {
 
         private long deltaTime = 0;
 
-        private readonly int MaxSamples;
+        [Description("Max visible samples"), Category("Data")]
+        public int MaxSamples { get; set; } = 5000;
 
-        private readonly int RefreshTime;
+        [Description("Time offset between chart refresh"), Category("Data")]
+        public int RefreshTime { get; set; } = 80;
 
         public ThreadSafeChart() {
             InitializeComponent();
-
-            MaxSamples = 5000;
-            RefreshTime = 30;
 
             series1 = new Series {
                 ChartType = SeriesChartType.Line,

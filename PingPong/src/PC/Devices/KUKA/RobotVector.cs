@@ -2,6 +2,9 @@
 using System;
 
 namespace PingPong.KUKA {
+    /// <summary>
+    /// Represents KUKA robot vector
+    /// </summary>
     public class RobotVector : ICloneable {
 
         public static readonly RobotVector Zero = new RobotVector();
@@ -30,12 +33,6 @@ namespace PingPong.KUKA {
             }
         }
 
-        public RobotVector() : this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0) {
-        }
-
-        public RobotVector(double X, double Y, double Z) : this(X, Y, Z, 0.0, 0.0, 0.0) {
-        }
-
         public RobotVector(double X, double Y, double Z, double A, double B, double C) {
             this.X = X;
             this.Y = Y;
@@ -45,13 +42,24 @@ namespace PingPong.KUKA {
             this.C = C;
         }
 
-        public RobotVector(Vector<double> XYZ, Vector<double> ABC) : this(XYZ[0], XYZ[1], XYZ[2], ABC[0], ABC[1], ABC[2]) {
+        public RobotVector() : 
+            this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0) {
         }
 
-        public RobotVector(double X, double Y, double Z, Vector<double> ABC) : this(X, Y, Z, ABC[0], ABC[1], ABC[2]) {
+        public RobotVector(double X, double Y, double Z) : 
+            this(X, Y, Z, 0.0, 0.0, 0.0) {
         }
 
-        public RobotVector(Vector<double> XYZ, double A, double B, double C) : this(XYZ[0], XYZ[1], XYZ[2], A, B, C) {
+        public RobotVector(Vector<double> XYZ, Vector<double> ABC) : 
+            this(XYZ[0], XYZ[1], XYZ[2], ABC[0], ABC[1], ABC[2]) {
+        }
+
+        public RobotVector(double X, double Y, double Z, Vector<double> ABC) : 
+            this(X, Y, Z, ABC[0], ABC[1], ABC[2]) {
+        }
+
+        public RobotVector(Vector<double> XYZ, double A, double B, double C) : 
+            this(XYZ[0], XYZ[1], XYZ[2], A, B, C) {
         }
 
         public bool Compare(RobotVector vectorToCompare, double xyzTolerance, double abcTolerance) {

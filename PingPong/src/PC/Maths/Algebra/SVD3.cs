@@ -20,12 +20,12 @@ namespace PingPong.Maths {
 
         public Matrix3 VT { get; private set; }
 
-        public SVD3(Matrix3 input, double tolerance) {
+        public SVD3(Matrix3 input, double errorTolerance) {
             S = input.Transpose() * input;
             V = Matrix3.Identity();
 
             int currentIteration = 0;
-            while (!CheckError(S, tolerance)) {
+            while (!CheckError(S, errorTolerance)) {
                 Compute(S);
 
                 if (currentIteration == maxIterations) {

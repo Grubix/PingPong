@@ -39,7 +39,7 @@
             this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chart.Location = new System.Drawing.Point(0, 0);
             this.chart.Name = "chart";
-            this.chart.Size = new System.Drawing.Size(300, 200);
+            this.chart.Size = new System.Drawing.Size(600, 400);
             this.chart.TabIndex = 0;
             this.chart.Text = "chart";
             // 
@@ -49,7 +49,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.chart);
             this.Name = "ThreadSafeChart";
-            this.Size = new System.Drawing.Size(300, 200);
+            this.Size = new System.Drawing.Size(600, 400);
             ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.ResumeLayout(false);
 

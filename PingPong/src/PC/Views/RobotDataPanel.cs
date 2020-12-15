@@ -1,14 +1,13 @@
 ﻿using PingPong.KUKA;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PingPong.Views {
     public partial class RobotDataPanel : UserControl {
 
-        private const double Ts = 30;
+        private const double Ts = 80;
 
         private const int maxSamples = 5000;
 

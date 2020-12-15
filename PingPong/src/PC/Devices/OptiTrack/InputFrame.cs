@@ -22,7 +22,6 @@ namespace PingPong.OptiTrack {
 
             FrameDeltaTime = data.fTimestamp - timestamp;
             timestamp = data.fTimestamp;
-
         }
 
     }

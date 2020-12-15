@@ -10,17 +10,17 @@ namespace PingPong.KUKA {
             private double xn, vn, an; // next value, velocity and acceleration
 
             /// <summary>
-            /// Current position
+            /// Current (theoretical) position
             /// </summary>
             public double X { get; private set; }
 
             /// <summary>
-            /// Current velocity
+            /// Current (theoretical) velocity
             /// </summary>
             public double V { get; private set; }
 
             /// <summary>
-            /// Current acceleration
+            /// Current (theoretical) acceleration
             /// </summary>
             public double A { get; private set; }
 
@@ -80,7 +80,7 @@ namespace PingPong.KUKA {
 
         private readonly object syncLock = new object();
 
-        private bool targetPositionReached;
+        private readonly RobotVector homePosition;
 
         private RobotVector targetPosition;
 
@@ -89,6 +89,8 @@ namespace PingPong.KUKA {
         private double targetDuration;
 
         private double elapsedTime;
+
+        private bool targetPositionReached;
 
         public RobotVector TargetPosition {
             get {
@@ -122,9 +124,11 @@ namespace PingPong.KUKA {
             }
         }
 
-        public TrajectoryGenerator5v2(RobotVector currentPosition) {
+        public TrajectoryGenerator5v2(RobotVector homePosition) {
+            this.homePosition = new RobotVector(homePosition.XYZ, 0, 0, 0);
+
             targetPositionReached = true;
-            targetPosition = currentPosition;
+            targetPosition = homePosition;
             targetVelocity = RobotVector.Zero;
             targetDuration = 0.0;
             elapsedTime = 0.0;
@@ -148,12 +152,12 @@ namespace PingPong.KUKA {
                     elapsedTime = 0.0;
                 }
 
-                polyX.UpdateCoefficients(currentPosition.X, targetPosition.X, targetVelocity.X, targetDuration);
-                polyY.UpdateCoefficients(currentPosition.Y, targetPosition.Y, targetVelocity.Y, targetDuration);
-                polyZ.UpdateCoefficients(currentPosition.Z, targetPosition.Z, targetVelocity.Z, targetDuration);
-                polyA.UpdateCoefficients(currentPosition.A, targetPosition.A, targetVelocity.A, targetDuration);
-                polyB.UpdateCoefficients(currentPosition.B, targetPosition.B, targetVelocity.B, targetDuration);
-                polyC.UpdateCoefficients(currentPosition.C, targetPosition.C, targetVelocity.C, targetDuration);
+                polyX.UpdateCoefficients(currentPosition.X, this.targetPosition.X, this.targetVelocity.X, this.targetDuration);
+                polyY.UpdateCoefficients(currentPosition.Y, this.targetPosition.Y, this.targetVelocity.Y, this.targetDuration);
+                polyZ.UpdateCoefficients(currentPosition.Z, this.targetPosition.Z, this.targetVelocity.Z, this.targetDuration);
+                polyA.UpdateCoefficients(currentPosition.A, this.targetPosition.A, this.targetVelocity.A, this.targetDuration);
+                polyB.UpdateCoefficients(currentPosition.B, this.targetPosition.B, this.targetVelocity.B, this.targetDuration);
+                polyC.UpdateCoefficients(currentPosition.C, this.targetPosition.C, this.targetVelocity.C, this.targetDuration);
             }
         }
 
@@ -162,14 +166,14 @@ namespace PingPong.KUKA {
                 if (!targetPositionReached && elapsedTime < targetDuration) {
                     elapsedTime += Ts;
 
-                    return new RobotVector(
-                        polyX.GetValueAt(elapsedTime),
-                        polyY.GetValueAt(elapsedTime),
-                        polyZ.GetValueAt(elapsedTime),
-                        polyA.GetValueAt(elapsedTime),
-                        polyB.GetValueAt(elapsedTime),
-                        polyC.GetValueAt(elapsedTime)
-                    );
+                    double nx = polyX.GetValueAt(elapsedTime);
+                    double ny = polyY.GetValueAt(elapsedTime);
+                    double nz = polyZ.GetValueAt(elapsedTime);
+                    double na = polyA.GetValueAt(elapsedTime);
+                    double nb = polyB.GetValueAt(elapsedTime);
+                    double nc = polyC.GetValueAt(elapsedTime);
+
+                    return new RobotVector(nx, ny, nz, na, nb, nc) - homePosition;
                 } else {
                     targetPositionReached = true;
 
@@ -180,7 +184,7 @@ namespace PingPong.KUKA {
                     polyB.Reset(targetVelocity.B);
                     polyC.Reset(targetVelocity.C);
 
-                    return currentPosition;
+                    return currentPosition - homePosition;
                 }
             }
         }

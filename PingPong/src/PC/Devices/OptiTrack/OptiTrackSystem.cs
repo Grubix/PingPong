@@ -38,12 +38,12 @@ namespace PingPong.OptiTrack {
                 throw new InvalidOperationException("Connection failed. Is Motive application running?");
             }
 
+            isInitialized = true;
+            Initialized?.Invoke();
+
             natNetClient.OnFrameReady += (data, client) => {
                 FrameReceived?.Invoke(new InputFrame(data));
             };
-
-            isInitialized = true;
-            Initialized?.Invoke();
         }
 
         public bool IsInitialized() {

@@ -232,7 +232,9 @@
             // 
             this.threadSafeChart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.threadSafeChart.Location = new System.Drawing.Point(3, 3);
+            this.threadSafeChart.MaxSamples = 5000;
             this.threadSafeChart.Name = "threadSafeChart";
+            this.threadSafeChart.RefreshTime = 80;
             this.threadSafeChart.Size = new System.Drawing.Size(979, 479);
             this.threadSafeChart.TabIndex = 0;
             // 

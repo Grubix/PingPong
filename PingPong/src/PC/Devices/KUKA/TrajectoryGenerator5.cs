@@ -10,12 +10,12 @@ namespace PingPong.KUKA {
             private double xn, vn, an; // Next value, velocity and next acceleration
 
             /// <summary>
-            /// Current velocity
+            /// Current (theoretical) velocity
             /// </summary>
             public double V { get; private set; }
 
             /// <summary>
-            /// Current acceleration
+            /// Current (theoretical) acceleration
             /// </summary>
             public double A { get; private set; }
 
@@ -72,8 +72,6 @@ namespace PingPong.KUKA {
 
         private readonly object syncLock = new object();
 
-        private bool targetPositionReached;
-
         private RobotVector targetPosition;
 
         private RobotVector targetVelocity;
@@ -81,6 +79,8 @@ namespace PingPong.KUKA {
         private double targetDuration;
 
         private double timeLeft;
+
+        private bool targetPositionReached;
 
         public RobotVector TargetPosition {
            get {
@@ -114,10 +114,10 @@ namespace PingPong.KUKA {
             }
         }
 
-        public TrajectoryGenerator5(RobotVector currentPosition) {
+        public TrajectoryGenerator5(RobotVector homePosition) {
             targetPositionReached = true;
-            targetPosition = currentPosition;
-            targetVelocity = new RobotVector();
+            targetPosition = homePosition;
+            targetVelocity = RobotVector.Zero;
             targetDuration = 0.0;
             timeLeft = 0.0;
         }
@@ -145,7 +145,6 @@ namespace PingPong.KUKA {
         public RobotVector GetNextCorrection(RobotVector currentPosition) {
             lock (syncLock) {
                 if (!targetPositionReached && timeLeft >= Ts && !currentPosition.Compare(targetPosition, 0.02, 0.004)) {
-                    targetPositionReached = false;
                     double nx = polyX.GetNextValue(currentPosition.X, targetPosition.X, targetVelocity.X, timeLeft, Ts);
                     double ny = polyY.GetNextValue(currentPosition.Y, targetPosition.Y, targetVelocity.Y, timeLeft, Ts);
                     double nz = polyZ.GetNextValue(currentPosition.Z, targetPosition.Z, targetVelocity.Z, timeLeft, Ts);
@@ -159,6 +158,7 @@ namespace PingPong.KUKA {
                     return nextPosition - currentPosition;
                 } else {
                     targetPositionReached = true;
+
                     polyX.Reset(targetVelocity.X);
                     polyY.Reset(targetVelocity.Y);
                     polyZ.Reset(targetVelocity.Z);
