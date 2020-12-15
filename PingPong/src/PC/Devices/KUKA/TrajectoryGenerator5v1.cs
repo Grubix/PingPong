@@ -117,7 +117,7 @@ namespace PingPong.KUKA {
         }
 
         public TrajectoryGenerator5v1(RobotVector homePosition) {
-            this.homePosition = new RobotVector(homePosition.XYZ, 0, 0, 0);
+            this.homePosition = homePosition;
 
             targetPositionReached = true;
             targetPosition = homePosition;

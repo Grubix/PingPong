@@ -96,7 +96,7 @@ namespace PingPong.Applications {
                     return; // No real roots
                 }
 
-                // bottom of the ball on z axis(T) = {target hit height} + {ball radius} - z0
+                // bottom of the ball on z axis (T) = {target hit height} + {ball radius} - z0
                 double T = roots[1];
 
                 if (IsTimeStable(T) && polyfitX.Values.Count >= 10) {
@@ -140,6 +140,10 @@ namespace PingPong.Applications {
 
                 for (int i = 1; i < predictedTimeSamples.Count; i++) {
                     isTimeStable &= Math.Abs(predictedTimeSamples[i] - predictedTimeSamples[i - 1]) <= timeErrorTolerance;
+
+                    if (!isTimeStable) {
+                        break;
+                    }
                 }
 
                 return isTimeStable;
