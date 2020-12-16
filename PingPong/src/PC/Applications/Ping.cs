@@ -1,6 +1,8 @@
-﻿using PingPong.KUKA;
+﻿using MathNet.Numerics.LinearAlgebra;
+using PingPong.KUKA;
 using PingPong.Maths;
 using PingPong.Maths.Solver;
+using PingPong.Views;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -30,13 +32,15 @@ namespace PingPong.Applications {
 
         private bool robotMoved = false; // flaga mowiaca ze robot wgl sie ruszyl
 
-        private readonly Chart chart;
+        private readonly ThreadSafeChart chart;
 
         private double elapsedTime;
 
         private int sample;
 
-        public Ping(KUKARobot robot, Chart chart) {
+        private RobotVector prevPosition = new RobotVector(791.016, 743.144, 148.319);
+
+        public Ping(KUKARobot robot, ThreadSafeChart chart) {
             this.robot = robot;
             this.chart = chart;
 
@@ -64,8 +68,8 @@ namespace PingPong.Applications {
             }
 
             // Zamiast zabawy w te ify trzeba ogarnac LabeledMarkers w optitracku zeby wykryc kiedy dokladnie widzimy pileczke a kiedy nie
-            if (!ballFell && ballZ > 250 && ballX < 1200 && ballX != 791.016 && ballY != 743.144 && ballZ != 148.319) {
-                if (polyfitZ.Values.Count == maxPolyfitPoints) {
+            if (!ballFell && ballZ > 0 && ballX < 1200 && prevPosition.X != ballX && prevPosition.Y != ballY && prevPosition.Z != ballZ) {
+                /*if (polyfitZ.Values.Count == maxPolyfitPoints) {
                     for (int i = 0; i < maxPolyfitPoints / 2; i++) {
                         polyfitX.Values[i] = polyfitX.Values[2 * i];
                         polyfitY.Values[i] = polyfitY.Values[2 * i];
@@ -75,7 +79,12 @@ namespace PingPong.Applications {
                     polyfitX.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
                     polyfitY.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
                     polyfitZ.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
-                }
+                }*/
+
+                prevPosition = new RobotVector(ballX, ballY, ballZ);
+                Console.WriteLine(ballX);
+                Console.WriteLine(ballY);
+                Console.WriteLine(ballZ);
 
                 polyfitX.AddPoint(elapsedTime, ballX);
                 polyfitY.AddPoint(elapsedTime, ballY);
@@ -92,19 +101,18 @@ namespace PingPong.Applications {
                 }
 
                 double T = roots[1];
+                if (T < 3)
+                    chart.AddPoint(T, 0);
 
                 if (IsTimeStable(T) && polyfitX.Values.Count >= 10) {
                     double timeToHit = T - elapsedTime;
                     double predX = xCoeffs[1] * T + xCoeffs[0];
                     double predY = yCoeffs[1] * T + yCoeffs[0];
 
-                    UpdateUI(() => {
-                        chart.Series[0].Points.AddXY(sample, predX);
-                        chart.Series[1].Points.AddXY(sample++, predY);
-                    });
+                   
                     Console.WriteLine("T: " + T + " X: " + predX + " Y: " + predY);
 
-                    if (!ballHit && timeToHit >= 0.05) { // 0.1 DO SPRAWDZENIA!
+                    /*if (!ballHit && timeToHit >= 0.05) { // 0.1 DO SPRAWDZENIA!
                         RobotVector predictedHitPosition = new RobotVector(predX, predY, zPositionAtHit, robot.Position.ABC);
 
                         if (robot.Limits.WorkspaceLimits.CheckPosition(predictedHitPosition)) {
@@ -114,10 +122,10 @@ namespace PingPong.Applications {
                             // Dla odwaznych: 
                             RobotVector velocity = new RobotVector(0, 0, 150);
 
-                            robot.MoveTo(predictedHitPosition, velocity, timeToHit);
+                            //robot.MoveTo(predictedHitPosition, velocity, timeToHit);
                             robotMoved = true;
                         }
-                    }
+                    }*/
                 }
 
                 elapsedTime += data.FrameDeltaTime;
@@ -137,19 +145,6 @@ namespace PingPong.Applications {
                 Math.Abs(timeOf3Pred[2] - timeOf3Pred[1]) < timeErrorTolerance &&
                 Math.Abs(timeOf3Pred[1] - timeOf3Pred[0]) < timeErrorTolerance;
         } 
-
-        private void UpdateUI(Action updateAction) {
-            if (chart.InvokeRequired) {
-                Action actionWrapper = () => {
-                    updateAction.Invoke();
-                };
-
-                chart.Invoke(actionWrapper);
-                return;
-            }
-
-            updateAction.Invoke();
-        }
 
     }
 }

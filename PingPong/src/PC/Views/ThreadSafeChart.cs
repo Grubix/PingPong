@@ -24,7 +24,7 @@ namespace PingPong.Views {
         public ThreadSafeChart() {
             InitializeComponent();
 
-            MaxSamples = 5000;
+            MaxSamples = 1000;
             RefreshTime = 30;
 
             series1 = new Series {

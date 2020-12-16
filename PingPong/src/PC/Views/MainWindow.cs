@@ -26,14 +26,20 @@ namespace PingPong.Views {
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
             optiTrack = InitializeOptiTrackSystem();
-            application = new Ping(robot1, chart1);
+            application = new Ping(robot1, threadSafeChart1);
 
             // Ping
-            robot1.Initialized += () => {
+            /*robot1.Initialized += () => {
                 optiTrack.FrameReceived += frame => {
                     application.ProcessData(frame);
                 };
+            };*/
+            optiTrack.FrameReceived += frame => {
+                application.ProcessData(frame);
             };
+            /*optiTrack.FrameReceived += frame => {
+                threadSafeChart1.AddPoint(frame.Position[1], 0);
+            };*/
 
             //var clw = new CollisionTest();
             //clw.Show();
