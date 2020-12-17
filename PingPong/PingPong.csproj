@@ -78,8 +78,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\PC\Applications\Ping.cs" />
-    <Compile Include="src\PC\Applications\Ping_FlyVertically.cs" />
-    <Compile Include="src\PC\Applications\Ping_JuggleVertically.cs" />
+    <Compile Include="src\PC\Applications\PingFlyVertically.cs" />
+    <Compile Include="src\PC\Applications\PingJuggleVertically.cs" />
     <Compile Include="src\PC\Commands\ClearCommand.cs" />
     <Compile Include="src\PC\Commands\ICommand.cs" />
     <Compile Include="src\PC\Commands\CommandArgs.cs" />

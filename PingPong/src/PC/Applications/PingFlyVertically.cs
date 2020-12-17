@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 
 namespace PingPong.Applications {
-    class Ping : IApplication {
+    class PingFlyVertically : IApplication {
 
         private const double targetHitHeight = 180.0; // docelowa zetka na ktorej ma nastapic zderzenie
 
@@ -42,7 +42,9 @@ namespace PingPong.Applications {
 
         private double elapsedTime;
 
-        public Ping(KUKARobot robot, ThreadSafeChart chart) {
+        private Vector<double> reflectionVector = Vector<double>.Build.DenseOfArray(new double[] { 0, 0, 1 });
+
+        public PingFlyVertically(KUKARobot robot, ThreadSafeChart chart) {
             this.robot = robot;
             this.chart = chart;
 
@@ -79,7 +81,7 @@ namespace PingPong.Applications {
 
             var ballPosition = robot.OptiTrackTransformation.Convert(data.Position);
 
-            if (ballPosition[0] < 1200.0 && 
+            if (ballPosition[0] < 1200.0 &&
                 (ballPosition[0] != prevBallPosition[0] ||
                 ballPosition[1] != prevBallPosition[1] ||
                 ballPosition[2] != prevBallPosition[2])
@@ -111,11 +113,19 @@ namespace PingPong.Applications {
                         var xCoeffs = polyfitX.CalculateCoefficients();
                         var yCoeffs = polyfitY.CalculateCoefficients();
 
+                        var ballTargetVelocity = Vector<double>.Build.DenseOfArray(new double[] { xCoeffs[1], yCoeffs[1], 2 * zCoeffs[2] * T + zCoeffs[1] });
+                        Vector<double> paddleNormal = Normalize(reflectionVector) - Normalize(ballTargetVelocity);
+                        
+                        double angleB = Math.Atan2(paddleNormal[0], paddleNormal[2]) * 180.0 / Math.PI;
+                        double angleC = -90.0 - Math.Atan2(paddleNormal[1], paddleNormal[2]) * 180.0 / Math.PI;
+
                         RobotVector predictedHitPosition = new RobotVector(
                             xCoeffs[1] * T + xCoeffs[0], // predicted x
                             yCoeffs[1] * T + yCoeffs[0], // predicted y
                             targetHitHeight,
-                            robot.HomePosition.ABC
+                            0,
+                            angleB,
+                            angleC
                         );
 
                         Console.WriteLine(predictedHitPosition);
@@ -179,6 +189,14 @@ namespace PingPong.Applications {
 
                 return false;
             }
+        }
+
+        private Vector<double> Normalize(Vector<double> vec) {
+            double vecTvec = 0;
+            for (int i = 0; i < vec.Count; i++) {
+                vecTvec += vec[i] * vec[i];
+            }
+            return vec / Math.Sqrt(vecTvec);
         }
 
     }
