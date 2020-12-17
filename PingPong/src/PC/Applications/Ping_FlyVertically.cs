@@ -55,7 +55,7 @@ namespace PingPong.Applications {
             };
         }
 
-        public void ProcessData(OptiTrack.InputFrame data) {
+        public void ProcessOptiTrackData(OptiTrack.InputFrame data) {
             // Pozycja przekonwertowana z układu optitracka do układu odpowiedniej KUKI
             var position = robot.OptiTrackTransformation.Convert(data.Position);
             double ballX = position[0];

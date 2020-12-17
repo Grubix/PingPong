@@ -1,7 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using PingPong.KUKA;
 using PingPong.Maths;
-using PingPong.Maths.Solver;
 using PingPong.Views;
 using System;
 using System.Collections.Generic;
@@ -9,15 +8,15 @@ using System.Collections.Generic;
 namespace PingPong.Applications {
     class Ping : IApplication {
 
-        private const double ballRadius = 20.0;
+        private const double targetHitHeight = 180.0; // docelowa zetka na ktorej ma nastapic zderzenie
 
-        private const double targetHitHeight = 180.0;
+        private const double ballFellHeight = targetHitHeight - 50.0; // wartosc zetki kiedy stwierdziamy ze pileczka spadla (50 mm moze byc za malo)
 
-        private const double ballFellHeightTreshold = 0.0;
+        private const double timeErrorTolerance = 0.03; // maksymalny blad predykcji czasu miedzy {timeCheckRange} predykcjami ***DO DOPASOWANIA***
 
-        private const double timeErrorTolerance = 0.03;
+        private const int timeCheckRange = 10; // ilosc iteracji przy sprawdzaniu stabilnosci czasu ***DO DOPASOWANIA***
 
-        private const int timeCheckRange = 5;
+        private const int maxPolyfitPoints = 30; // maksymalna ilosc probek do liczenia polyfita ***DO DOPASOWANIA***
 
         private readonly ThreadSafeChart chart;
 
@@ -25,17 +24,21 @@ namespace PingPong.Applications {
 
         private readonly Polyfit polyfitX;
 
-        private readonly Polyfit polyfitZ = new Polyfit(2);
+        private readonly Polyfit polyfitY;
 
-        private readonly List<double> predictedTimeSamples = new List<double>();
+        private readonly Polyfit polyfitZ;
 
-        private readonly ThreadSafeChart chart;
+        private readonly List<double> predictedTimeSamples;
 
-        private bool ballFell = false; // jak ta flaga ustawi sie na true, to robot na 100% sie nie ruszy
+        private Vector<double> prevBallPosition;
+
+        private bool ballSpotted = false; // flaga wyłapująca pierwsze wejscie pilczeki w zakres
+
+        private bool ballFell = false; // jak ta flaga ustawi sie na true, to robot na 100% sie nie ruszy i wlasciwie jest koniec programu
 
         private bool ballHit = false; // flaga mowiaca o tym ze w teorii nastapilo zderzenie
 
-        private bool robotMoved = false; // flaga mowiaca ze robot wgl sie ruszyl
+        private bool robotMoved = false; // flaga mowiaca ze robot wgl sie ruszyl, tzn nastapil podjazd do jakiejs tam predykcji
 
         private double elapsedTime;
 
@@ -49,9 +52,7 @@ namespace PingPong.Applications {
             predictedTimeSamples = new List<double>();
 
             // TUTAJ NA RAZIE NA PALE DAC TEN WEKTOR TRANZLACJI Z KUKI
-            prevBallPosition = Vector<double>.Build.DenseOfArray(
-                new double[] { 791.016, 743.144, 148.319 }
-            );
+            prevBallPosition = Vector<double>.Build.DenseOfArray(new double[] { 791.016, 743.144, 148.319 });
 
             robot.FrameReceived += ProcessRobotData;
         }
@@ -61,12 +62,16 @@ namespace PingPong.Applications {
                 return;
             }
 
-                if (robotMoved && robot.IsTargetPositionReached) {
-                    ballHit = true;
-                    robot.MoveTo(new RobotVector(robot.Position.XYZ, robot.HomePosition.ABC), RobotVector.Zero, 1.5);
-                }
-            };
+            if (robotMoved && robot.IsTargetPositionReached) {
+                ballHit = true;
+                //robot.MoveTo(new RobotVector(robot.Position.XYZ, robot.HomePosition.ABC), RobotVector.Zero, 1.5);
+            }
         }
+
+        public void ProcessOptiTrackData(OptiTrack.InputFrame data) {
+            if (ballFell) {
+                return;
+            }
 
             if (ballSpotted) {
                 elapsedTime += data.FrameDeltaTime;
@@ -74,49 +79,36 @@ namespace PingPong.Applications {
 
             var ballPosition = robot.OptiTrackTransformation.Convert(data.Position);
 
-            if (ballPosition[0] < 1200.0 && (
-                ballPosition[0] != prevBallPosition[0] || 
-                ballPosition[1] != prevBallPosition[1] || 
+            if (ballPosition[0] < 1200.0 && 
+                (ballPosition[0] != prevBallPosition[0] ||
+                ballPosition[1] != prevBallPosition[1] ||
                 ballPosition[2] != prevBallPosition[2])
             ) {
                 ballSpotted = true;
 
-                    polyfitX.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
-                    polyfitY.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
-                    polyfitZ.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
+                if (ballPosition[2] <= ballFellHeight) {
+                    ballFell = true;
+                    return;
                 }
 
                 polyfitX.AddPoint(elapsedTime, ballPosition[0]);
                 polyfitY.AddPoint(elapsedTime, ballPosition[1]);
                 polyfitZ.AddPoint(elapsedTime, ballPosition[2]);
 
-                var xCoeffs = polyfitX.CalculateCoefficients();
-                var yCoeffs = polyfitY.CalculateCoefficients();
-                var zCoeffs = polyfitZ.CalculateCoefficients();
-
-                // center of the ball on z axis (t) = a0 / 2 * t^2 + v0 * t + z0
-                // bottom of the ball on z axis (t) = a0 / 2 * t^2 + v0 * t + z0 - {ball radius}
-                // a0 / 2 * t^2 + v0 * t + z0 - {ball radius} = {target hit height}
-                // a0 / 2 * t^2 + v0 * t + z0 - {target hit height} - {ball radius} = 0
-
-                var roots = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - targetHitHeight - ballRadius);
-
-                if (roots.Length == 0) {
-                    return; // No real roots
+                if (polyfitZ.Values.Count == maxPolyfitPoints) {
+                    ShiftPolyfitPoints();
                 }
 
-                // bottom of the ball on z axis (T) = {target hit height} + {ball radius} - z0
-                double T = roots[1];
+                double T = CalculatePredictedTimeOfFlight();
 
-                chart.AddPoint(T, T); //POTEM MOZNA WYWALIC, TYLKO DO TESTOW
+                chart.AddPoint(T, T);
 
-                if (!ballHit && T > 0.1 && IsPredictedTimeStable(T)) { // 0.1 DO SPRAWDZENIA, MOZE POWINNO BYC WIECEJ ¯\_(ツ)_/¯
+                if (!ballHit && T > 0.1 && IsPredictedTimeStable(T)) { // 0.1 mozna zwiekszyc - do przetestowania
                     double timeToHit = T - elapsedTime;
-                    double predX = xCoeffs[1] * T + xCoeffs[0];
-                    double predY = yCoeffs[1] * T + yCoeffs[0];
 
-                    if (!ballHit && timeToHit >= 0.05) {
-                        RobotVector predictedHitPosition = new RobotVector(predX, predY, targetHitHeight, robot.HomePosition.ABC);
+                    if (timeToHit >= 0.05) {
+                        var xCoeffs = polyfitX.CalculateCoefficients();
+                        var yCoeffs = polyfitY.CalculateCoefficients();
 
                         RobotVector predictedHitPosition = new RobotVector(
                             xCoeffs[1] * T + xCoeffs[0], // predicted x
@@ -124,6 +116,8 @@ namespace PingPong.Applications {
                             targetHitHeight,
                             robot.HomePosition.ABC
                         );
+
+                        Console.WriteLine(predictedHitPosition);
 
                         if (robot.Limits.WorkspaceLimits.CheckPosition(predictedHitPosition)) {
                             robotMoved = true;
@@ -137,26 +131,41 @@ namespace PingPong.Applications {
             prevBallPosition = ballPosition;
         }
 
-                elapsedTime += data.FrameDeltaTime;
+        private void ShiftPolyfitPoints() {
+            for (int i = 0; i < maxPolyfitPoints / 2; i++) {
+                polyfitX.Values[i] = polyfitX.Values[2 * i];
+                polyfitY.Values[i] = polyfitY.Values[2 * i];
+                polyfitZ.Values[i] = polyfitZ.Values[2 * i];
+            }
+
+            polyfitX.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
+            polyfitY.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
+            polyfitZ.Values.RemoveRange(maxPolyfitPoints / 2, maxPolyfitPoints / 2);
+        }
+
+        private double CalculatePredictedTimeOfFlight() {
+            var zCoeffs = polyfitZ.CalculateCoefficients();
+            double a = zCoeffs[2];
+            double b = zCoeffs[1];
+            double c = zCoeffs[0] - targetHitHeight;
+
+            if (a >= 0.0) {
+                return -1.0;
+            }
+
+            double delta = b * b - 4.0 * a * c;
+
+            if (delta < 0) {
+                return -1.0;
+            } else {
+                return (-b - Math.Sqrt(delta)) / (2.0 * a);
             }
         }
 
-        private bool IsBallVisible(Vector<double> ballPosition) {
-            var translationVector = robot.OptiTrackTransformation.Translation;
-
-            return
-                !ballFell &&
-                ballPosition[0] < 1200.0 &&
-                ballPosition[2] > 250.0 &&
-                ballPosition[0] != translationVector[0] &&
-                ballPosition[1] != translationVector[1] &&
-                ballPosition[2] != translationVector[2];
-        }
-
-        private bool IsTimeStable(double time) {
+        private bool IsPredictedTimeStable(double predictedTime) {
             if (predictedTimeSamples.Count == timeCheckRange) {
                 predictedTimeSamples.RemoveAt(0);
-                predictedTimeSamples.Add(time);
+                predictedTimeSamples.Add(predictedTime);
 
                 bool isTimeStable = true;
 
@@ -164,13 +173,13 @@ namespace PingPong.Applications {
                     isTimeStable &= Math.Abs(predictedTimeSamples[i] - predictedTimeSamples[i - 1]) <= timeErrorTolerance;
 
                     if (!isTimeStable) {
-                        break;
+                        return false;
                     }
                 }
 
                 return isTimeStable;
             } else {
-                predictedTimeSamples.Add(time);
+                predictedTimeSamples.Add(predictedTime);
 
                 return false;
             }

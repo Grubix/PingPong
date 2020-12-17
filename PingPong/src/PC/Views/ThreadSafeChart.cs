@@ -19,15 +19,20 @@ namespace PingPong.Views {
         private long deltaTime = 0;
 
         [Description("Max visible samples"), Category("Data")]
-        public int MaxSamples { get; set; } = 5000;
+        public int MaxSamples {
+            get {
+                return (int)chart.ChartAreas[0].AxisX.Maximum;
+            }
+            set {
+                chart.ChartAreas[0].AxisX.Maximum = value;
+            }
+        }
 
         [Description("Time offset in milliseconds between chart updates"), Category("Data")]
         public int RefreshTimeOffset { get; set; }
 
         public ThreadSafeChart() {
             InitializeComponent();
-            MaxSamples = 5000;
-            RefreshTimeOffset = 80;
 
             series1 = new Series {
                 ChartType = SeriesChartType.Line,
@@ -47,6 +52,9 @@ namespace PingPong.Views {
 
             series1.Points.AddXY(0, 0);
             series2.Points.AddXY(0, 0);
+
+            MaxSamples = 5000;
+            RefreshTimeOffset = 80;
 
             stopWatch.Start();
         }

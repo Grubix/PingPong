@@ -40,8 +40,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.robot1Panel = new PingPong.Views.RobotDataPanel();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.threadSafeChart = new PingPong.Views.ThreadSafeChart();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -209,6 +209,16 @@
             this.tabPage1.Text = "KUKA";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // robot1Panel
+            // 
+            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.robot1Panel.Location = new System.Drawing.Point(3, 3);
+            this.robot1Panel.MaxSamples = 5000;
+            this.robot1Panel.Name = "robot1Panel";
+            this.robot1Panel.RefreshTimeOffset = 80;
+            this.robot1Panel.Size = new System.Drawing.Size(979, 479);
+            this.robot1Panel.TabIndex = 0;
+            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.threadSafeChart);
@@ -219,16 +229,6 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "OptiTrack";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // robot1Panel
-            // 
-            this.robot1Panel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.robot1Panel.Location = new System.Drawing.Point(3, 3);
-            this.robot1Panel.MaxSamples = 5000;
-            this.robot1Panel.Name = "robot1Panel";
-            this.robot1Panel.RefreshTimeOffset = 80;
-            this.robot1Panel.Size = new System.Drawing.Size(979, 479);
-            this.robot1Panel.TabIndex = 0;
             // 
             // threadSafeChart
             // 

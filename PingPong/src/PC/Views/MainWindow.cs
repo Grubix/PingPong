@@ -33,7 +33,7 @@ namespace PingPong.Views {
             // Ping
             robot1.Initialized += () => {
                 optiTrack.FrameReceived += frame => {
-                    application.ProcessData(frame);
+                    application.ProcessOptiTrackData(frame);
                 };
             };
         }
