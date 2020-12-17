@@ -36,14 +36,6 @@ namespace PingPong.Views {
                     application.ProcessData(frame);
                 };
             };
-
-            //var clw = new CollisionTest();
-            //clw.Show();
-            //clw.TopMost = true;
-
-            //new CORTester(optiTrack).Show();
-
-            Console.WriteLine(threadSafeChart.MaxSamples);
         }
 
         public void ShowCalibrationWindow() {

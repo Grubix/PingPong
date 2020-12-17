@@ -21,11 +21,13 @@ namespace PingPong.Views {
         [Description("Max visible samples"), Category("Data")]
         public int MaxSamples { get; set; } = 5000;
 
-        [Description("Time offset between chart refresh"), Category("Data")]
-        public int RefreshTime { get; set; } = 80;
+        [Description("Time offset in milliseconds between chart updates"), Category("Data")]
+        public int RefreshTimeOffset { get; set; }
 
         public ThreadSafeChart() {
             InitializeComponent();
+            MaxSamples = 5000;
+            RefreshTimeOffset = 80;
 
             series1 = new Series {
                 ChartType = SeriesChartType.Line,
@@ -37,14 +39,15 @@ namespace PingPong.Views {
                 BorderWidth = 3
             };
 
+            chart.Series.Add(series1);
+            chart.Series.Add(series2);
+
             chart.ChartAreas[0].AxisX.Minimum = 0;
             chart.ChartAreas[0].AxisX.Maximum = MaxSamples;
 
-            //chart.ChartAreas[0].AxisY.Minimum = 100;
-            //chart.ChartAreas[0].AxisY.Maximum = 200;
+            series1.Points.AddXY(0, 0);
+            series2.Points.AddXY(0, 0);
 
-            chart.Series.Add(series1);
-            chart.Series.Add(series2);
             stopWatch.Start();
         }
 
@@ -56,7 +59,7 @@ namespace PingPong.Views {
             stopWatch.Reset();
             stopWatch.Start();
 
-            if (deltaTime < RefreshTime) {
+            if (deltaTime < RefreshTimeOffset) {
                 totalSamples++;
                 visibleSamples++;
                 return;

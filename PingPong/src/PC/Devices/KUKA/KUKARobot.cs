@@ -22,7 +22,7 @@ namespace PingPong.KUKA {
 
         private bool forceMoveMode = false;
 
-        private long IPOC;
+        private long IPOC; // timestamp
 
         private RobotVector position;
 
@@ -172,9 +172,6 @@ namespace PingPong.KUKA {
         /// </summary>
         private async Task ReceiveDataAsync() {
             InputFrame receivedFrame = await rsiAdapter.ReceiveDataAsync();
-
-            // DO ODKOMENTOWANIA DLA POZYCJI ABSOLUTNEJ
-            /*
             RobotVector correction = receivedFrame.Position - position;
 
             if (!Limits.CheckCorrection(correction)) {
@@ -182,24 +179,23 @@ namespace PingPong.KUKA {
                 throw new InvalidOperationException("Correction limit has been exceeded:" +
                     $"{Environment.NewLine}{correction}");
             }
-            */
+
+            if (!Limits.CheckAxisPosition(receivedFrame.AxisPosition)) {
+                Uninitialize();
+                throw new InvalidOperationException("Axis position limit has been exceeded:" +
+                    $"{Environment.NewLine}{receivedFrame.AxisPosition}");
+            }
+
+            if (!Limits.CheckPosition(receivedFrame.Position)) {
+                Uninitialize();
+                throw new InvalidOperationException("Available workspace limit has been exceeded:" +
+                    $"{Environment.NewLine}{receivedFrame.Position}");
+            }
 
             lock (receivedDataSyncLock) {
                 IPOC = receivedFrame.IPOC;
                 position = receivedFrame.Position;
                 axisPosition = receivedFrame.AxisPosition;
-            }
-
-            if (!Limits.CheckAxisPosition(axisPosition)) {
-                Uninitialize();
-                throw new InvalidOperationException("Axis position limit has been exceeded:" +
-                    $"{Environment.NewLine}{axisPosition}");
-            }
-
-            if (!Limits.CheckPosition(position)) {
-                Uninitialize();
-                throw new InvalidOperationException("Available workspace limit has been exceeded:" +
-                    $"{Environment.NewLine}{position}");
             }
 
             FrameReceived?.Invoke(receivedFrame);
@@ -215,10 +211,9 @@ namespace PingPong.KUKA {
                 correction = generator.GetNextCorrection(position);
             }
 
-            //correction = new E6POS(correction.X, correction.Y, correction.Z, 0, correction.B, correction.C);
             correction = new RobotVector(correction.X, correction.Y, correction.Z, 0, 0, 0);
 
-            // DO ZAKOMENTOWANIA DLA POZYCJI ABSOLUTNEJ
+            // CAŁY IF DO ZAKOMENTOWANIA DLA POZYCJI ABSOLUTNEJ
             if (!Limits.CheckCorrection(correction)) {
                 Uninitialize();
                 throw new InvalidOperationException("Correction limit has been exceeded:" +
@@ -252,7 +247,7 @@ namespace PingPong.KUKA {
 
             if (!Limits.CheckVelocity(targetVelocity)) {
                 throw new ArgumentException("target velocity exceeding max value " +
-                    $"({Limits.MaxVelocity.XYZ} [mm/s], {Limits.MaxVelocity.ABC} deg/s):" +
+                    $"({Limits.MaxVelocity.XYZ} [mm/s], {Limits.MaxVelocity.ABC} [deg/s]):" +
                     $"{Environment.NewLine}{targetVelocity}");
             }
 

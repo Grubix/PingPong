@@ -1,15 +1,12 @@
 ﻿using PingPong.KUKA;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PingPong.Views {
     public partial class RobotDataPanel : UserControl {
-
-        private const double Ts = 80;
-
-        private const int maxSamples = 5000;
 
         private readonly Stopwatch stopWatch;
 
@@ -23,11 +20,28 @@ namespace PingPong.Views {
 
         private Series velX, velY, velZ, velA, velB, velC;
 
+        [Description("Max visible samples"), Category("Data")]
+        public int MaxSamples {
+            get {
+                return (int)positionChart.ChartAreas[0].AxisX.Maximum;
+            }
+            set {
+                positionChart.ChartAreas[0].AxisX.Maximum = value;
+                velocityChart.ChartAreas[0].AxisX.Maximum = value;
+            }
+        }
+
+        [Description("Time offset in milliseconds between chart updates"), Category("Data")]
+        public int RefreshTimeOffset { get; set; }
+
         public RobotDataPanel() {
             InitializeComponent();
             InitializePositionChart();
             InitializeVelocityChart();
             stopWatch = new Stopwatch();
+
+            MaxSamples = 5000;
+            RefreshTimeOffset = 80;
         }
 
         public void AssignRobot(KUKARobot robot) {
@@ -39,14 +53,14 @@ namespace PingPong.Views {
                 totalSamples++;
                 visibleSamples++;
 
-                if (deltaTime < Ts) {
+                if (deltaTime < RefreshTimeOffset) {
                     return;
                 }
 
                 deltaTime = 0;
 
                 UpdateUI(() => {
-                    if (visibleSamples >= maxSamples) {
+                    if (visibleSamples >= MaxSamples) {
                         visibleSamples = 0;
 
                         posX.Points.Clear();
@@ -65,8 +79,8 @@ namespace PingPong.Views {
 
                         positionChart.ChartAreas[0].AxisX.Minimum = totalSamples;
                         velocityChart.ChartAreas[0].AxisX.Minimum = totalSamples;
-                        positionChart.ChartAreas[0].AxisX.Maximum = totalSamples + maxSamples;
-                        velocityChart.ChartAreas[0].AxisX.Maximum = totalSamples + maxSamples;
+                        positionChart.ChartAreas[0].AxisX.Maximum = totalSamples + MaxSamples;
+                        velocityChart.ChartAreas[0].AxisX.Maximum = totalSamples + MaxSamples;
                     }
 
                     var position = robot.Position;
@@ -158,7 +172,7 @@ namespace PingPong.Views {
             posYCheck.Checked = true;
             posZCheck.Checked = true;
 
-            positionChart.ChartAreas[0].AxisX.Maximum = maxSamples;
+            positionChart.ChartAreas[0].AxisX.Maximum = MaxSamples;
         }
 
         private void InitializeVelocityChart() {
@@ -216,7 +230,7 @@ namespace PingPong.Views {
             velYCheck.Checked = true;
             velZCheck.Checked = true;
 
-            velocityChart.ChartAreas[0].AxisX.Maximum = maxSamples;
+            velocityChart.ChartAreas[0].AxisX.Maximum = MaxSamples;
         }
 
         private void InitializeCheckBox(Chart chart, Series series, CheckBox checkBox) {
