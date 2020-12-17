@@ -9,19 +9,19 @@ namespace PingPong.OptiTrack {
 
         private static double timestamp;
 
-        public Vector<double> Position { get; }
+        public Vector<double> Position { get; set; }
 
-        public double FrameDeltaTime { get; }
+        public double FrameDeltaTime { get; set; }
 
         public InputFrame(FrameOfMocapData data) {
-            Position = Vector<double>.Build.DenseOfArray(new double[] {
-                data.OtherMarkers[0].x * 1000.0,
-                data.OtherMarkers[0].y * 1000.0,
-                data.OtherMarkers[0].z * 1000.0
-            });
+            //Position = Vector<double>.Build.DenseOfArray(new double[] {
+            //    data.OtherMarkers[0].x * 1000.0,
+            //    data.OtherMarkers[0].y * 1000.0,
+            //    data.OtherMarkers[0].z * 1000.0
+            //});
 
-            FrameDeltaTime = data.fTimestamp - timestamp;
-            timestamp = data.fTimestamp;
+            //FrameDeltaTime = data.fTimestamp - timestamp;
+            //timestamp = data.fTimestamp;
         }
 
     }

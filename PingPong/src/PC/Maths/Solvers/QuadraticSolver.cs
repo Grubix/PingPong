@@ -29,6 +29,18 @@ namespace PingPong.Maths.Solver {
         }
 
         public static double[] SolveReal(double a, double b, double c) {
+            if (a == 0.0) {
+                if (b != 0.0) {
+                    if (c != 0.0) {
+                        return new double[] { -b / c };
+                    } else {
+                        return new double[] { };
+                    }
+                } else {
+                    return new double[] { };
+                }
+            }
+            
             double delta = b * b - 4 * a * c;
 
             if (delta < 0) {

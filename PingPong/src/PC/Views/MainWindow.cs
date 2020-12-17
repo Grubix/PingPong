@@ -2,6 +2,7 @@
 using PingPong.Applications;
 using PingPong.KUKA;
 using PingPong.Maths;
+using PingPong.Maths.Solver;
 using PingPong.OptiTrack;
 using System;
 using System.Drawing;
@@ -33,7 +34,7 @@ namespace PingPong.Views {
             // Ping
             robot1.Initialized += () => {
                 optiTrack.FrameReceived += frame => {
-                    application.ProcessData(frame);
+                    application.ProcessOptiTrackData(frame);
                 };
             };
 
@@ -43,7 +44,39 @@ namespace PingPong.Views {
 
             //new CORTester(optiTrack).Show();
 
-            Console.WriteLine(threadSafeChart.MaxSamples);
+            Polyfit fit = new Polyfit(2);
+            Random rand = new Random();
+            IApplication app = new Ping(robot1, threadSafeChart);
+
+            double g = 9.81;
+            double v0 = 3.5;
+            double z0 = 0.4;
+
+            double t = 0.0;
+            double x = 2000.0;
+            double z = 0.0;
+            double noise = 0.1;
+
+            Task.Run(() => {
+                for (int i = 0; i < 1000; i++) {
+                    if (i > 150) {
+                        z = (-g / 2.0 * t * t + v0 * t + z0 + rand.NextDouble() * noise - noise / 2.0) * 1000;
+                        t += 0.004;
+                        x = 1000;
+                    }
+
+                    OptiTrack.InputFrame frame = new OptiTrack.InputFrame(null);
+                    frame.Position = Vector<double>.Build.DenseOfArray(new double[] { x, 0, z });
+                    frame.FrameDeltaTime = 0.004;
+
+                    app.ProcessOptiTrackData(frame);
+                    Thread.Sleep(4);
+
+                    if (z > 0) {
+                        //threadSafeChart.AddPoint(z, z);
+                    }
+                }
+            });
         }
 
         public void ShowCalibrationWindow() {
@@ -98,14 +131,24 @@ namespace PingPong.Views {
             RobotLimits limits = new RobotLimits(workspaceLimits, axisLimits, (2.7, 0.05));
             KUKARobot robot1 = new KUKARobot(8081, limits);
 
+            //var rotationMatrix = Matrix<double>.Build.DenseOfArray(new double[,] {
+            //    { -0.009,  0.001, -1.0 },
+            //    { -1.0, -0.002,  0.009 },
+            //    { -0.002,  1.0,  0.001 }
+            //});
+
+            //var translationVector = Vector<double>.Build.DenseOfArray(new double[] {
+            //    791.016, 743.144, 148.319
+            //});
+
             var rotationMatrix = Matrix<double>.Build.DenseOfArray(new double[,] {
-                { -0.009,  0.001, -1.0 },
-                { -1.0, -0.002,  0.009 },
-                { -0.002,  1.0,  0.001 }
+                { 1, 0, 0 },
+                { 0, 1, 0 },
+                { 0, 0, 1 }
             });
 
             var translationVector = Vector<double>.Build.DenseOfArray(new double[] {
-                791.016, 743.144, 148.319
+                0, 0, 0
             });
 
             robot1Panel.AssignRobot(robot1);

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
 using MathNet.Numerics.LinearAlgebra;
+using PingPong.Views;
 
 namespace PingPong.Applications {
     class Ping_FlyVertically : IApplication {
@@ -31,7 +32,7 @@ namespace PingPong.Applications {
 
         private bool robotMoved = false; // flaga mowiaca ze robot wgl sie ruszyl
 
-        private readonly Chart chart;
+        private readonly ThreadSafeChart chart;
 
         private double elapsedTime;
 
@@ -39,7 +40,7 @@ namespace PingPong.Applications {
 
         private Vector<double> reflectionVector = Vector<double>.Build.DenseOfArray(new double[] { 0, 0, 1 });
 
-        public Ping_FlyVertically(KUKARobot robot, Chart chart) {
+        public Ping_FlyVertically(KUKARobot robot, ThreadSafeChart chart) {
             this.robot = robot;
             this.chart = chart;
 
@@ -55,7 +56,7 @@ namespace PingPong.Applications {
             };
         }
 
-        public void ProcessData(OptiTrack.InputFrame data) {
+        public void ProcessOptiTrackData(OptiTrack.InputFrame data) {
             // Pozycja przekonwertowana z układu optitracka do układu odpowiedniej KUKI
             var position = robot.OptiTrackTransformation.Convert(data.Position);
             double ballX = position[0];
@@ -67,7 +68,9 @@ namespace PingPong.Applications {
             }
 
             // Zamiast zabawy w te ify trzeba ogarnac LabeledMarkers w optitracku zeby wykryc kiedy dokladnie widzimy pileczke a kiedy nie
-            if (!ballFell && ballZ > 250 && ballX < 1200 && ballX != 791.016 && ballY != 743.144 && ballZ != 148.319) {
+            if (!ballFell && ballX < 1200 && ballX != 791.016 && ballY != 743.144 && ballZ != 148.319) {
+                Console.WriteLine("cc");
+
                 if (polyfitZ.Values.Count == maxPolyfitPoints) {
                     for (int i = 0; i < maxPolyfitPoints / 2; i++) {
                         polyfitX.Values[i] = polyfitX.Values[2 * i];
@@ -87,14 +90,18 @@ namespace PingPong.Applications {
                 var xCoeffs = polyfitX.CalculateCoefficients();
                 var yCoeffs = polyfitY.CalculateCoefficients();
                 var zCoeffs = polyfitZ.CalculateCoefficients();
-                var roots = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - zPositionAtHit - 20.0);
+                var roots = QuadraticSolver.SolveReal(zCoeffs[2], zCoeffs[1], zCoeffs[0] - zPositionAtHit);
 
-                if (roots.Length == 0) {
+                elapsedTime += data.FrameDeltaTime;
+
+                if (roots.Length != 2) {
                     // No real roots
                     return;
                 }
 
                 double T = roots[1];
+
+                chart.AddPoint(T, T);
 
                 var ballTargetVelocity = Vector<double>.Build.DenseOfArray(new double[] { xCoeffs[1], yCoeffs[1], 2 * zCoeffs[2] * T + zCoeffs[1] });
                 Vector<double> paddleNormal = Normalize(reflectionVector) - Normalize(ballTargetVelocity);
@@ -104,10 +111,6 @@ namespace PingPong.Applications {
                     double predX = xCoeffs[1] * T + xCoeffs[0];
                     double predY = yCoeffs[1] * T + yCoeffs[0];
 
-                    UpdateUI(() => {
-                        chart.Series[0].Points.AddXY(sample, predX);
-                        chart.Series[1].Points.AddXY(sample++, predY);
-                    });
                     Console.WriteLine("T: " + T + " X: " + predX + " Y: " + predY);
 
                     if (!ballHit && timeToHit >= 0.05) { // 0.1 DO SPRAWDZENIA!
@@ -118,20 +121,18 @@ namespace PingPong.Applications {
                             predX, predY, zPositionAtHit, 0, angleB, angleC
                         );
 
-                        if (robot.Limits.WorkspaceLimits.CheckPosition(predictedHitPosition)) {
-                            //predkosc na osiach w [mm/s]
-                            // RobotVector velocity = new RobotVector(0, 0, 0);
+                        //if (robot.Limits.WorkspaceLimits.CheckPosition(predictedHitPosition)) {
+                        //    //predkosc na osiach w [mm/s]
+                        //    // RobotVector velocity = new RobotVector(0, 0, 0);
 
-                            // Dla odwaznych: 
-                            RobotVector velocity = new RobotVector(0, 0, 150);
+                        //    // Dla odwaznych: 
+                        //    RobotVector velocity = new RobotVector(0, 0, 150);
 
-                            robot.MoveTo(predictedHitPosition, velocity, timeToHit);
-                            robotMoved = true;
-                        }
+                        //    robot.MoveTo(predictedHitPosition, velocity, timeToHit);
+                        //    robotMoved = true;
+                        //}
                     }
                 }
-
-                elapsedTime += data.FrameDeltaTime;
             }
         }
 
@@ -155,19 +156,6 @@ namespace PingPong.Applications {
                 vecTvec += vec[i] * vec[i];
             }
             return vec / Math.Sqrt(vecTvec);
-        }
-
-        private void UpdateUI(Action updateAction) {
-            if (chart.InvokeRequired) {
-                Action actionWrapper = () => {
-                    updateAction.Invoke();
-                };
-
-                chart.Invoke(actionWrapper);
-                return;
-            }
-
-            updateAction.Invoke();
         }
 
     }

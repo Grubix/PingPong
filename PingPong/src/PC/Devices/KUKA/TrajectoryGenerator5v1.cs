@@ -74,6 +74,8 @@ namespace PingPong.KUKA {
 
         private readonly RobotVector homePosition;
 
+        private RobotVector reachedPosition;
+
         private RobotVector targetPosition;
 
         private RobotVector targetVelocity;
@@ -159,8 +161,11 @@ namespace PingPong.KUKA {
 
                     return new RobotVector(nx, ny, nz, na, nb, nc) - homePosition;
                 } else {
-                    targetPositionReached = true;
+                    if (!targetPositionReached) {
+                        reachedPosition = currentPosition - homePosition;
+                    }
 
+                    targetPositionReached = true;
                     polyX.Reset(targetVelocity.X);
                     polyY.Reset(targetVelocity.Y);
                     polyZ.Reset(targetVelocity.Z);
@@ -168,7 +173,7 @@ namespace PingPong.KUKA {
                     polyB.Reset(targetVelocity.B);
                     polyC.Reset(targetVelocity.C);
 
-                    return currentPosition - homePosition;
+                    return reachedPosition;
                 }
             }
         }
