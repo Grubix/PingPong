@@ -28,6 +28,8 @@ namespace PingPong.KUKA {
 
         private AxisPosition axisPosition;
 
+        private RobotVector sumOfCorr = new RobotVector(0, 0, 0, 0, 0, 0);
+
         /// <summary>
         /// Robot Ip adress (Robot Sensor Interface - RSI)
         /// </summary>
@@ -174,11 +176,11 @@ namespace PingPong.KUKA {
             InputFrame receivedFrame = await rsiAdapter.ReceiveDataAsync();
             RobotVector correction = receivedFrame.Position - position;
 
-            if (!Limits.CheckCorrection(correction)) {
+            /*if (!Limits.CheckCorrection(correction)) {
                 Uninitialize();
                 throw new InvalidOperationException("Correction limit has been exceeded:" +
                     $"{Environment.NewLine}{correction}");
-            }
+            }*/
 
             if (!Limits.CheckAxisPosition(receivedFrame.AxisPosition)) {
                 Uninitialize();
@@ -211,7 +213,9 @@ namespace PingPong.KUKA {
                 correction = generator.GetNextCorrection(position);
             }
 
-            correction = new RobotVector(correction.X, correction.Y, correction.Z, 0, 0, 0);
+            //correction = new RobotVector(correction.X, correction.Y, correction.Z, 0, 0, 0);
+            //sumOfCorr += correction;
+            //Console.WriteLine(sumOfCorr);
 
             // CAŁY IF DO ZAKOMENTOWANIA DLA POZYCJI ABSOLUTNEJ
             if (!Limits.CheckCorrection(correction)) {

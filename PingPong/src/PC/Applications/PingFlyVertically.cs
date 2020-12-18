@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace PingPong.Applications {
     class PingFlyVertically : IApplication {
 
-        private const double targetHitHeight = 180.0; // docelowa zetka na ktorej ma nastapic zderzenie
+        private const double targetHitHeight = 177.83; // docelowa zetka na ktorej ma nastapic zderzenie
 
         private const double ballFellHeight = targetHitHeight - 50.0; // wartosc zetki kiedy stwierdziamy ze pileczka spadla (50 mm moze byc za malo)
 
@@ -44,6 +44,8 @@ namespace PingPong.Applications {
 
         private Vector<double> reflectionVector = Vector<double>.Build.DenseOfArray(new double[] { 0, 0, 1 });
 
+        private readonly object syncLock = new object();
+
         public PingFlyVertically(KUKARobot robot, ThreadSafeChart chart) {
             this.robot = robot;
             this.chart = chart;
@@ -66,12 +68,13 @@ namespace PingPong.Applications {
 
             if (robotMoved && robot.IsTargetPositionReached) {
                 ballHit = true;
-                robot.MoveTo(new RobotVector(robot.Position.XYZ, robot.HomePosition.ABC), RobotVector.Zero, 1.5);
+                Console.WriteLine("ballHit: " + ballHit);
+                robot.MoveTo(new RobotVector(robot.Position.XYZ, robot.HomePosition.ABC), RobotVector.Zero, 3);
             }
         }
 
         public void ProcessOptiTrackData(OptiTrack.InputFrame data) {
-            if (ballFell) {
+            if (ballFell || ballHit) {
                 return;
             }
 
@@ -104,12 +107,11 @@ namespace PingPong.Applications {
                 var zCoeffs = polyfitZ.CalculateCoefficients();
                 double T = CalculatePredictedTimeOfFlight(zCoeffs[2], zCoeffs[1], zCoeffs[0] - targetHitHeight);
 
+                double timeToHit = T - elapsedTime;
                 chart.AddPoint(T, T);
 
-                if (!ballHit && T > 0.1 && IsPredictedTimeStable(T)) { // 0.1 mozna zwiekszyc - do przetestowania
-                    double timeToHit = T - elapsedTime;
-
-                    if (timeToHit >= 0.05) {
+                if (T > 0.1 && IsPredictedTimeStable(T)) { // 0.1 mozna zwiekszyc - do przetestowania
+                    if (timeToHit >= 0.3) {
                         var xCoeffs = polyfitX.CalculateCoefficients();
                         var yCoeffs = polyfitY.CalculateCoefficients();
 
@@ -131,9 +133,12 @@ namespace PingPong.Applications {
                         Console.WriteLine(predictedHitPosition);
 
                         if (robot.Limits.WorkspaceLimits.CheckPosition(predictedHitPosition)) {
-                            robotMoved = true;
-                            RobotVector velocity = new RobotVector(0, 0, 0);
-                            //robot.MoveTo(predictedHitPosition, velocity, timeToHit);
+                            lock(syncLock) {
+                                robotMoved = true;
+                                RobotVector velocity = new RobotVector(0, 0, 0);
+                                robot.MoveTo(predictedHitPosition, velocity, timeToHit);
+
+                            }
                         }
                     }
                 }

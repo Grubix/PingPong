@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace PingPong.Applications {
     class PingJuggleVertically : IApplication {
 
-        private const double targetHitHeight = 180.0; // docelowa zetka na ktorej ma nastapic zderzenie
+        private const double targetHitHeight = 177.83; // docelowa zetka na ktorej ma nastapic zderzenie
 
         private const double ballFellHeight = targetHitHeight - 50.0; // wartosc zetki kiedy stwierdziamy ze pileczka spadla (50 mm moze byc za malo)
 
@@ -41,6 +41,8 @@ namespace PingPong.Applications {
         private double elapsedTime;
 
         private Vector<double> reflectionVector = Vector<double>.Build.DenseOfArray(new double[] { 0, 0, 1 });
+
+        private readonly object syncLock = new object();
 
         public PingJuggleVertically(KUKARobot robot, ThreadSafeChart chart) {
             this.robot = robot;
@@ -104,12 +106,11 @@ namespace PingPong.Applications {
                 var zCoeffs = polyfitZ.CalculateCoefficients();
                 double T = CalculatePredictedTimeOfFlight(zCoeffs[2], zCoeffs[1], zCoeffs[0] - targetHitHeight);
 
+                double timeToHit = T - elapsedTime;
                 chart.AddPoint(T, T);
 
                 if (T > 0.1 && IsPredictedTimeStable(T)) { // 0.1 mozna zwiekszyc - do przetestowania
-                    double timeToHit = T - elapsedTime;
-
-                    if (timeToHit >= 0.05) {
+                    if (timeToHit >= 0.3) {
                         var xCoeffs = polyfitX.CalculateCoefficients();
                         var yCoeffs = polyfitY.CalculateCoefficients();
 
