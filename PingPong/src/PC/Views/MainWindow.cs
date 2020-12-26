@@ -27,14 +27,39 @@ namespace PingPong.Views {
             InitializeControls();
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
-            optiTrack = InitializeOptiTrackSystem();
-            application = new PingFlyVertically(robot1, threadSafeChart);
+            //optiTrack = InitializeOptiTrackSystem();
+            application = new Ping(robot1, threadSafeChart);
+
+            PIDRegulator regulator = new PIDRegulator(
+                kp: 1,
+                ki: 1,
+                kd: 0,
+                N: 1,
+                Ts: 0.004,
+                setpoint: 5
+            );
+            double u0 = 0, u1 = 0;
+            double y0 = 0, y1 = 0;
+
+            Task.Run(() => {
+                for (int i = 0; i < 30; i++) {
+                    u1 = u0;
+                    y1 = y0;
+
+                    u0 = regulator.Compute(y0);
+                    y0 = u0 / 3.0;
+
+                    UpdateUI(() => {
+                        chart1.Series[0].Points.AddXY(i * 0.004, u0);
+                    });
+
+                    Thread.Sleep(4);
+                }
+            });
 
             // Ping
             robot1.Initialized += () => {
-                optiTrack.FrameReceived += frame => {
-                    application.ProcessOptiTrackData(frame);
-                };
+                application.Start();
             };
         }
 
@@ -147,7 +172,7 @@ namespace PingPong.Views {
 
             Task.Run(() => {
                 for (int i = 0; i < 2000; i++) {
-                    current = gen.GetNextValue(current);
+                    current = gen.GetNextAbsoluteCorrection(current);
                     
                     if (!gen.IsTargetPositionReached) {
                         //current += new RobotVector(rand.NextDouble() * 0.05, 0, 0);

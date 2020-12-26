@@ -1,5 +1,5 @@
 ﻿namespace PingPong.Views {
-    partial class RobotDataPanel {
+    partial class RobotDataMonitor {
         /// <summary> 
         /// Required designer variable.
         /// </summary>

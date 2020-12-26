@@ -28,8 +28,6 @@ namespace PingPong.KUKA {
 
         private AxisPosition axisPosition;
 
-        private RobotVector sumOfCorr = new RobotVector(0, 0, 0, 0, 0, 0);
-
         /// <summary>
         /// Robot Ip adress (Robot Sensor Interface - RSI)
         /// </summary>
@@ -174,13 +172,6 @@ namespace PingPong.KUKA {
         /// </summary>
         private async Task ReceiveDataAsync() {
             InputFrame receivedFrame = await rsiAdapter.ReceiveDataAsync();
-            RobotVector correction = receivedFrame.Position - position;
-
-            /*if (!Limits.CheckCorrection(correction)) {
-                Uninitialize();
-                throw new InvalidOperationException("Correction limit has been exceeded:" +
-                    $"{Environment.NewLine}{correction}");
-            }*/
 
             if (!Limits.CheckAxisPosition(receivedFrame.AxisPosition)) {
                 Uninitialize();
@@ -207,11 +198,7 @@ namespace PingPong.KUKA {
         /// Sends data (IPOC, correction) to the robot, raises <see cref="KUKARobot.FrameSent">FrameSent</see> event
         /// </summary>
         private void SendData() {
-            RobotVector correction;
-
-            lock (forceMoveSyncLock) {
-                correction = generator.GetNextCorrection(position);
-            }
+            RobotVector correction = generator.GetNextCorrection(position); ;
 
             //correction = new RobotVector(correction.X, correction.Y, correction.Z, 0, 0, 0);
             //sumOfCorr += correction;
@@ -265,13 +252,14 @@ namespace PingPong.KUKA {
         }
 
         /// <summary>
-        /// Moves robot to the specified position and blocks current thread until position is reached
+        /// Moves robot to the specified position and blocks current thread until position is reached.
         /// Enables force move mode during the movement.
         /// </summary>
         /// <param name="targetPosition">target position</param>
         /// <param name="targetVelocity">target velocity (velocity after targetDuration)</param>
         /// <param name="targetDuration">desired movement duration in seconds</param>
         public void ForceMoveTo(RobotVector targetPosition, RobotVector targetVelocity, double targetDuration) {
+            // TODO: async, token source
             MoveTo(targetPosition, targetVelocity, targetDuration);
 
             lock (forceMoveSyncLock) {

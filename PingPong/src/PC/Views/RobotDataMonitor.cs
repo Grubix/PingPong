@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PingPong.Views {
-    public partial class RobotDataPanel : UserControl {
+    public partial class RobotDataMonitor : UserControl {
 
         private readonly Stopwatch stopWatch;
 
@@ -34,7 +34,7 @@ namespace PingPong.Views {
         [Description("Time offset in milliseconds between chart updates"), Category("Data")]
         public int RefreshTimeOffset { get; set; }
 
-        public RobotDataPanel() {
+        public RobotDataMonitor() {
             InitializeComponent();
             InitializePositionChart();
             InitializeVelocityChart();

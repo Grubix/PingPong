@@ -6,11 +6,13 @@ using System.Threading;
 namespace PingPong.OptiTrack {
     public class OptiTrackSystem : IDevice {
 
-        private bool isInitialized = false;
-
         private readonly NatNetClientML natNetClient;
 
         private readonly ServerDescription serverDescription;
+
+        private bool isInitialized = false;
+
+        private double frameTimestamp;
 
         public event Action Initialized;
 
@@ -42,7 +44,9 @@ namespace PingPong.OptiTrack {
             Initialized?.Invoke();
 
             natNetClient.OnFrameReady += (data, client) => {
-                FrameReceived?.Invoke(new InputFrame(data));
+                double frameDeltaTime = data.fTimestamp - frameTimestamp;
+                frameTimestamp = data.fTimestamp;
+                FrameReceived?.Invoke(new InputFrame(data, frameDeltaTime));
             };
         }
 
@@ -56,6 +60,7 @@ namespace PingPong.OptiTrack {
         }
 
         public Vector<double> GetAveragePosition(int samples) {
+            // TODO: async, token source
             if (!isInitialized) {
                 throw new InvalidOperationException("OptiTrack system is not initialized");
             }

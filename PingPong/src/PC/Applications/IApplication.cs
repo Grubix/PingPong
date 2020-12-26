@@ -1,9 +1,7 @@
-﻿using PingPong.OptiTrack;
-
-namespace PingPong.Applications {
+﻿namespace PingPong.Applications {
     interface IApplication {
 
-        void ProcessOptiTrackData(InputFrame data);
+        void Start();
 
     }
 }

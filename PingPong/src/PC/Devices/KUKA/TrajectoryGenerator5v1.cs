@@ -122,6 +122,7 @@ namespace PingPong.KUKA {
             this.homePosition = homePosition;
 
             targetPositionReached = true;
+            reachedPosition = homePosition;
             targetPosition = homePosition;
             targetVelocity = RobotVector.Zero;
             targetDuration = 0.0;
@@ -148,7 +149,7 @@ namespace PingPong.KUKA {
             }
         }
 
-        public RobotVector GetNextValue(RobotVector currentPosition) {
+        public RobotVector GetNextAbsoluteCorrection(RobotVector currentPosition) {
             lock (syncLock) {
                 if (!targetPositionReached && timeLeft >= Ts && !currentPosition.Compare(targetPosition, 0.02, 0.004)) {
                     double nx = polyX.GetNextValue(currentPosition.X, targetPosition.X, targetVelocity.X, timeLeft, Ts);

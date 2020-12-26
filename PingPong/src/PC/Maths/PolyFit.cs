@@ -12,6 +12,11 @@ namespace PingPong.Maths {
 
         public List<(double X, double Y)> Values { get; }
 
+        /// <summary>
+        /// Coefficients calculated with CalculateCoefficients() method
+        /// </summary>
+        public List<double> Coefficients;
+
         public Polyfit(int order) {
             Order = order;
             Values = new List<(double X, double Y)>();
@@ -50,6 +55,7 @@ namespace PingPong.Maths {
                     coefficients.Add(0.0);
                 }
 
+                Coefficients = new List<double>(coefficients);
                 return coefficients;
             }
 
@@ -60,6 +66,7 @@ namespace PingPong.Maths {
                 coefficients.Add(C[i, 0]);
             }
 
+            Coefficients = new List<double>(coefficients);
             return coefficients;
         }
 

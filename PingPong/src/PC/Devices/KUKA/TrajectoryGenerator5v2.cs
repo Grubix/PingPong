@@ -66,6 +66,8 @@ namespace PingPong.KUKA {
 
         private const double Ts = 0.004;
 
+        private readonly object syncLock = new object();
+
         private readonly Polynominal polyX = new Polynominal();
 
         private readonly Polynominal polyY = new Polynominal();
@@ -77,8 +79,6 @@ namespace PingPong.KUKA {
         private readonly Polynominal polyB = new Polynominal();
 
         private readonly Polynominal polyC = new Polynominal();
-
-        private readonly object syncLock = new object();
 
         private readonly RobotVector homePosition;
 
@@ -130,6 +130,7 @@ namespace PingPong.KUKA {
             this.homePosition = homePosition;
 
             targetPositionReached = true;
+            reachedPosition = homePosition;
             targetPosition = homePosition;
             targetVelocity = RobotVector.Zero;
             targetDuration = 0.0;
@@ -154,16 +155,16 @@ namespace PingPong.KUKA {
                     elapsedTime = 0.0;
                 }
 
-                polyX.UpdateCoefficients(currentPosition.X, this.targetPosition.X, this.targetVelocity.X, this.targetDuration);
-                polyY.UpdateCoefficients(currentPosition.Y, this.targetPosition.Y, this.targetVelocity.Y, this.targetDuration);
-                polyZ.UpdateCoefficients(currentPosition.Z, this.targetPosition.Z, this.targetVelocity.Z, this.targetDuration);
-                polyA.UpdateCoefficients(currentPosition.A, this.targetPosition.A, this.targetVelocity.A, this.targetDuration);
-                polyB.UpdateCoefficients(currentPosition.B, this.targetPosition.B, this.targetVelocity.B, this.targetDuration);
-                polyC.UpdateCoefficients(currentPosition.C, this.targetPosition.C, this.targetVelocity.C, this.targetDuration);
+                polyX.UpdateCoefficients(currentPosition.X, targetPosition.X, targetVelocity.X, targetDuration);
+                polyY.UpdateCoefficients(currentPosition.Y, targetPosition.Y, targetVelocity.Y, targetDuration);
+                polyZ.UpdateCoefficients(currentPosition.Z, targetPosition.Z, targetVelocity.Z, targetDuration);
+                polyA.UpdateCoefficients(currentPosition.A, targetPosition.A, targetVelocity.A, targetDuration);
+                polyB.UpdateCoefficients(currentPosition.B, targetPosition.B, targetVelocity.B, targetDuration);
+                polyC.UpdateCoefficients(currentPosition.C, targetPosition.C, targetVelocity.C, targetDuration);
             }
         }
 
-        public RobotVector GetNextValue(RobotVector currentPosition) {
+        public RobotVector GetNextAbsoluteCorrection(RobotVector currentPosition) {
             lock (syncLock) {
                 if (!targetPositionReached && elapsedTime < targetDuration) {
                     elapsedTime += Ts;
