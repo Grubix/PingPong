@@ -19,13 +19,13 @@ namespace PingPong.Applications {
 
             private const double timeErrorTolerance = 0.03;
 
-            private readonly List<double> predictedTimeSamples;
+            private readonly Polyfit polyfitX = new Polyfit(1);
 
-            private readonly Polyfit polyfitX;
+            private readonly Polyfit polyfitY = new Polyfit(1);
 
-            private readonly Polyfit polyfitY;
+            private readonly Polyfit polyfitZ = new Polyfit(2);
 
-            private readonly Polyfit polyfitZ;
+            private readonly List<double> predictedTimeSamples = new List<double>();
 
             public double TargetHitHeight { get; set; }
 
@@ -71,7 +71,7 @@ namespace PingPong.Applications {
 
             public RobotVector Velocity { 
                 get {
-                    return RobotVector.Zero; //TODO: predkosc zderzenia do dorobienia regulator do ogarniania wysokosci podbijania
+                    return RobotVector.Zero; //TODO: predkosc zderzenia - do dorobienia regulator do ogarniania wysokosci podbijania
                 }
             }
 

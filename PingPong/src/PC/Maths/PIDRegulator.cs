@@ -4,102 +4,70 @@
     /// </summary>
     class PIDRegulator {
 
-        private double kp, ki, kd, ts, n;
+        private readonly double ku1, ku2, ke0, ke1, ke2;
 
-        private double ku1, ku2, ke0, ke1, ke2;
+        private double u0, u1, u2; // u[k], u[k-1], u[k-2]
 
-        private double u0, u1, u2; // u0 = u[k]; u1 = u[k-1]; u2 = u[k-2] ## OUTPUT
+        private double e1, e2; // e[k-1], e[k-2]
 
-        private double e1, e2; // e1 = e[k-1]; e2 = e[k-2] ## ERROR (setpoint - feedback)
+        public double Kp { get; }
+
+        public double Ki { get; }
+
+        public double Kd { get; }
+
+        public double N { get; }
+
+        public double Ts { get; }
 
         public double Setpoint { get; set; }
 
-        public double Kp {
-            get {
-                return kp;
-            }
-            set {
-                kp = value;
-                CalculateCoefficients();
-            }
-        }
+        public PIDRegulator(double kp, double ki, double kd, double N, double Ts) {
+            Kp = kp;
+            Ki = ki;
+            Kd = kd;
+            this.N = N;
+            this.Ts = Ts;
 
-        public double Ki {
-            get {
-                return ki;
-            }
-            set {
-                ki = value;
-                CalculateCoefficients();
-            }
-        }
+            double b2 = (4.0 - 2.0 * N * Ts) * Kp + (N * Ts * Ts - 2.0 * Ts) * Ki + 4.0 * N * Kd;
+            double b1 = 2.0 * N * Ts * Ts * Ki - 8.0 * (Kp + N * Kd);
+            double b0 = (4.0 + 2.0 * N * Ts) * Kp + (N * Ts * Ts + 2.0 * Ts) * Ki + 4.0 * N * Kd;
 
-        public double Kd {
-            get {
-                return kd;
-            }
-            set {
-                kd = value;
-                CalculateCoefficients();
-            }
-        }
+            double a2 = 4.0 - 2 * N * Ts;
+            double a1 = -8.0;
+            double a0 = 4.0 + 2 * N * Ts;
 
-        public double Ts {
-            get {
-                return ts;
-            }
-            set {
-                ts = value;
-                CalculateCoefficients();
-            }
-        }
+            b0 = Ts * Ts * Ki + 4.0 * Kd + 2.0 * Ts * Kp;
+            b1 = 2.0 * Ts * Ts * Ki - 8.0 * Kd;
+            b2 = Ts * Ts * Ki + 4.0 * Kd - 2.0 * Ts * Kp;
 
-        public double N {
-            get {
-                return n;
-            }
-            set {
-                n = value;
-                CalculateCoefficients();
-            }
-        }
+            a0 = 2.0 * Ts;
+            a2 = -2.0 * Ts;
 
-        public PIDRegulator(double kp, double ki, double kd, double N, double Ts, double setpoint) {
-            Setpoint = setpoint;
-            this.kp = kp;
-            this.ki = ki;
-            this.kd = kd;
-            ts = Ts;
-            n = N;
+            ku1 = a1 / a0;
+            ku1 = 0;
 
-            CalculateCoefficients();
-        }
-
-        private void CalculateCoefficients() {
-            double a0 = 1 + N * Ts;
-            double a1 = -(2.0 + N * Ts);
-            double a2 = 1.0;
-
-            double b0 = Kp * (1.0 + N * Ts) + Ki * Ts * (1.0 + N * Ts) + Kd * N;
-            double b1 = -(Kp * (2.0 + N * Ts) + Ki * Ts + 2.0 * Kd * N);
-            double b2 = Kp + Kd * N;
-
-            ku1 = -a1 / a0;
-            ku2 = -a2 / a0;
+            ku2 = a2 / a0;
             ke0 = b0 / a0;
             ke1 = b1 / a0;
             ke2 = b2 / a0;
+
+            System.Console.WriteLine(ku1);
+            System.Console.WriteLine(ku2);
+            System.Console.WriteLine(ke0);
+            System.Console.WriteLine(ke1);
+            System.Console.WriteLine(ke2);
         }
 
-        public double Compute(double feedback) {
-            double e0 = Setpoint - feedback;
+        public double Compute(double setpoint, double feedback) {
+            double e0 = setpoint - feedback;
 
             e2 = e1;
             e1 = e0;
             u2 = u1;
             u1 = u0;
 
-            u0 = -(ku1 * u1) - (ku2 * u2) + (ke0 * e0) + (ke1 * e1) + (ke2 * e2);
+            u0 = ke0 * e0 + ke1 * e1 + ke2 * e2 - ku1 * u1 - ku2 * u2;
 
             //TODO: limity wyjscia, anti windup ?
 
