@@ -16,50 +16,43 @@
 
         public double Kd { get; }
 
-        public double N { get; }
-
         public double Ts { get; }
 
-        public double Setpoint { get; set; }
+        public double N { get; }
 
-        public PIDRegulator(double kp, double ki, double kd, double N, double Ts) {
+        public PIDRegulator(double kp, double ki, double kd, double Ts, double N = 0) {
             Kp = kp;
             Ki = ki;
             Kd = kd;
-            this.N = N;
             this.Ts = Ts;
+            this.N = N;
 
-            double b2 = (4.0 - 2.0 * N * Ts) * Kp + (N * Ts * Ts - 2.0 * Ts) * Ki + 4.0 * N * Kd;
-            double b1 = 2.0 * N * Ts * Ts * Ki - 8.0 * (Kp + N * Kd);
-            double b0 = (4.0 + 2.0 * N * Ts) * Kp + (N * Ts * Ts + 2.0 * Ts) * Ki + 4.0 * N * Kd;
+            double a0, a1, a2, b0, b1, b2;
 
-            double a2 = 4.0 - 2 * N * Ts;
-            double a1 = -8.0;
-            double a0 = 4.0 + 2 * N * Ts;
-
-            b0 = Ts * Ts * Ki + 4.0 * Kd + 2.0 * Ts * Kp;
-            b1 = 2.0 * Ts * Ts * Ki - 8.0 * Kd;
-            b2 = Ts * Ts * Ki + 4.0 * Kd - 2.0 * Ts * Kp;
-
-            a0 = 2.0 * Ts;
-            a2 = -2.0 * Ts;
+            if (N != 0) {
+                a0 = 4.0 + 2 * N * Ts;
+                a1 = -8.0;
+                a2 = 4.0 - 2 * N * Ts;
+                b0 = (4.0 + 2.0 * N * Ts) * Kp + (N * Ts * Ts + 2.0 * Ts) * Ki + 4.0 * N * Kd;
+                b1 = 2.0 * N * Ts * Ts * Ki - 8.0 * (Kp + N * Kd);
+                b2 = (4.0 - 2.0 * N * Ts) * Kp + (N * Ts * Ts - 2.0 * Ts) * Ki + 4.0 * N * Kd;
+            } else {
+                b0 = Ts * Ts * Ki + 4.0 * Kd + 2.0 * Ts * Kp;
+                b1 = 2.0 * Ts * Ts * Ki - 8.0 * Kd;
+                b2 = Ts * Ts * Ki + 4.0 * Kd - 2.0 * Ts * Kp;
+                a0 = 2.0 * Ts;
+                a1 = 0.0;
+                a2 = -2.0 * Ts;
+            }
 
             ku1 = a1 / a0;
-            ku1 = 0;
-
             ku2 = a2 / a0;
             ke0 = b0 / a0;
             ke1 = b1 / a0;
             ke2 = b2 / a0;
-
-            System.Console.WriteLine(ku1);
-            System.Console.WriteLine(ku2);
-            System.Console.WriteLine(ke0);
-            System.Console.WriteLine(ke1);
-            System.Console.WriteLine(ke2);
         }
 
-        public double Compute(double setpoint, double feedback) {
+        public (double Output, double Error) Compute(double setpoint, double feedback) {
             double e0 = setpoint - feedback;
 
             e2 = e1;
@@ -71,7 +64,7 @@
 
             //TODO: limity wyjscia, anti windup ?
 
-            return u0;
+            return (u0, e0);
         }
 
     }

@@ -27,7 +27,7 @@ namespace PingPong.Applications {
 
             private readonly List<double> predictedTimeSamples = new List<double>();
 
-            public double TargetHitHeight { get; set; }
+            public (double X, double Y, double Z) TargetHitPosition { get; set; }
 
             public double TargetBounceHeight { get; set; }
 
@@ -65,7 +65,7 @@ namespace PingPong.Applications {
                     double predB = Math.Atan2(racketNormalVector[0], racketNormalVector[2]) * 180.0 / Math.PI;
                     double predC = -90.0 - Math.Atan2(racketNormalVector[1], racketNormalVector[2]) * 180.0 / Math.PI;
 
-                    return new RobotVector(predX, predY, TargetHitHeight, 0, predB, predC);
+                    return new RobotVector(predX, predY, TargetHitPosition.Z, 0, predB, predC);
                 }
             }
 
@@ -125,7 +125,7 @@ namespace PingPong.Applications {
                     return -1.0;
                 }
 
-                double delta = predV * predV - 4.0 * predA * predZ;
+                double delta = predV * predV - 4.0 * predA * (predZ - TargetHitPosition.Z);
 
                 if (delta < 0.0) {
                     return -1.0;
@@ -176,7 +176,7 @@ namespace PingPong.Applications {
             this.chart = chart;
 
             prediction = new HitPrediction {
-                TargetHitHeight = 177.87,
+                TargetHitPosition = (0, 800, 177),
                 TargetBounceHeight = 250.0
             };
         }
@@ -237,7 +237,7 @@ namespace PingPong.Applications {
             }
 
             // if true -> ball fell
-            if (ballPosition[2] < prediction.TargetHitHeight - 50.0) {
+            if (ballPosition[2] < prediction.TargetHitPosition.Z - 50.0) {
                 optiTrack.FrameReceived -= ProcessOptiTrackData;
                 robot.Uninitialize();
                 return;

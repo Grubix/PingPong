@@ -30,19 +30,27 @@ namespace PingPong.Views {
             //optiTrack = InitializeOptiTrackSystem();
             application = new Ping(robot1, threadSafeChart);
 
-            PIDRegulator regulator = new PIDRegulator(1, 120, 0, 10000000, 0.004);
+            PIDRegulator regulator = new PIDRegulator(125, 10, 0.01, 0.004);
             double u0 = 0, u1 = 0;
             double y0 = 0, y1 = 0;
+            double e0 = 0;
 
+            double T = 5;
             Task.Run(() => {
                 for (int i = 0; i < 550; i++) {
                     u1 = u0;
                     y1 = y0;
 
-                    double setpoint = Math.Sin(i / 8.0);
-                    setpoint = 15.0;
-                    u0 = regulator.Compute(setpoint, y0);
-                    y0 = 0.125 * u1 + 0.1 * y1;
+                    double setpoint = 0;
+                    if (i > 50) {
+                        setpoint = 15.0;
+                        if (i >= 300) {
+                            setpoint = -15.0;
+                        }
+                    }
+
+                    (u0, e0) = regulator.Compute(setpoint, y0);
+                    y0 = 1.0 / (0.004 + 2.0 * T) * (0.004 * (u0 + u1) - (0.004 - 2.0 * T) * y1);
 
                     UpdateUI(() => {
                         chart1.Series[0].Points.AddXY(i * 0.004, setpoint);
