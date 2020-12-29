@@ -126,8 +126,8 @@ namespace PingPong.Views {
             private void CalculateCalibrationPoints(KUKARobot robot, int pointsPerLine) {
                 calibrationPoints.Clear();
 
-                (double x0, double y0, double z0) = robot.Limits.WorkspaceLimits.LowerLimit;
-                (double x1, double y1, double z1) = robot.Limits.WorkspaceLimits.UpperLimit;
+                (double x0, double y0, double z0) = robot.Limits.LowerWorkspaceLimit;
+                (double x1, double y1, double z1) = robot.Limits.UpperWorkspaceLimit;
 
                 // Shrink workspace by 5mm
                 x0 += x1 > x0 ? 5.0 : -5.0;

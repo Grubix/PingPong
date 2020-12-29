@@ -59,8 +59,8 @@ namespace PingPong.OptiTrack {
             natNetClient.Uninitialize();
         }
 
+        // TODO: async, token source
         public Vector<double> GetAveragePosition(int samples) {
-            // TODO: async, token source
             if (!isInitialized) {
                 throw new InvalidOperationException("OptiTrack system is not initialized");
             }

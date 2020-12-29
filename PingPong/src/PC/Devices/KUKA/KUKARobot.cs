@@ -26,7 +26,7 @@ namespace PingPong.KUKA {
 
         private RobotVector position;
 
-        private AxisPosition axisPosition;
+        private RobotAxisPosition axisPosition;
 
         /// <summary>
         /// Robot Ip adress (Robot Sensor Interface - RSI)
@@ -61,7 +61,7 @@ namespace PingPong.KUKA {
         /// <summary>
         /// Robot current axis position
         /// </summary>
-        public AxisPosition AxisPosition {
+        public RobotAxisPosition AxisPosition {
             get {
                 lock (receivedDataSyncLock) {
                     return axisPosition;
@@ -200,12 +200,8 @@ namespace PingPong.KUKA {
         private void SendData() {
             RobotVector correction = generator.GetNextCorrection(position); ;
 
-            //correction = new RobotVector(correction.X, correction.Y, correction.Z, 0, 0, 0);
-            //sumOfCorr += correction;
-            //Console.WriteLine(sumOfCorr);
-
-            // CAŁY IF DO ZAKOMENTOWANIA DLA POZYCJI ABSOLUTNEJ
-            if (!Limits.CheckCorrection(correction)) {
+            // ZMIANA NA CHECK ABSOLUTE CORRECTION DLA GENERATORA ABS.
+            if (!Limits.CheckRelativeCorrection(correction)) {
                 Uninitialize();
                 throw new InvalidOperationException("Correction limit has been exceeded:" +
                     $"{Environment.NewLine}{correction}");
@@ -238,7 +234,7 @@ namespace PingPong.KUKA {
 
             if (!Limits.CheckVelocity(targetVelocity)) {
                 throw new ArgumentException("target velocity exceeding max value " +
-                    $"({Limits.MaxVelocity.XYZ} [mm/s], {Limits.MaxVelocity.ABC} [deg/s]):" +
+                    $"({Limits.VelocityLimit.XYZ} [mm/s], {Limits.VelocityLimit.ABC} [deg/s]):" +
                     $"{Environment.NewLine}{targetVelocity}");
             }
 
@@ -251,6 +247,7 @@ namespace PingPong.KUKA {
             generator.SetTargetPosition(targetPosition, targetVelocity, targetDuration);
         }
 
+        // TODO: async, token source
         /// <summary>
         /// Moves robot to the specified position and blocks current thread until position is reached.
         /// Enables force move mode during the movement.
@@ -259,7 +256,6 @@ namespace PingPong.KUKA {
         /// <param name="targetVelocity">target velocity (velocity after targetDuration)</param>
         /// <param name="targetDuration">desired movement duration in seconds</param>
         public void ForceMoveTo(RobotVector targetPosition, RobotVector targetVelocity, double targetDuration) {
-            // TODO: async, token source
             MoveTo(targetPosition, targetVelocity, targetDuration);
 
             lock (forceMoveSyncLock) {
@@ -293,6 +289,7 @@ namespace PingPong.KUKA {
             MoveTo(Position + deltaPosition, targetVelocity, targetDuration);
         }
 
+        // TODO: async, token source
         /// <summary>
         /// Shifts robot by the specified delta position and blocks current thread until new position is reached.
         /// Enables force move mode during the movement.

@@ -79,15 +79,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\PC\Applications\Ping.cs" />
     <Compile Include="src\PC\Applications\PingPong.cs" />
-    <Compile Include="src\PC\Commands\ClearCommand.cs" />
-    <Compile Include="src\PC\Commands\ICommand.cs" />
-    <Compile Include="src\PC\Commands\CommandArgs.cs" />
-    <Compile Include="src\PC\Commands\ExitCommand.cs" />
-    <Compile Include="src\PC\Commands\HelpCommand.cs" />
-    <Compile Include="src\PC\Commands\MoveCommand.cs" />
-    <Compile Include="src\PC\Devices\KUKA\Limits\AxisLimits.cs" />
-    <Compile Include="src\PC\Devices\KUKA\Limits\RobotLimits.cs" />
-    <Compile Include="src\PC\Devices\KUKA\Limits\WorkspaceLimits.cs" />
+    <Compile Include="src\PC\Devices\KUKA\RobotLimits.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5v1.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator5v2.cs" />
@@ -98,22 +90,8 @@
     <Compile Include="src\PC\Views\CollisionTest.Designer.cs">
       <DependentUpon>CollisionTest.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\PC\Views\CommandLineWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\PC\Views\CommandLineWindow.Designer.cs">
-      <DependentUpon>CommandLineWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\PC\Maths\Algebra\LUD3.cs" />
-    <Compile Include="src\PC\Maths\Algebra\Matrix3.cs" />
-    <Compile Include="src\PC\Maths\Polyfit2.cs" />
     <Compile Include="src\PC\Maths\Polyfit.cs" />
-    <Compile Include="src\PC\Maths\Solvers\CubicSolver.cs" />
-    <Compile Include="src\PC\Maths\Solvers\QuadraticSolver.cs" />
-    <Compile Include="src\PC\Maths\Solvers\QuarticSolver.cs" />
-    <Compile Include="src\PC\Maths\Algebra\SVD3.cs" />
-    <Compile Include="src\PC\Maths\Algebra\Vector3.cs" />
-    <Compile Include="src\PC\Devices\KUKA\AxisPosition.cs" />
+    <Compile Include="src\PC\Devices\KUKA\RobotAxisPosition.cs" />
     <Compile Include="src\PC\Views\CalibrationWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -132,7 +110,7 @@
     <Compile Include="src\PC\Views\RobotDataMonitor.Designer.cs">
       <DependentUpon>RobotDataMonitor.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\PC\Maths\Algebra\Transformation.cs" />
+    <Compile Include="src\PC\Maths\Transformation.cs" />
     <Compile Include="src\PC\Devices\KUKA\TrajectoryGenerator3.cs" />
     <Compile Include="src\PC\Devices\OptiTrack\InputFrame.cs" />
     <Compile Include="src\PC\Views\ThreadSafeChart.cs">
@@ -171,9 +149,6 @@
     <EmbeddedResource Include="src\PC\Views\CollisionTest.resx">
       <DependentUpon>CollisionTest.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\PC\Views\CommandLineWindow.resx">
-      <DependentUpon>CommandLineWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\PC\Views\CORTester.resx">
       <DependentUpon>CORTester.cs</DependentUpon>
     </EmbeddedResource>
@@ -206,7 +181,6 @@
     <None Include="src\Docs\Trajectory_Planning_for_Automatic_Machines_and_Robots.pdf" />
     <None Include="src\Kuka\RSI_Ethernet.rsix" />
     <None Include="src\Kuka\RSI_Ethernet.src" />
-    <None Include="src\PC\robot1.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -215,8 +189,6 @@
   <ItemGroup>
     <Content Include="ping-pong.ico" />
     <Content Include="src\Kuka\RSI_EthernetConfig.xml" />
-    <Content Include="src\PC\predkosc.PNG" />
-    <Content Include="src\PC\predkosc2.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

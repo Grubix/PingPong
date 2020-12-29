@@ -88,6 +88,8 @@ namespace PingPong.KUKA {
 
         private RobotVector targetVelocity;
 
+        private RobotVector positionError;
+
         private double targetDuration;
 
         private double elapsedTime;
@@ -110,6 +112,20 @@ namespace PingPong.KUKA {
             }
         }
 
+        /// <summary>
+        /// Current (theoretical) position
+        /// </summary>
+        public RobotVector Position {
+            get {
+                lock (syncLock) {
+                    return new RobotVector(polyX.X, polyY.X, polyZ.X, polyA.X, polyB.X, polyC.X);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Current (theoretical) velocity
+        /// </summary>
         public RobotVector Velocity {
             get {
                 lock (syncLock) {
@@ -118,6 +134,9 @@ namespace PingPong.KUKA {
             }
         }
 
+        /// <summary>
+        /// Current (theoretical) acceleration
+        /// </summary>
         public RobotVector Acceleration {
             get {
                 lock (syncLock) {
@@ -126,13 +145,24 @@ namespace PingPong.KUKA {
             }
         }
 
+        /// <summary>
+        /// Current position error (diffrence between theoretical and actual position)
+        /// </summary>
+        public RobotVector PositionError {
+            get {
+                lock (syncLock) {
+                    return positionError;
+                }
+            }
+        }
+
         public TrajectoryGenerator5v2(RobotVector homePosition) {
             this.homePosition = homePosition;
-
             targetPositionReached = true;
             reachedPosition = homePosition;
             targetPosition = homePosition;
             targetVelocity = RobotVector.Zero;
+            positionError = RobotVector.Zero;
             targetDuration = 0.0;
             elapsedTime = 0.0;
         }
@@ -142,8 +172,8 @@ namespace PingPong.KUKA {
                 throw new ArgumentException($"Duration value must be greater than 0, get {targetDuration}");
             }
 
-            bool targetPositionChanged = !targetPosition.Compare(this.targetPosition, 0.1, 1);
-            bool targetVelocityChanged = !targetVelocity.Compare(this.targetVelocity, 0.1, 1);
+            bool targetPositionChanged = !targetPosition.Compare(this.targetPosition, 0.1, 0.1);
+            bool targetVelocityChanged = !targetVelocity.Compare(this.targetVelocity, 0.1, 0.1);
             bool targetDurationChanged = targetDuration != this.targetDuration;
 
             if (targetDurationChanged || targetPositionChanged || targetVelocityChanged) {
@@ -176,19 +206,20 @@ namespace PingPong.KUKA {
                     double nb = polyB.GetValueAt(elapsedTime);
                     double nc = polyC.GetValueAt(elapsedTime);
 
+                    positionError = Position - currentPosition;
                     return new RobotVector(nx, ny, nz, na, nb, nc) - homePosition;
                 } else {
                     if (!targetPositionReached) {
+                        targetPositionReached = true;
                         reachedPosition = currentPosition - homePosition;
-                    }
 
-                    targetPositionReached = true;
-                    polyX.Reset(targetVelocity.X);
-                    polyY.Reset(targetVelocity.Y);
-                    polyZ.Reset(targetVelocity.Z);
-                    polyA.Reset(targetVelocity.A);
-                    polyB.Reset(targetVelocity.B);
-                    polyC.Reset(targetVelocity.C);
+                        polyX.Reset(targetVelocity.X);
+                        polyY.Reset(targetVelocity.Y);
+                        polyZ.Reset(targetVelocity.Z);
+                        polyA.Reset(targetVelocity.A);
+                        polyB.Reset(targetVelocity.B);
+                        polyC.Reset(targetVelocity.C);
+                    }
 
                     return reachedPosition;
                 }

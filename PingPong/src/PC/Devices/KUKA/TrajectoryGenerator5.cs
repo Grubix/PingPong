@@ -10,6 +10,11 @@ namespace PingPong.KUKA {
             private double xn, vn, an; // Next value, velocity and next acceleration
 
             /// <summary>
+            /// Current (theoretical) position
+            /// </summary>
+            public double X { get; private set; }
+
+            /// <summary>
             /// Current (theoretical) velocity
             /// </summary>
             public double V { get; private set; }
@@ -20,6 +25,7 @@ namespace PingPong.KUKA {
             public double A { get; private set; }
 
             public double GetNextValue(double x0, double x1, double v1, double T, double t) {
+                X = xn;
                 V = vn;
                 A = an;
 
@@ -76,6 +82,8 @@ namespace PingPong.KUKA {
 
         private RobotVector targetVelocity;
 
+        private RobotVector positionError;
+
         private double targetDuration;
 
         private double timeLeft;
@@ -98,6 +106,20 @@ namespace PingPong.KUKA {
             }
         }
 
+        /// <summary>
+        /// Current (theoretical) position
+        /// </summary>
+        public RobotVector Position {
+            get {
+                lock (syncLock) {
+                    return new RobotVector(polyX.X, polyY.X, polyZ.X, polyA.X, polyB.X, polyC.X);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Current (theoretical) velocity
+        /// </summary>
         public RobotVector Velocity {
             get {
                 lock (syncLock) {
@@ -106,6 +128,9 @@ namespace PingPong.KUKA {
             }
         }
 
+        /// <summary>
+        /// Current (theoretical) acceleration
+        /// </summary>
         public RobotVector Acceleration {
             get {
                 lock (syncLock) {
@@ -114,10 +139,22 @@ namespace PingPong.KUKA {
             }
         }
 
+        /// <summary>
+        /// Current position error (diffrence between theoretical and actual position)
+        /// </summary>
+        public RobotVector PositionError {
+            get {
+                lock (syncLock) {
+                    return positionError;
+                }
+            }
+        }
+
         public TrajectoryGenerator5(RobotVector homePosition) {
             targetPositionReached = true;
             targetPosition = homePosition;
             targetVelocity = RobotVector.Zero;
+            positionError = RobotVector.Zero;
             targetDuration = 0.0;
             timeLeft = 0.0;
         }
@@ -152,6 +189,7 @@ namespace PingPong.KUKA {
                     double nb = polyB.GetNextValue(currentPosition.B, targetPosition.B, targetVelocity.B, timeLeft, Ts);
                     double nc = polyC.GetNextValue(currentPosition.C, targetPosition.C, targetVelocity.C, timeLeft, Ts);
 
+                    positionError = Position - currentPosition;
                     RobotVector nextPosition = new RobotVector(nx, ny, nz, na, nb, nc);
                     timeLeft -= Ts;
 

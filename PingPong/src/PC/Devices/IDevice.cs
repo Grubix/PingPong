@@ -12,7 +12,7 @@
         void Uninitialize();
 
         /// <summary>
-        /// Checks if device is initialized
+        /// Indicates if device has been initialized
         /// </summary>
         /// <returns>true if device is ready to use, false otherwise</returns>
         bool IsInitialized();

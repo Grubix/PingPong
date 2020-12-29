@@ -53,7 +53,7 @@ namespace PingPong.Applications {
                         new double[] { xCoeffs[1], yCoeffs[1], 2.0 * zCoeffs[2] * TimeOfFlight + zCoeffs[1] }
                     );
 
-                    //TODO: kwestia takiego dobrania tego wektora zeby po zderzeniu pilka leciala do jakiegos setpointa
+                    //TODO: kwestia takiego dobrania tego wektora zeby po zderzeniu pilka leciala do TargetHitPOsition
                     var reflectionVector = Vector<double>.Build.DenseOfArray(
                         new double[] { 0.0, 0.0, 1.0 }
                     );
@@ -62,10 +62,11 @@ namespace PingPong.Applications {
 
                     double predX = xCoeffs[1] * TimeOfFlight + xCoeffs[0];
                     double predY = yCoeffs[1] * TimeOfFlight + yCoeffs[0];
+                    double predZ = TargetHitPosition.Z;
                     double predB = Math.Atan2(racketNormalVector[0], racketNormalVector[2]) * 180.0 / Math.PI;
                     double predC = -90.0 - Math.Atan2(racketNormalVector[1], racketNormalVector[2]) * 180.0 / Math.PI;
 
-                    return new RobotVector(predX, predY, TargetHitPosition.Z, 0, predB, predC);
+                    return new RobotVector(predX, predY, predZ, 0, predB, predC);
                 }
             }
 
@@ -117,20 +118,24 @@ namespace PingPong.Applications {
 
                 var zCoeffs = polyfitZ.CalculateCoefficients();
 
-                double predA = zCoeffs[2]; // predicted acceleration
-                double predV = zCoeffs[1]; // predicted velocity
-                double predZ = zCoeffs[0]; // predicted height
+                // z(t) = a0 * t^2 + v0 * t + z0
+                // z(T) = a0 * T^2 + v0 * T + z0 = TargetHitPosition.Z
+                // T = predicted time of flight
 
-                if (predA >= 0.0) { // negative acceleration expected (-g/2)
+                double a0 = zCoeffs[2];
+                double v0 = zCoeffs[1];
+                double z0 = zCoeffs[0];
+
+                if (a0 >= 0.0) { // negative acceleration expected (-g/2)
                     return -1.0;
                 }
 
-                double delta = predV * predV - 4.0 * predA * (predZ - TargetHitPosition.Z);
+                double delta = v0 * v0 - 4.0 * a0 * (z0 - TargetHitPosition.Z);
 
-                if (delta < 0.0) {
+                if (delta < 0.0) { // no real roots
                     return -1.0;
                 } else {
-                    return (-predV - Math.Sqrt(delta)) / (2.0 * predA);
+                    return (-v0 - Math.Sqrt(delta)) / (2.0 * a0);
                 }
             }
 
@@ -171,17 +176,22 @@ namespace PingPong.Applications {
 
         private double elapsedTime;
 
-        public Ping(KUKARobot robot, ThreadSafeChart chart) {
+        public Ping(KUKARobot robot, OptiTrackSystem optiTrack, ThreadSafeChart chart) {
             this.robot = robot;
+            this.optiTrack = optiTrack;
             this.chart = chart;
 
             prediction = new HitPrediction {
                 TargetHitPosition = (0, 800, 177),
-                TargetBounceHeight = 250.0
+                TargetBounceHeight = 500.0
             };
         }
 
         public void Start() {
+            if (!robot.IsInitialized() || !optiTrack.IsInitialized()) {
+                throw new InvalidOperationException("Robot and optiTrack system must be initialized");
+            }
+
             // waiting for ball to be visible
             Task.Run(() => {
                 ManualResetEvent ballSpottedEvent = new ManualResetEvent(false);
@@ -249,12 +259,11 @@ namespace PingPong.Applications {
             }
 
             prediction.AddMeasurement(ballPosition, elapsedTime);
-            // prediction.PolyfitPointsCount != 0 now
 
             if (prediction.IsReady && prediction.TimeToHit >= 0.3) {
                 RobotVector predictedPosition = prediction.Position;
 
-                if (robot.Limits.WorkspaceLimits.CheckPosition(predictedPosition)) {
+                if (robot.Limits.CheckPosition(predictedPosition)) {
                     robotMovedToHitPosition = true;
                     robot.MoveTo(predictedPosition, prediction.Velocity, prediction.TimeToHit);
                 }

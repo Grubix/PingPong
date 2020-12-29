@@ -28,9 +28,9 @@ namespace PingPong.Views {
             robot1 = InitializeRobot1();
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
-            application = new Ping(robot1, threadSafeChart);
+            application = new Ping(robot1, optiTrack, threadSafeChart);
 
-            PIDRegulator regulator = new PIDRegulator(125, 10, 0.01, 0.004);
+            PIDRegulator regulator = new PIDRegulator(600, 0, 0, 0.004, 0);
             double u0 = 0, u1 = 0;
             double y0 = 0, y1 = 0;
             double e0 = 0;
@@ -41,11 +41,14 @@ namespace PingPong.Views {
                     u1 = u0;
                     y1 = y0;
 
-                    double setpoint = 0;
-                    if (i > 50) {
+                    double setpoint = -20.0;
+                    if (i >= 50) {
                         setpoint = 15.0;
-                        if (i >= 300) {
-                            setpoint = -15.0;
+                        if (i >= 100) {
+                            setpoint = (i - 99) / 10.0 * Math.Sin(Math.Sin(i / 10.0)) + 15.0;
+                            if (i >= 300) {
+                                setpoint = 0;
+                            }
                         }
                     }
 
@@ -101,22 +104,18 @@ namespace PingPong.Views {
         }
 
         private KUKARobot InitializeRobot1() {
-            WorkspaceLimits workspaceLimits = new WorkspaceLimits(
-                X: (-250, 250),
-                Y: (700, 950),
-                Z: (150, 400)
+            RobotLimits limits = new RobotLimits(
+                lowerWorkspaceLimit: (-250.0, 700.0, 150.0),
+                upperWorkspaceLimit: (250.0, 950.0, 400.0),
+                a1AxisLimit: (-360, 360),
+                a2AxisLimit: (-360, 360),
+                a3AxisLimit: (-360, 360),
+                a4AxisLimit: (-360, 360),
+                a5AxisLimit: (-360, 360),
+                a6AxisLimit: (-360, 360),
+                correctionLimit: (2.0, 0.1)
             );
 
-            AxisLimits axisLimits = new AxisLimits(
-                A1: (-360, 360),
-                A2: (-360, 360),
-                A3: (-360, 360),
-                A4: (-360, 360),
-                A5: (-360, 360),
-                A6: (-360, 360)
-            );
-
-            RobotLimits limits = new RobotLimits(workspaceLimits, axisLimits, (2, 0.1));
             KUKARobot robot1 = new KUKARobot(8081, limits);
 
             var rotationMatrix = Matrix<double>.Build.DenseOfArray(new double[,] {

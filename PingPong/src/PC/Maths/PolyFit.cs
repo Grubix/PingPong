@@ -8,8 +8,14 @@ namespace PingPong.Maths {
     /// </summary>
     class Polyfit {
 
+        /// <summary>
+        /// Polynominal order
+        /// </summary>
         public int Order { get; }
 
+        /// <summary>
+        /// List of paired x,y values
+        /// </summary>
         public List<(double X, double Y)> Values { get; }
 
         /// <summary>
