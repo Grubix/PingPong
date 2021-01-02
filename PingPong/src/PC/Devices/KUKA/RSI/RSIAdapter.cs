@@ -27,8 +27,11 @@ namespace PingPong.KUKA {
             }
         }
 
+        public int Port { get; }
+
         public RSIAdapter(int port) {
             client = new UdpClient(new IPEndPoint(IPAddress.Any, port));
+            Port = port;
         }
 
         /// <summary>

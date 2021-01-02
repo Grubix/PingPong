@@ -58,8 +58,10 @@ namespace PingPong.KUKA {
             }
 
             public void Reset(double targetVelocity) {
-                V = vn = targetVelocity;
-                A = an = 0.0;
+                if (targetVelocity == 0.0) {
+                    V = vn = targetVelocity;
+                    A = an = 0.0;
+                }
             }
 
         }
@@ -196,7 +198,11 @@ namespace PingPong.KUKA {
 
         public RobotVector GetNextAbsoluteCorrection(RobotVector currentPosition) {
             lock (syncLock) {
-                if (!targetPositionReached && elapsedTime < targetDuration) {
+                if (targetPositionReached) {
+                    return reachedPosition;
+                }
+
+                if (elapsedTime < targetDuration) {
                     elapsedTime += Ts;
 
                     double nx = polyX.GetValueAt(elapsedTime);
@@ -209,17 +215,15 @@ namespace PingPong.KUKA {
                     positionError = Position - currentPosition;
                     return new RobotVector(nx, ny, nz, na, nb, nc) - homePosition;
                 } else {
-                    if (!targetPositionReached) {
-                        targetPositionReached = true;
-                        reachedPosition = currentPosition - homePosition;
+                    targetPositionReached = true;
+                    reachedPosition = currentPosition - homePosition;
 
-                        polyX.Reset(targetVelocity.X);
-                        polyY.Reset(targetVelocity.Y);
-                        polyZ.Reset(targetVelocity.Z);
-                        polyA.Reset(targetVelocity.A);
-                        polyB.Reset(targetVelocity.B);
-                        polyC.Reset(targetVelocity.C);
-                    }
+                    polyX.Reset(targetVelocity.X);
+                    polyY.Reset(targetVelocity.Y);
+                    polyZ.Reset(targetVelocity.Z);
+                    polyA.Reset(targetVelocity.A);
+                    polyB.Reset(targetVelocity.B);
+                    polyC.Reset(targetVelocity.C);
 
                     return reachedPosition;
                 }

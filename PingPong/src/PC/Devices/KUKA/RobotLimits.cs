@@ -3,9 +3,9 @@
 namespace PingPong.KUKA {
     public class RobotLimits {
 
-        public (double X, double Y, double Z) LowerWorkspaceLimit { get; }
+        public (double X, double Y, double Z) LowerWorkspacePoint { get; }
 
-        public (double X, double Y, double Z) UpperWorkspaceLimit { get; }
+        public (double X, double Y, double Z) UpperWorkspacePoint { get; }
 
         public (double Min, double Max) A1AxisLimit { get; }
 
@@ -34,8 +34,8 @@ namespace PingPong.KUKA {
             (double Min, double Max) a6AxisLimit, 
             (double XYZ, double ABC) correctionLimit
         ) {
-            LowerWorkspaceLimit = lowerWorkspaceLimit;
-            UpperWorkspaceLimit = upperWorkspaceLimit;
+            LowerWorkspacePoint = lowerWorkspaceLimit;
+            UpperWorkspacePoint = upperWorkspaceLimit;
             A1AxisLimit = a1AxisLimit;
             A2AxisLimit = a2AxisLimit;
             A3AxisLimit = a3AxisLimit;
@@ -47,11 +47,22 @@ namespace PingPong.KUKA {
         }
 
         public bool CheckPosition(RobotVector position) {
-            bool checkX = position.X >= LowerWorkspaceLimit.X && position.X <= UpperWorkspaceLimit.X;
-            bool checkY = position.Y >= LowerWorkspaceLimit.Y && position.Y <= UpperWorkspaceLimit.Y;
-            bool checkZ = position.Z >= LowerWorkspaceLimit.Z && position.Z <= UpperWorkspaceLimit.Z;
+            bool checkX = position.X >= LowerWorkspacePoint.X && position.X <= UpperWorkspacePoint.X;
+            bool checkY = position.Y >= LowerWorkspacePoint.Y && position.Y <= UpperWorkspacePoint.Y;
+            bool checkZ = position.Z >= LowerWorkspacePoint.Z && position.Z <= UpperWorkspacePoint.Z;
 
             return checkX && checkY && checkZ;
+        }
+
+        public bool CheckAxisPosition(RobotAxisPosition axisPosition) {
+            bool checkA1 = axisPosition.A1 >= A1AxisLimit.Min && axisPosition.A1 <= A1AxisLimit.Max;
+            bool checkA2 = axisPosition.A2 >= A2AxisLimit.Min && axisPosition.A2 <= A2AxisLimit.Max;
+            bool checkA3 = axisPosition.A3 >= A3AxisLimit.Min && axisPosition.A3 <= A3AxisLimit.Max;
+            bool checkA4 = axisPosition.A4 >= A4AxisLimit.Min && axisPosition.A4 <= A4AxisLimit.Max;
+            bool checkA5 = axisPosition.A5 >= A5AxisLimit.Min && axisPosition.A5 <= A5AxisLimit.Max;
+            bool checkA6 = axisPosition.A6 >= A6AxisLimit.Min && axisPosition.A6 <= A6AxisLimit.Max;
+
+            return checkA1 && checkA2 && checkA3 && checkA4 && checkA5 && checkA6;
         }
 
         public bool CheckVelocity(RobotVector velocity) {
@@ -78,17 +89,6 @@ namespace PingPong.KUKA {
 
         public bool CheckAbsoluteCorrection(RobotVector correction, RobotVector homePosition) {
             return CheckPosition(homePosition + correction);
-        }
-
-        public bool CheckAxisPosition(RobotAxisPosition axisPosition) {
-            bool checkA1 = axisPosition.A1 >= A1AxisLimit.Min && axisPosition.A1 <= A1AxisLimit.Max;
-            bool checkA2 = axisPosition.A2 >= A2AxisLimit.Min && axisPosition.A2 <= A2AxisLimit.Max;
-            bool checkA3 = axisPosition.A3 >= A3AxisLimit.Min && axisPosition.A3 <= A3AxisLimit.Max;
-            bool checkA4 = axisPosition.A4 >= A4AxisLimit.Min && axisPosition.A4 <= A4AxisLimit.Max;
-            bool checkA5 = axisPosition.A5 >= A5AxisLimit.Min && axisPosition.A5 <= A5AxisLimit.Max;
-            bool checkA6 = axisPosition.A6 >= A6AxisLimit.Min && axisPosition.A6 <= A6AxisLimit.Max;
-
-            return checkA1 && checkA2 && checkA3 && checkA4 && checkA5 && checkA6;
         }
 
     }

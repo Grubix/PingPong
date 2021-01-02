@@ -242,11 +242,11 @@ namespace PingPong.Applications {
 
                 // slow down the robot
                 //TODO: gdzie robot powinien jechac po odbiciu na XYZie zeby to bylo optymalne?
-                //TODO: bo dawanie mu swojej obecnej pozycji to tak 2/10
+                //TODO: bo dawanie mu swojej obecnej pozycji to tak 2/10, moze zadaną pozycje odbicia ?
                 robot.MoveTo(new RobotVector(robot.Position.XYZ, robot.HomePosition.ABC), RobotVector.Zero, 3);
             }
 
-            // if true -> ball fell
+            // if true -> ball fell, stop application
             if (ballPosition[2] < prediction.TargetHitPosition.Z - 50.0) {
                 optiTrack.FrameReceived -= ProcessOptiTrackData;
                 robot.Uninitialize();

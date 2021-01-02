@@ -5,6 +5,7 @@ using PingPong.Maths;
 using PingPong.OptiTrack;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -29,6 +30,15 @@ namespace PingPong.Views {
             robot2 = InitializeRobot2();
             //optiTrack = InitializeOptiTrackSystem();
             application = new Ping(robot1, optiTrack, threadSafeChart);
+
+            //robot1.CreateConfigFile("robot1-config.json");
+
+            try {
+                KUKARobot rob = KUKARobot.Load("robot1-config.json");
+                Console.WriteLine(rob);
+            } catch (Exception e) {
+                Console.WriteLine(e);
+            }
 
             PIDRegulator regulator = new PIDRegulator(600, 0, 0, 0.004, 0);
             double u0 = 0, u1 = 0;

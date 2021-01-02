@@ -1,6 +1,7 @@
 ﻿using PingPong.Maths;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +36,15 @@ namespace PingPong.KUKA {
             get {
                 return rsiAdapter.Ip;
             }
+        }
+
+        /// <summary>
+        /// Port number (Robot Sensor Interface - RSI)
+        /// </summary>
+        public int Port { 
+            get {
+                return rsiAdapter.Port;
+            } 
         }
 
         /// <summary>
@@ -185,6 +195,8 @@ namespace PingPong.KUKA {
                     $"{Environment.NewLine}{receivedFrame.Position}");
             }
 
+            //TODO: mozna dorobic sprawdzanie korekcji, ale dodatkowo przy sprawdzeniu czy IsTargetPositonReached
+
             lock (receivedDataSyncLock) {
                 IPOC = receivedFrame.IPOC;
                 position = receivedFrame.Position;
@@ -321,10 +333,18 @@ namespace PingPong.KUKA {
 
         public override string ToString() {
             if (Ip != null) {
-                return $"KUKA::{Ip}";
+                return $"{Ip}:{Port}";
             } else {
-                return "KUKA::[not initialized]";
+                return $"0.0.0.0:{Port}";
             }
+        }
+
+        public void CreateConfigFile(string destPath) {
+            KUKARobotWriter.Save(this, destPath);
+        }
+
+        public static KUKARobot Load(string configFilePath) {
+            return KUKARobotLoader.Load(File.ReadAllText(configFilePath));
         }
 
     }
